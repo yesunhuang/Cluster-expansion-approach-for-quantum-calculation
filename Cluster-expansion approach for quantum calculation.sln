@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Cluster-expansion approach for quantum calculation", "Cluster-expansion approach for quantum calculation\Cluster-expansion approach for quantum calculation.pyproj", "{5E45ABB7-CAA8-40B4-BB71-FE9D42D8364F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E45ABB7-CAA8-40B4-BB71-FE9D42D8364F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E45ABB7-CAA8-40B4-BB71-FE9D42D8364F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81A6F568-93E0-42C3-85B6-458FEAC8D814}
+	EndGlobalSection
+EndGlobal
