@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>Cluster-expansion approach for quantum calculation</Name>
     <RootNamespace>Cluster-expansion approach for quantum calculation</RootNamespace>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

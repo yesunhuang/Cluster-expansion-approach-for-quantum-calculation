@@ -80,7 +80,7 @@ class OPM:
                 if (inque[Sh1]==False):
                     OperatorQue.put(Sh1)
                     inque[Sh1]=True
-                if((i0-2<=0)or(i0-subm-1<=0)):
+                if((i0-2<0)or(i0-subm-1<=0)):
                     continue;
                 Op2=subOperator-(1<<subn)+(1<<(i0-2))
                 (Sh2,Sb2)=self.hash(Op2)
