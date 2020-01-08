@@ -32,7 +32,7 @@ $$
 
 #### Solution:
 
-> Regardless of the data structure to be described in the next chapter, we simply assuming that we are able to keep all the normalized operator' s coefficients in an array which can be access in constant time.(This is possible if we are going to use the hash table) 
+> Regardless of the data structure to be described in the next chapter, we simply assume that we are able to keep all the normalized operator' s coefficients in an array which can be access in constant time.(This is possible if we are going to use the hash table) 
 
 > **Basic algorithm**:
 >
@@ -64,7 +64,7 @@ $$
 O(N^2)
 $$
 
-
+> **conjecture**: There is no linear time algorithm. (Find a wise computer scientist to prove it :(
 
 ### Multimode Operators
 
