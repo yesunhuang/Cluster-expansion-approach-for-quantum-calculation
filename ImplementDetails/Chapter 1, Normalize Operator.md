@@ -48,15 +48,15 @@ $$
 
 > * **Step one:**
 >
->   Starting from the right, record the current position with variable **i**. we ignore all the 'a' and when we come across the last 'a' , we put the scanned character together as an operator into the queue. And let the a variable **j** record the last 'a' 's position.
+>   Starting from the right, record the current position with variable `i`. we ignore all the 'a' and when we come across the last 'a' , we put the scanned character together as an operator into the queue. And let the a variable `j` record the last 'a' 's position.
 
 > * **Step two:**
 >
->   Then, if we come across 'a^dag' , we do nothing. However, if we come across 'a', we out all the **current** operators in the queue. And for every operator, we do the decomposition process described above and add the new operator to the queue if it is not in the queue. (Notice that **i-j-1** tells us the additional 'a^dag' came across since last decomposition.) Besides, update the coefficient. Reset the value of **j** to **i**.
+>   Then, if we come across 'a^dag' , we do nothing. However, if we come across 'a', we out all the **current** operators in the queue. And for every operator, we do the decomposition process described above and add the new operator to the queue if it is not in the queue. (Notice that `i-j-1` tells us the additional 'a^dag' came across since last decomposition.) Besides, update the coefficient. Reset the value of `j` to `i`.
 
 > * **Final step:**
 >
->   When the scanning process is finished, use the value of **i** and **j** to out all the operators in the queue  and renew the coefficient.
+>   When the scanning process is finished, use the value of `i` and `j` to out all the operators in the queue  and renew the coefficient.
 
 > Obviously, the time complexity is
 
@@ -105,3 +105,53 @@ $$
 > * **Final step:**
 >
 >   Multiply all the operators together based on the distributive law and we get all the normalized operators and their coefficients.
+
+### Multiplied Operators
+
+#### Problem:
+>The high order terms which are produced by the cluster expansion process as **single operator**, and we always keep different multiplied parts of the operator in length increasing order (Or, we can say, integer increasing order). 
+>
+>Map all the basic operator to integer and translate the operator into array(or string for less space), use '0' to represent multiplication. For example:
+>
+>$$
+><a^{\dagger}><c^{\dagger}cba^{\dagger}a>->[1,0,5,6,4,1,2]
+>$$
+>Given two normalized operators, output the normalized operator created by the multiplied process.
+>
+>For example:
+>$$
+><abc><a^{\dagger}b^{\dagger}bc>\times<a><bbc><abbc>=<a><abc><bbc><a^{\dagger}b^{\dagger}bc><abbc>
+>$$
+>or in array form:
+>$$
+>[2,4,6,0,1,3,4,6]\times[2,0,4,4,6,0,2,4,4,6]=[2,0,2,4,6,0,4,4,6,0,1,3,4,6,0,2,4,4,6]
+>$$
+
+#### Solution:
+
+> The solution is quite similar to order array merging. 
+>
+> * **Step One**
+>
+>   Create variables `p1` and `p2` to indicate the current position of the first array and the second. Also, a boolean variable `Selection` to mark the selection and a variable `n` to records the scanning steps. Also, a new array `Result` to store the result whose length equal to sum of the length of input.
+>
+> * **Step Two** 
+>
+>   Scanning from left to right and compare the number from two array simultaneously, use `n` to record the steps. If the number scanned hits no '0', use the variable `Seletion` to mark the possible selection between two arrays basing on the comparison. If we come across '0' simultaneously, we use `selection` to tell us of the numbers we should put in the new array. Remember that variable `n` indicates the position we starting scanning. If we come across '0' in one array but none '0' in the other, we just simply select the former. If we reach the end of any array, just treat it like we come across '0'. 
+>
+> * **Step Three**
+>
+>   Reset the value of `n` to zeros, and the pointer of the unselected array to `pi-n`.
+>
+> * **Final Step**  
+>
+>   Repeat step two to step three until we reach the end of any array. Then we just simply put the remaining part of the other array in the new array.
+>
+> It is not difficult to prove that the time complexity is
+> $$
+> O(N)
+> $$
+> where N is the sum of the length of input array.
+
+
+
