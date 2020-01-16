@@ -73,7 +73,7 @@ $$
 >Given a arbitrary operator(m modes) consists of  total length of **n** character representing by  
 
 $$
-a, a^{\dagger},b,b^{\dagger},c,c^{\dagger}...(2m\space kind\space of\space character)
+a, a^{\dagger},b,b^{\dagger},c,c^{\dagger}...(2m\space kinds\space of\space character)
 $$
 
 > in arbitrary order  as follows:
@@ -96,7 +96,7 @@ $$
 
 > * **Step one:**
 >
->   Using stable sort method to gather different modes' operators separately.
+>   Using stable sort method to gather different modes' operators separately.**(They are in order!)**
 
 > * **Step two:**
 >

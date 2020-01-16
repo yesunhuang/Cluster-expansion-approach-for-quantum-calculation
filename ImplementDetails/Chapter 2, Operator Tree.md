@@ -10,7 +10,7 @@ $$
 <A>=tr(\rho A)
 $$
 
-> Thus <ab> and <a><b> have different meaning in the tree. And we put a '.' in the operator input to distinguish them. For example: <abc><bc> represented in the input is {bc.abc}.
+> Thus <ab> and <a><b> have different meanings in the tree. And we put a '.' in the operator input to distinguish them. For example: <abc><bc> represented in the input is {bc.abc}.
 
 > We use a order tree structure to describe a set of operators and their coefficient. And this structure support several operation which enable us to implement **cluster expansion** process in a efficient way.
 
@@ -85,9 +85,13 @@ $$
 >
 > The delete process can guarantee to be completed in O(n) time and costs O(ln n) on average, where n is the length of the certain operator.
 
-### Multiply
+### T-O-Multiply
 
 >In most case, we face the problem to multiply one tree with a certain operator of another tree. Use the former tree as the output tree. Delete the certain operator in the tree but store its coefficient. Do DFS in the tree being multiplied and do the multiplied process between each operator in the tree and the certain operator described in the last chapter, multiplied their coefficient and insert the result to the output tree. 
+
+### T-T-Multiply
+
+> Multiply a tree with another will cost a great amount of time and have no better idea than brute force yet. Create a new root node, do DFS in both trees, multiply every operator in one and another, and add the result to the new tree. 
 
 ### Build from Position tree
 
@@ -169,8 +173,9 @@ public class OPTree
     public int search(int[] operator){};//output the coefficient.
     public bool delete(int[] operator){};
     public bool insert(int[] operator){};
-    public static bool multiply(OPTree mtree, Node moperator){};
-    public OPTree(OPTree PositionTree){};
+    public static bool tomultiply(OPTree mtree, Node moperator){};
+    public static Node ttmultiply(OPTree tree1,OPTree tree2){};
+    public OPTree(OPTree PositionTree){};//Build from Position Tree.
 }
 
 public static class Normalizer
