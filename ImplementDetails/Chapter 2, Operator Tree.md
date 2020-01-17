@@ -79,6 +79,9 @@ $$
 >
 > The insert process can be completed in O(n) time, where n is the length of the given operator.
 
+### T-T-Add
+> Given two trees, add them together. Compare the total number of operators of two trees and select the larger one as output tree. Do DPS in the other tree and for every operator in the tree, do the insert process based on the coefficient.
+
 ### Delete
 
 > To delete a certain operator in the tree need a bit more work. If the last node of the operator is not the leave, we just set its coefficient to zero. If it is the leave, destroy the node and the pointer linked to it, and in the DFS recalling process, we delete all the node way back until we reach the root, the node with none zero coefficient or the node with more than one child.(In lazy version, we can also just set its coefficient to zeros but might result in space wasting). Renew the value of the root.
@@ -173,6 +176,7 @@ public class OPTree
     public int search(int[] operator){};//output the coefficient.
     public bool delete(int[] operator){};
     public bool insert(int[] operator){};
+    public static bool ttadd(OPTree tree1,OPTree tree2){};
     public static bool tomultiply(OPTree mtree, Node moperator){};
     public static Node ttmultiply(OPTree tree1,OPTree tree2){};
     public OPTree(OPTree PositionTree){};//Build from Position Tree.
