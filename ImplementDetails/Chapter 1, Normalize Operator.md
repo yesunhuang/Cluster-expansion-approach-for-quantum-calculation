@@ -22,7 +22,7 @@ $$
 [a,a^{\dagger}]=aa^{\dagger}-a^{\dagger}a=1
 $$
 
-> Decompose the input operator into several normalized operators which all the 'a^dag's are in front of 'a's . For example:
+> Decompose the input operator into several normalized operators which all the $a^{\dagger}$ are in front of $a$ s . For example:
 
 $$
 {aa^{\dagger}a}=a^{\dagger}aa+a
@@ -36,7 +36,7 @@ $$
 
 > **Basic algorithm**:
 >
-> ​	Consider a normalized operator multiplied by a^dagger on the left. Assuming this operator have **i** 'a' and **j** 'a^dag'. Obviously the new operator can be decomposed into one normalized operator consisting of **i+1** 'a' and **j**  'a^dag', and **j** normalized operators consisting of **i** 'a' and **j-1** 'a^dag'. For example:
+> ​	Consider a normalized operator multiplied by a^dagger on the left. Assuming this operator have **i** $a$ and **j** $a^{\dagger}$. Obviously the new operator can be decomposed into one normalized operator consisting of **i+1** $a$ and **j**  $a^{\dagger}$, and **j** normalized operators consisting of **i** $a$ and **j-1** $a^{\dagger}$. For example:
 
 $$
 a[a^{\dagger}a^{\dagger}aa]=a^{\dagger}a^{\dagger}aaa+2a^{\dagger}aa
@@ -44,15 +44,15 @@ $$
 
 > **Solution**:
 >
-> ​	Basing on the simply algorithm described above, we simply scanning the operator from right to left. Every time we come across 'a', we do the composition process above and keep the result in a queue. 
+> ​	Basing on the simply algorithm described above, we simply scanning the operator from right to left. Every time we come across $a$, we do the composition process above and keep the result in a queue. 
 
 > * **Step one:**
 >
->   Starting from the right, record the current position with variable `i`. we ignore all the 'a' and when we come across the last 'a' , we put the scanned character together as an operator into the queue. And let the a variable `j` record the last 'a' 's position.
+>   Starting from the right, record the current position with variable `i`. we ignore all the $a$ and when we come across the last $a$ , we put the scanned character together as an operator into the queue. And let the a variable `j` record the last $a$ 's position.
 
 > * **Step two:**
 >
->   Then, if we come across 'a^dag' , we do nothing. However, if we come across 'a', we out all the **current** operators in the queue. And for every operator, we do the decomposition process described above and add the new operator to the queue if it is not in the queue. (Notice that `i-j-1` tells us the additional 'a^dag' came across since last decomposition.) Besides, update the coefficient. Reset the value of `j` to `i`.
+>   Then, if we come across $a^{\dagger}$ , we do nothing. However, if we come across $a$, we out all the **current** operators in the queue. And for every operator, we do the decomposition process described above and add the new operator to the queue if it is not in the queue. (Notice that `i-j-1` tells us the additional $a^{\dagger}$ came across since last decomposition.) Besides, update the coefficient. Reset the value of `j` to `i`.
 
 > * **Final step:**
 >
