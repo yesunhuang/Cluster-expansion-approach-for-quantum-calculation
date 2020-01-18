@@ -123,12 +123,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="normalizer.c" />
     <ClCompile Include="operator_tree.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="position_tree.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="normalizer.h" />
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />
   </ItemGroup>
