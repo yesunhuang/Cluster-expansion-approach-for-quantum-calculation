@@ -90,7 +90,7 @@ $$
 
 ### T-O-Multiply
 
->In most case, we face the problem to multiply one tree with a certain operator of another tree. Use the former tree as the output tree. Delete the certain operator in the tree but store its coefficient. Do DFS in the tree being multiplied and do the multiplied process between each operator in the tree and the certain operator described in the last chapter, multiplied their coefficient and insert the result to the output tree. 
+>In most case, we face the problem to multiply one tree with a certain operator of another tree. Use the latter tree as the output tree. Delete the certain operator in the tree but store its coefficient. Do DFS in the tree being multiplied and do the multiplied process between each operator in the tree and the certain operator described in the last chapter, multiplied their coefficient and insert the result to the output tree. 
 
 ### T-T-Multiply
 
