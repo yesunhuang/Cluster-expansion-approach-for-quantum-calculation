@@ -64,7 +64,7 @@ typedef struct _PTree PTree, *pPTree;
 #pragma region 函数声明区
 
 /**
- * @ 函数: int Insert_OPTree(pOPTree tree, pOPArray arr, int len)
+ * @ 函数: int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree outputOPTree)
  *
  * @ 功能: 根据PositionTree和一个oprator,生成OPTree
  *
