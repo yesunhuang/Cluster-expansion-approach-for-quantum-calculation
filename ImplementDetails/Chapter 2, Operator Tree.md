@@ -33,39 +33,40 @@ $$
 
 > * Example: 
 >
->    	consider a set of operators:
+> 	consider a set of operators:
 >
->   | operator    | array representation | coefficient |
->   | ----------- | -------------------- | ----------- |
->   | {a^dag a b^dag b c} | [1,2,3,4,6]          | 1           |
->   | {a b^dag b } | [2,3,4]              | 16          |
-> 	|{a.b^dag |[2,0,3]|6|
-> 	|{a.c.a^dag a}|[2,0,6,0,1,2]|4|
-> 	|{a.b.c}|[2,0,4,0,6]|6|
+> | operator    | array representation | coefficient |
+> | ----------- | -------------------- | ----------- |
+> | {a^dag a b^dag b c} | [1,2,3,4,6]          | 1           |
+> | {a b^dag b } | [2,3,4]              | 16          |
+> |{a.b^dag |[2,0,3]|6|
+> |{a.c.a^dag a}|[2,0,6,0,1,2]|4|
+> |{a.b.c}|[2,0,4,0,6]|6|
+>
+> The tree representation is:
 > 	
-> 	The tree representation is:
-> 	
-> 	```mermaid
-> 	graph TB
-> 	 	id1((root:5))
-> 	 	id1-->id2((1:0))
-> 	 	id1-->id3((2:0))
-> 	 	id2-->id4((2:0))
-> 	 	id4-->id16((3:0))
-> 	 	id16-->id17((4:0))
-> 	 	id17-->id18((6:1))
-> 	 	id3-->id5((0:0))
-> 	 	id5-->id8((3:6))
-> 	 	id5-->id9((4:0))
-> 	 	id5-->id10((6:0))
-> 	 	id9-->id11((0:0))
-> 	 	id11-->id12((6:6))
-> 	 	id10-->id13((0:0))
-> 	 	id13-->id14((1:0))
-> 	 	id14-->id15((2:4))
-> 	 	id3-->id6((3:0))
-> 	 	id6-->id7((4:16))
-> 	```
+
+> ```mermaid
+> graph TB
+>  	id1((root:5))
+>  	id1-->id2((1:0))
+>  	id1-->id3((2:0))
+>  	id2-->id4((2:0))
+>  	id4-->id16((3:0))
+>  	id16-->id17((4:0))
+>  	id17-->id18((6:1))
+>  	id3-->id5((0:0))
+>  	id5-->id8((3:6))
+>  	id5-->id9((4:0))
+>  	id5-->id10((6:0))
+>  	id9-->id11((0:0))
+>  	id11-->id12((6:6))
+>  	id10-->id13((0:0))
+>  	id13-->id14((1:0))
+>  	id14-->id15((2:4))
+>  	id3-->id6((3:0))
+>  	id6-->id7((4:16))
+> ```
 
 ### Search
 
