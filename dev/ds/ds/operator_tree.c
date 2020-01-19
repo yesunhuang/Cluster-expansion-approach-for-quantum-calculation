@@ -61,7 +61,9 @@ int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
 	if (tree2->childSize > tree1->childSize)
 		ReserveChildSize(tree1, tree2->childSize);
 
-	return _AddOfOPTree_TT(tree1, tree2);
+	_AddOfOPTree_TT(tree1->root, tree2->root, tree1, tree2);
+	_AdjustRootValue(tree1);
+	return 1;
 }
 
 int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
@@ -131,6 +133,23 @@ int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree) {
 	return ret;
 }
 
+int ReserveChildSize(pOPTree tree, UINT_L newCsize) {
+	if (newCsize <= 0)
+		return 0;
+	if (tree->childSize == newCsize)
+		return 1;
+
+	_ReserveChildSize(tree->root, tree->childSize, newCsize);
+
+	tree->childSize = newCsize;
+
+	/* 如果空间缩小,需要更新一下root->value */
+	if (newCsize < tree->childSize)
+		_AdjustRootValue(tree);
+
+	return 1;
+}
+
 int ClearOfOPTree(pOPTree tree) {
 	if (tree == NULL)
 		return 0;
@@ -144,6 +163,50 @@ int ClearOfOPTree(pOPTree tree) {
 
 	tree->root->value = 0;
 
+	return 1;
+}
+
+int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) {
+	/* 注意: 本函数不调整root中的value */
+	for (int i = 0; i <= tree2->childSize; ++i) {
+		if (node2->children[i] != NULL) {
+			if (node1->children[i] != NULL) {
+				/* node1中存在此子节点 */
+				node1->children[i]->value += node2->children[i]->value;
+			}
+			else {
+				/* node1中不存在此子节点 */
+				MallocOPNode(node2->label, node2->value, tree1->childSize, node1, &node1->children[i]);
+			}
+		}
+		_AddOfOPTree_TT(node1->children[i], node2->children[i], tree1, tree2);
+	}
+	/* 删除可能出现的"零"叶子结点 */
+	for (int i = 0; i <= tree2->childSize; ++i) {
+		if (node1->children[i]->value == 0 && _IsLeafNode(node1->children[i], tree1->childSize)) {
+			free(node1->children[i]);
+			node1->children[i] = NULL;
+		}
+	}
+	return 1;
+}
+
+int _AdjustRootValue(pOPTree tree) {
+	int sum = 0;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		_AdjustRootValue_Sum(tree->root->children[i], tree->childSize, &sum);
+	}
+	tree->root->value = sum;
+	return 1;
+}
+
+int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum) {
+	if (node->value != 0)
+		++(*psum);
+	for (int i = 0; i <= csize; ++i) {
+		if (node->children[i] != NULL)
+			_AdjustRootValue_Sum(node->children[i], csize, psum);
+	}
 	return 1;
 }
 
@@ -215,7 +278,7 @@ void _FreeNode(struct _Node* node, int csize) {
 	if (node == NULL)
 		return;
 
-	for (int i = 0; i < csize; ++i) {
+	for (int i = 0; i <= csize; ++i) {
 		if (node->children[i] != NULL) {
 			_FreeNode(node->children[i], csize);
 		}
@@ -285,4 +348,22 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 		free(ans);
 	}
 	return ret;
+}
+
+int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize) {
+	struct _Node** newChild = (struct _Node**)malloc((newCsize + 1) * sizeof(struct _Node*));
+	if (newChild == NULL) 
+		return 0;
+	for (int i = 0; i <= MIN(originCsize, newCsize); ++i) {
+		newChild[i] = node->children[i];
+	}
+	/* 空间缩小时,需要释放原来的截断空间 */
+	if (newCsize < originCsize) {
+		for (int i = newChild + 1; i <= originCsize; ++i) {
+			_FreeNode(node->children[i], originCsize);
+		}
+	}
+	free(node->children);
+	node->children = newChild;
+	return 1;
 }

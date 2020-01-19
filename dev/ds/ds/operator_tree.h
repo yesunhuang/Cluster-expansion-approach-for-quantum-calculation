@@ -16,6 +16,8 @@
 
 #define NULL 0
 #define OFFSETOF(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#define MIN(a, b) (((a) < (b))? (a) : (b))
+#define MAX(a, b) (((a) > (b))? (a) : (b))
 /**
  * @ 宏定义: ROOT_TO_TREE(ROOT, TREE)
  *
@@ -28,6 +30,7 @@
 #define ROOT_TO_TREE(ROOT, TREE) do{ TREE = (OPTree*)((size_t)ROOT - OFFSETOF(OPTree, root));}while(0)
 
 #define UINT_V_ERROR 0xfefefefe
+// #define UINT_V_ADD_DELETE_FLAG 0xfefefefc
 /* operator的最大长度 */
 #define MAX_OPERATOR_LENGTH 256
 
@@ -270,8 +273,8 @@ int ReserveChildSize(pOPTree tree, UINT_L newCsize);
  */
 int ClearOfOPTree(pOPTree tree);
 
-/** TODO
- * @ 函数: int _AddOfOPTree_TT(pOPNode node1, pOPNode node2)
+/**
+ * @ 函数: int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree2)
  *
  * @ 功能: 将tree2中的每个元素插入至tree1中.
  *
@@ -279,9 +282,39 @@ int ClearOfOPTree(pOPTree tree);
  *
  * @ param{node2}: operator 2
  *
+ * @ param{tree1}: 第一棵树
+ *
+ * @ param{tree2}: 第二棵树
+ *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _AddOfOPTree_TT(pOPNode node1, pOPNode node2);
+int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2);
+
+/**
+ * @ 函数: int _AdjustRootValue(pOPTree tree)
+ *
+ * @ 功能: 更新树中的value
+ *
+ * @ param{tree}: 需要调整的树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _AdjustRootValue(pOPTree tree);
+
+/**
+ * @ 函数: int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum)
+ *
+ * @ 功能: 更新树中的value
+ *
+ * @ param{node}: 结点
+ *
+ * @ param{csize}: 略
+ *
+ * @ param{psum}: 用于计数的变量
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum);
 
 /**
  * @ 函数: int _SearchOfOPTree(pOpTree tree, pOPArray arr, int len, pOPNode* output)
@@ -405,6 +438,21 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
  */
 int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
+
+/**
+ * @ 函数: int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize)
+ *
+ * @ 功能: 不改变拓扑结构的前提下,调整树的childsize.
+ *
+ * @ param{tree}: operator tree
+ *
+ * @ param{originCsize}: 原来的childsize
+ *
+ * @ param{newCsize}: 新的childsize
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize);
 #pragma endregion
 
 #endif // !_OPERATOR_TREE_H_
