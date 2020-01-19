@@ -34,7 +34,7 @@ int GetRoot(struct _Node* node,struct _Node** output) {
 		++cnt;
 		nowNode = nowNode->parent;
 	}
-	*output = nowNode;
+	if (output != NULL) *output = nowNode;
 	return cnt;
 }
 
@@ -51,6 +51,17 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr) {
 int InitOPTree(pOPTree tree, UINT_L csize) {
 	tree->childSize = csize;
 	return MallocOPNode(0, 0, csize, NULL, &tree->root);
+}
+
+int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
+{
+	if (tree1 == NULL || tree2 == NULL)
+		return 0;
+	/* 调整tree1的大小 */
+	if (tree2->childSize > tree1->childSize)
+		ReserveChildSize(tree1, tree2->childSize);
+
+	return _AddOfOPTree_TT(tree1, tree2);
 }
 
 int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
@@ -93,7 +104,6 @@ int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len) {
 }
 
 int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node) {
-	// TODO: 注意用_DeleteNode(nowNode, tree)
 	/* 获得另一个树的根节点和树指针 */
 	pOPNode otherRoot;
 	int depth = GetRoot(node, &otherRoot);
@@ -103,16 +113,29 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node) {
 	pOPArray otherArray = (pOPArray)malloc(depth * sizeof(UINT_L));
 	ArrayFromNode(node, depth, otherArray);
 	/* 另一个树中删除该结点 */
+	int coef = node->value;
 	DeleteOfOPTree(otherTree, otherArray, depth);
 
-	return _MultiplyOfOPTree_TO(tree, otherArray, depth, otherTree);
+	return _MultiplyOfOPTree_TO(tree, otherArray, depth, coef, otherTree);
+}
+
+int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree) {
+	/* 定义一个简易的栈 */
+	UINT_L tree2Stack[MAX_OPERATOR_LENGTH];
+	int ret = 1;
+	for (int i = 0; i <= tree2->childSize; ++i) {
+		if (tree2->root->children[i] != NULL) {
+			ret &= _MultiplyOfOPTree_TT(tree1, tree2->root->children[i], tree2->childSize, tree2Stack, 0, outputTree);
+		}
+	}
+	return ret;
 }
 
 int ClearOfOPTree(pOPTree tree) {
 	if (tree == NULL)
 		return 0;
 
-	for (int i = 0; i < tree->childSize; ++i) {
+	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL) {
 			_FreeNode(tree->root->children[i], tree->childSize);
 			tree->root->children[i] = NULL;
@@ -149,7 +172,7 @@ int _IsLeafNode(struct _Node* node, int csize) {
 int _DeleteNode(pOPNode node, pOPTree tree) {
 	if (tree == NULL)
 		return 0;
-	pOPNode nowNode = tree->root;
+	pOPNode nowNode = node;
 	/* 无此结点 */
 	if (nowNode == NULL)
 		return 0;
@@ -204,13 +227,62 @@ void _FreeNode(struct _Node* node, int csize) {
 	return;
 }
 
-int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, pOPTree otherTree) {
+int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree) {
 	/* 定义一个简易的栈 */
 	UINT_L lStack[MAX_OPERATOR_LENGTH];
-	return _MultiplyNodeWithOP(tree->root, arr, len, lStack, 0, otherTree);
+	int ret = 1;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL) {
+			ret &= _MultiplyNodeWithOP(tree->root->children[i], tree->childSize, arr, len, coef, lStack, 0, otherTree);
+		}
+	}
+	return ret;
 }
 
-int _MultiplyNodeWithOP(pOPNode node, pOPArray arr, int len, UINT_L* lStack, int nextIndex, pOPTree otherTree) {
+int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
+	UINT_L* tree2Stack, int nextIndex, pOPTree outputTree) {
+	if (nextIndex >= MAX_OPERATOR_LENGTH)
+		return 0;
+	tree2Stack[nextIndex] = tree2node->label;
+	int ret = 1;
 
-	return 0;
+	if (tree2node->value != 0) {
+		/* 定义一个简易的栈 */
+		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
+		for (int i = 0; i <= tree1->childSize; ++i) {
+			if (tree1->root->children[i] != NULL) {
+				ret &= _MultiplyNodeWithOP(tree1->root->children[i], tree1->childSize, 
+					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
+			}
+		}
+	}
+
+	for (int i = 0; i <= tree2csize; ++i) {
+		ret &= MultiplyOfOPTree_TT(tree1, tree2node->children[i], tree2csize, tree2Stack, nextIndex + 1, outputTree);
+	}
+
+	return ret;
+}
+
+int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
+	UINT_L* lStack, int nextIndex, pOPTree otherTree) {
+	if (nextIndex >= MAX_OPERATOR_LENGTH)
+		return 0;
+	lStack[nextIndex] = node->label;
+	int ret = 1;
+	if (node->value == 0) {
+		for (int i = 0; i <= csize; ++i) {
+			if (node->children[i] != NULL) {
+				ret &= _MultiplyNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
+			}
+		}
+	}
+	else {
+		int newLen = ((nextIndex + 1) * len + 1);
+		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
+		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, NULL);
+		InsertOfOPTree(otherTree, ans, newLen, coef * node->value);
+		free(ans);
+	}
+	return ret;
 }

@@ -33,7 +33,7 @@
 int Normalize(pOPArray arr, int len, pOPTree outTree);
 
 /**
- * @ 函数: int Normalize(pOPArray arr, int len, pOPTree outTree)
+ * @ 函数: int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray* output, int* outLen)
  *
  * @ 功能: 让两个operator相乘
  *
@@ -47,7 +47,7 @@ int Normalize(pOPArray arr, int len, pOPTree outTree);
  *
  * @ param{output}: 结果
  *
- * @ param{outLen}: 结果的长度(可省略)
+ * @ param{outLen}: 结果的长度(可省略为NULL)
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
