@@ -9,6 +9,7 @@
  */
 
 #include "operator_tree.h"
+#include "normalizer.h"
 
 int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p)
 {
@@ -46,6 +47,11 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr) {
 		nowNode = nowNode->parent;
 	}
 	return 1;
+}
+
+int CreateOPTree(UINT_L csize, pOPTree* outputTree) {
+	*outputTree = (pOPTree)malloc(sizeof(OPTree));
+	return _InitOPTree(*outputTree, csize);
 }
 
 int _InitOPTree(pOPTree tree, UINT_L csize) {
@@ -163,6 +169,12 @@ int ClearOfOPTree(pOPTree tree) {
 
 	tree->root->value = 0;
 
+	return 1;
+}
+
+int FreeOPTree(pOPTree tree) {
+	ClearOfOPTree(tree);
+	free(tree);
 	return 1;
 }
 

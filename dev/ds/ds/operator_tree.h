@@ -36,7 +36,7 @@
 
 #pragma endregion
 
-#pragma region 预头文件区
+#pragma region 头文件区
 
 #include <malloc.h>
 #include <memory.h>
@@ -72,12 +72,6 @@ struct _OPTree {
 	UINT_L childSize;
 };
 typedef struct _OPTree OPTree, *pOPTree;
-#pragma endregion
-
-#pragma region 后头文件区
-
-#include "normalizer.h"
-
 #pragma endregion
 
 #pragma region 函数声明区
@@ -149,7 +143,9 @@ int GetRoot(struct _Node* node, struct _Node** output);
 int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
 
 /**
- * @ 函数: int InitOPTree(pOPTree tree, UINT_L csize)
+ * @ 函数: int CreateOPTree(UINT_L csize, pOPTree* outputTree)
+ *
+ * @ 功能: 生成一棵新的树,与FreeOPTree搭配使用
  *
  * @ param{csize}: 表示有多少个孩子的可能
  *
@@ -160,7 +156,7 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
 int CreateOPTree(UINT_L csize, pOPTree* outputTree);
 
 /**
- * @ 函数: int InitOPTree(pOPTree tree, UINT_L csize)
+ * @ 函数: int _InitOPTree(pOPTree tree, UINT_L csize)
  *
  * @ param{tree}: operator tree
  *
@@ -283,6 +279,17 @@ int ReserveChildSize(pOPTree tree, UINT_L newCsize);
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int ClearOfOPTree(pOPTree tree);
+
+/**
+ * @ 函数: int FreeOPTree(pOPTree tree)
+ *
+ * @ 功能: 释放tree
+ *
+ * @ param{tree}: operator tree
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int FreeOPTree(pOPTree tree);
 
 /**
  * @ 函数: int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree2)
@@ -449,6 +456,17 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
  */
 int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
+
+/**
+ * @ 函数: int _NormalizeOPTree(pOPNode node)
+ *
+ * @ 功能: 以node为根节点,向下标准化operator tree
+ *
+ * @ param{node}: 默认为根节点
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _NormalizeOPTree(pOPNode node);
 
 /**
  * @ 函数: int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize)

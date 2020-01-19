@@ -4,7 +4,7 @@
  * @作者: AyajiLin & YesunHuang
  * @邮箱: 493987054@qq.com & 944812203@qq.com
  * @github: https://github.com/leonardodalinky & https://github.com/yesunhuang
- * @日期: 2020年1月18日
+ * @日期: 2020年1月19日
  *
  */
 #include "position_tree.h"
@@ -12,7 +12,10 @@
 
 int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree) {
 	// TODO
-	*outputOPTree = 
+	int ret = 1;
+	ret &= CreateOPTree(len, outputOPTree);
+	ret &= _BuildFromPTree(posTree->root, posTree->childSize, *outputOPTree, len);
+	ret &= _NormalizeOPTree(*outputOPTree);
 
-	return 0;
+	return ret;
 }

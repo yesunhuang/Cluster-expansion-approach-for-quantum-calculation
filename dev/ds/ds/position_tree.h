@@ -57,7 +57,8 @@
 typedef struct _Node PNode, *pPNode;
 
 struct _PTree {
-	PNode root;
+	pPNode root;
+	UINT_L childSize;
 };
 typedef struct _PTree PTree, *pPTree;
 
@@ -81,6 +82,23 @@ typedef struct _PTree PTree, *pPTree;
  * @ 返回值: 成功生成时,返回值为1; 否则,返回值为0.
  */
 int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree);
+
+/** TODO
+ * @ 函数: int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPNode opNode, UINT_L opCsize)
+ *
+ * @ 功能: 根据PositionTree和一个oprator,生成OPTree
+ *
+ * @ param{posNode}: position tree树结点
+ *
+ * @ param{posCsize}: position tree的csize
+ *
+ * @ param{opNode}: operator tree树结点
+ *
+ * @ param{opCsize}: operator tree的csize
+ *
+ * @ 返回值: 成功生成时,返回值为1; 否则,返回值为0.
+ */
+int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPNode opNode, UINT_L opCsize);
 
 #pragma endregion
 #endif // !_POSITION_TREE_H_

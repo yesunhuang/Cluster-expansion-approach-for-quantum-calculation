@@ -10,12 +10,7 @@ $$
 <A>=tr(\rho A)
 $$
 
-<<<<<<< HEAD
-> Thus <ab> and <a><b> have different meaning in the tree. And we put a '.' in the operator input to distinguish them. For example: <abc><bc> represented in the input is {$bc.abc$}.
-> =======
 > Thus <ab> and <a><b> have different meanings in the tree. And we put a '.' in the operator input to distinguish them. For example: <abc><bc> represented in the input is {bc.abc}.
->
-> >>>>>> 4f8cd7743de99f1f58a0223c84ec8be2172b4dd5
 
 > We use a order tree structure to describe a set of operators and their coefficient. And this structure support several operation which enable us to implement **cluster expansion** process in a efficient way.
 
@@ -38,18 +33,19 @@ $$
 
 > * Example: 
 >
->    	consider a set of operators:
+> 	consider a set of operators:
 >
->   | operator    | array representation | coefficient |
->   | ----------- | -------------------- | ----------- |
->   | {$a^{\dagger} a b^{\dagger} b c$} | [1,2,3,4,6]          | 1           |
->   | {$a b^{\dagger} b$} | [2,3,4]              | 16          |
-> |{$a.b^{\dagger}$}|[2,0,3]|6|
-> |{$a.c.a^{\dagger} a$}|[2,0,6,0,1,2]|4|
-> |{$a.b.c$}|[2,0,4,0,6]|6|
-> 
-The tree representation is:
-> 
+> | operator    | array representation | coefficient |
+> | ----------- | -------------------- | ----------- |
+> | {a^dag a b^dag b c} | [1,2,3,4,6]          | 1           |
+> | {a b^dag b } | [2,3,4]              | 16          |
+> |{a.b^dag |[2,0,3]|6|
+> |{a.c.a^dag a}|[2,0,6,0,1,2]|4|
+> |{a.b.c}|[2,0,4,0,6]|6|
+>
+> The tree representation is:
+> 	
+
 > ```mermaid
 > graph TB
 >  	id1((root:5))
@@ -121,54 +117,43 @@ The tree representation is:
 >
 > ```mermaid
 > graph TB
-> 	id1((root:5))
-> 	id1-->id2((1:0))
-> 	id1-->id3((2:0))
-> 	id2-->id4((0:0))
-> 	id4-->id5((2:0))
-> 	id5-->id6((0:0))
-> 	id6-->id7((3:2))
-> 	id2-->id8((0:0))
-> 	id8-->id9((2:0))
-> 	id9-->id10((3:-1))
-> 	id3-->id11((0:0))
-> 	id11-->id12((1:0))
-> 	id12-->id13((3:-1))
-> 	id1-->id14((3:0))
-> 	id14-->id15((0:0))
-> 	id15-->id16((1:0))
-> 	id16-->id17((2:-1))
-> 	id2-->id18((2:0))
-> 	id18-->id19((3:1))
+>  	id1((root:5))
+>  	id1-->id2((1:0))
+>  	id1-->id3((2:0))
+>  	id2-->id4((0:0))
+>  	id4-->id5((2:0))
+>  	id5-->id6((0:0))
+>  	id6-->id7((3:2))
+>  	id2-->id8((0:0))
+>  	id8-->id9((2:0))
+>  	id9-->id10((3:-1))
+>  	id3-->id11((0:0))
+>  	id11-->id12((1:0))
+>  	id12-->id13((3:-1))
+>  	id1-->id14((3:0))
+>  	id14-->id15((0:0))
+>  	id15-->id16((1:0))
+>  	id16-->id17((2:-1))
+>  	id2-->id18((2:0))
+>  	id18-->id19((3:1))
 > ```
 >
 > ​	Output:
 >
 > ```mermaid
 > graph TB
-> 	
-> 	
-> 	id1((root:3))
-> 	id1-->id2((2:0))
-> 	id2-->id4((0:0))
-> 	id4-->id5((2:0))
-> 	id5-->id6((0:0))
-> 	id6-->id7((2:2))
-> 	id2-->id8((0:0))
-> 	id8-->id9((2:0))
-> 	id9-->id10((2:-3))
-> 	id2-->id18((2:0))
-> 	id18-->id19((2:1))
-> 	id1((root:3))
-> 	id1-->id2((2:0))
-> 	id2-->id4((0:0))
-> 	id4-->id5((2:0))
-> 	id5-->id6((0:0))
-> 	id6-->id7((2:2))
-> 	id5-->id10((2:-3))
-> 	id2-->id18((2:0))
-> 	id18-->id19((2:1))
-> ```
+>  	
+>  	
+>  	id1((root:3))
+>  	id1-->id2((2:0))
+>  	id2-->id4((0:0))
+>  	id4-->id5((2:0))
+>  	id5-->id6((0:0))
+>  	id6-->id7((2:2))
+>    	id5-->id10((2:-3))
+>  	id2-->id18((2:0))
+>  	id18-->id19((2:1))
+>  ```
 
 ## API
 

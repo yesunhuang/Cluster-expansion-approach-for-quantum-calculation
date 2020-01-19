@@ -1,6 +1,6 @@
 /**
- * @ 文件名: operator_tree.h
- * @ 功能: 声明operator tree的功能
+ * @ 文件名: normalizer.h
+ * @ 功能: 声明有关正交化的功能
  * @ 作者: AyajiLin & YesunHuang
  * @ 邮箱: 493987054@qq.com & 944812203@qq.com
  * @ github: https://github.com/leonardodalinky & https://github.com/yesunhuang
@@ -11,7 +11,7 @@
 #ifndef _NORMALIZER_H_
 #define _NORMALIZER_H_
 
-#pragma region 预头文件区
+#pragma region 头文件区
 #include "operator_tree.h"
 #pragma endregion
 
