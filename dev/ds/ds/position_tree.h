@@ -13,6 +13,8 @@
 
 #pragma region 宏定义区
 
+#define MAX_QUEUE_CAPACITY 2048
+
 /**
  * @ 宏定义: InitOPTree(pPTree tree, UINT_L csize)
  *
@@ -63,7 +65,7 @@ typedef struct _PTree PTree, *pPTree;
 
 #pragma region 函数声明区
 
-/**
+/** TODO
  * @ 函数: int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree outputOPTree)
  *
  * @ 功能: 根据PositionTree和一个oprator,生成OPTree
@@ -74,11 +76,11 @@ typedef struct _PTree PTree, *pPTree;
  *
  * @ param{len}: operator的数组表达的长度
  *
- * @ param{outputOPTree}: 输出的opTree
+ * @ param{outputOPTree}: 输出的新opTree
  *
  * @ 返回值: 成功生成时,返回值为1; 否则,返回值为0.
  */
-int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree outputOPTree);
+int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree);
 
 #pragma endregion
 #endif // !_POSITION_TREE_H_

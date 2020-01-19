@@ -14,7 +14,7 @@
 
 #pragma region 宏定义区
 
-#define NULL 0
+//#define NULL ((void*)0)
 #define OFFSETOF(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 #define MIN(a, b) (((a) < (b))? (a) : (b))
 #define MAX(a, b) (((a) > (b))? (a) : (b))
@@ -151,13 +151,24 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
 /**
  * @ 函数: int InitOPTree(pOPTree tree, UINT_L csize)
  *
+ * @ param{csize}: 表示有多少个孩子的可能
+ *
+ * @ param{outputTree}: 表示有多少个孩子的可能
+ *
+ * @ 返回值: 若初始化成功,返回值为1; 否则,返回值为0.
+ */
+int CreateOPTree(UINT_L csize, pOPTree* outputTree);
+
+/**
+ * @ 函数: int InitOPTree(pOPTree tree, UINT_L csize)
+ *
  * @ param{tree}: operator tree
  *
  * @ param{csize}: 表示有多少个孩子的可能
  *
  * @ 返回值: 若初始化成功,返回值为1; 否则,返回值为0.
  */
-int InitOPTree(pOPTree tree, UINT_L csize);
+int _InitOPTree(pOPTree tree, UINT_L csize);
 
 /**
  * @ 函数: int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
@@ -249,7 +260,7 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node);
  */
 int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree);
 
-/** TODO
+/**
  * @ 函数: int ReserveChildSize(pOPTree tree, UINT_L newCsize)
  *
  * @ 功能: 不改变拓扑结构的前提下,调整树的childsize.

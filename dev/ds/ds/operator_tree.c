@@ -48,7 +48,7 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr) {
 	return 1;
 }
 
-int InitOPTree(pOPTree tree, UINT_L csize) {
+int _InitOPTree(pOPTree tree, UINT_L csize) {
 	tree->childSize = csize;
 	return MallocOPNode(0, 0, csize, NULL, &tree->root);
 }

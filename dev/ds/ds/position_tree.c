@@ -7,3 +7,12 @@
  * @日期: 2020年1月18日
  *
  */
+#include "position_tree.h"
+
+
+int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree) {
+	// TODO
+	*outputOPTree = 
+
+	return 0;
+}
