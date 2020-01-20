@@ -13,14 +13,12 @@
 
 #pragma region 宏定义区
 
-#define MAX_QUEUE_CAPACITY 2048
-
 /**
- * @ 宏定义: InitOPTree(pPTree tree, UINT_L csize)
+ * @ 宏定义: CreateOPTree(UINT_L csize, pPTree* outputTree)
  *
  * @ 功能: 对应OPTree中相同功能
  */
-#define InitPTree(tree, csize) ((InitOPTree((pOPTree)tree, csize)))
+#define CreatePTree(csize, outputTree) ((CreateOPTree(csize, outputTree)))
 
  /**
   * @ 宏定义: DeleteOfPTree(pPTree tree, pOPArray arr, int len)
@@ -42,6 +40,13 @@
  * @ 功能: 对应OPTree中相同功能
  */
 #define ClearOfPTree(tree) ((ClearOfOPTree((pOPTree)tree)))
+
+/**
+ * @ 宏定义: FreeOPTree(pPTree tree)
+ *
+ * @ 功能: 对应OPTree中相同功能
+ */
+#define FreePTree(tree) ((FreeOPTree((pOPTree)tree)))
 
 #pragma endregion
 
@@ -66,7 +71,7 @@ typedef struct _PTree PTree, *pPTree;
 
 #pragma region 函数声明区
 
-/** TODO
+/** 
  * @ 函数: int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree outputOPTree)
  *
  * @ 功能: 根据PositionTree和一个oprator,生成OPTree
@@ -83,8 +88,8 @@ typedef struct _PTree PTree, *pPTree;
  */
 int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree);
 
-/** TODO
- * @ 函数: int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPNode opNode, UINT_L opCsize)
+/** 
+ * @ 函数: int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPArray arr, int len, pOPNode opNode, UINT_L opCsize)
  *
  * @ 功能: 根据PositionTree和一个oprator,生成OPTree
  *
@@ -92,13 +97,17 @@ int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree)
  *
  * @ param{posCsize}: position tree的csize
  *
+ * @ param{arr}: operator数组表达
+ *
+ * @ param{int}: operator数组长度
+ *
  * @ param{opNode}: operator tree树结点
  *
  * @ param{opCsize}: operator tree的csize
  *
  * @ 返回值: 成功生成时,返回值为1; 否则,返回值为0.
  */
-int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPNode opNode, UINT_L opCsize);
+int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPArray arr, int len, pOPNode opNode, UINT_L opCsize);
 
 #pragma endregion
 #endif // !_POSITION_TREE_H_

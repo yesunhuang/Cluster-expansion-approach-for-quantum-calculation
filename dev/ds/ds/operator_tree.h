@@ -156,17 +156,6 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
 int CreateOPTree(UINT_L csize, pOPTree* outputTree);
 
 /**
- * @ 函数: int _InitOPTree(pOPTree tree, UINT_L csize)
- *
- * @ param{tree}: operator tree
- *
- * @ param{csize}: 表示有多少个孩子的可能
- *
- * @ 返回值: 若初始化成功,返回值为1; 否则,返回值为0.
- */
-int _InitOPTree(pOPTree tree, UINT_L csize);
-
-/**
  * @ 函数: int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
  *
  * @ 功能: 将tree2中的每个元素插入至tree1中.
@@ -257,6 +246,17 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node);
 int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree);
 
 /**
+ * @ 函数: int NormalizeOPTree(pOPTree tree)
+ *
+ * @ 功能: 从树的根节点,向下标准化operator tree
+ *
+ * @ param{tree}: op树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int NormalizeOPTree(pOPTree tree);
+
+/**
  * @ 函数: int ReserveChildSize(pOPTree tree, UINT_L newCsize)
  *
  * @ 功能: 不改变拓扑结构的前提下,调整树的childsize.
@@ -283,7 +283,7 @@ int ClearOfOPTree(pOPTree tree);
 /**
  * @ 函数: int FreeOPTree(pOPTree tree)
  *
- * @ 功能: 释放tree
+ * @ 功能: 释放tree,与CreateOPTree配合使用
  *
  * @ param{tree}: operator tree
  *
@@ -350,6 +350,17 @@ int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum);
  * @ 返回值: 若有,output值设为该节点,返回值为1; 否则,output值设为NULL,返回值为0.
  */
 int _SearchOfOPTree(pOPTree tree, pOPArray arr, int len, pOPNode* output);
+
+/**
+ * @ 函数: int _InitOPTree(pOPTree tree, UINT_L csize)
+ *
+ * @ param{tree}: operator tree
+ *
+ * @ param{csize}: 表示有多少个孩子的可能
+ *
+ * @ 返回值: 若初始化成功,返回值为1; 否则,返回值为0.
+ */
+int _InitOPTree(pOPTree tree, UINT_L csize);
 
 /**
  * @ 函数: int _SearchOfOPTree(pOpTree tree, pOPArray arr, int len, pOPNode* output)
@@ -458,15 +469,17 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
 
 /**
- * @ 函数: int _NormalizeOPTree(pOPNode node)
+ * @ 函数: int _NormalizeOPTree(pOPNode node, INT_V* rootValue)
  *
- * @ 功能: 以node为根节点,向下标准化operator tree
+ * @ 功能: 以node为开始的节点,向下标准化operator tree
  *
- * @ param{node}: 默认为根节点
+ * @ param{node}: 开始标准化的结点
+ *
+ * @ param{tree}: op树
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _NormalizeOPTree(pOPNode node);
+int _NormalizeOPTree(pOPNode node, pOPTree tree);
 
 /**
  * @ 函数: int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize)

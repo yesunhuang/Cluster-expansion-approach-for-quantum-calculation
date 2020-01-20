@@ -139,6 +139,17 @@ int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree) {
 	return ret;
 }
 
+int NormalizeOPTree(pOPTree tree) {
+	tree->root->value = 0;
+	int ret = 1;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL) {
+			ret &= _NormalizeOPTree(tree->root->children[i], tree);
+		}
+	}
+	return ret;
+}
+
 int ReserveChildSize(pOPTree tree, UINT_L newCsize) {
 	if (newCsize <= 0)
 		return 0;
@@ -333,7 +344,7 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 	}
 
 	for (int i = 0; i <= tree2csize; ++i) {
-		ret &= MultiplyOfOPTree_TT(tree1, tree2node->children[i], tree2csize, tree2Stack, nextIndex + 1, outputTree);
+		ret &= _MultiplyOfOPTree_TT(tree1, tree2node->children[i], tree2csize, tree2Stack, nextIndex + 1, outputTree);
 	}
 
 	return ret;
@@ -353,12 +364,34 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 		}
 	}
 	else {
-		int newLen = ((nextIndex + 1) * len + 1);
+		int newLen = ((nextIndex + 1) + len + 1);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, NULL);
 		InsertOfOPTree(otherTree, ans, newLen, coef * node->value);
 		free(ans);
 	}
+	return ret;
+}
+
+int _NormalizeOPTree(pOPNode node, pOPTree tree) {
+	if (node == NULL)
+		return 0;
+	if (node->value != 0)
+		++(tree->root->value);
+
+	int ret = 1;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (node->children[i] != NULL) {
+			ret &= _NormalizeOPTree(node->children[i], tree);
+		}
+	}
+
+	if (_IsLeafNode(node, tree->childSize) && node->value == 0) {
+		pOPNode p = node->parent;
+		p->children[node->label] = NULL;
+		free(node);
+	}
+
 	return ret;
 }
 

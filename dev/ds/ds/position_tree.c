@@ -11,11 +11,33 @@
 
 
 int BuildFromPTree(pPTree posTree, pOPArray arr, int len, pOPTree* outputOPTree) {
-	// TODO
 	int ret = 1;
-	ret &= CreateOPTree(len, outputOPTree);
-	ret &= _BuildFromPTree(posTree->root, posTree->childSize, *outputOPTree, len);
-	ret &= _NormalizeOPTree(*outputOPTree);
+	int opCsize = 0;
+	for (int i = 0; i < len; ++i)
+		opCsize = MAX(arr[i], opCsize);
+	ret &= CreateOPTree(opCsize, outputOPTree);
+	ret &= _BuildFromPTree(posTree->root, posTree->childSize, arr, len, (*outputOPTree)->root, opCsize);
+	ret &= NormalizeOPTree(*outputOPTree);
+
+	return ret;
+}
+
+int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPArray arr, int len, pOPNode opNode, UINT_L opCsize) {
+	int ret = 1;
+	for (int i = 0; i <= posCsize; ++i) {
+		if (posNode->children[i] != NULL) {
+			/* 不允许位置树指向operator不存在的位置 */
+			if (posNode->children[i]->label > len)
+				return 0;
+			UINT_L nextChild = (posNode->children[i]->label == 0) ? 0 : arr[posNode->children[i]->label - 1];
+			/* 判断该子节点是否已经建立 */
+			if (opNode->children[nextChild] == NULL)
+				MallocOPNode(nextChild, 0, opCsize, opNode, &opNode->children[nextChild]);
+
+			opNode->children[nextChild]->value += posNode->value;
+			ret &= _BuildFromPTree(posNode->children[i], posCsize, arr, len, opNode->children[nextChild], opCsize);
+		}
+	}
 
 	return ret;
 }
