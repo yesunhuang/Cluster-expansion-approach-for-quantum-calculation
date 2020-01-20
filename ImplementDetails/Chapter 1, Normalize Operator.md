@@ -36,7 +36,7 @@ $$
 
 > **Basic algorithm**:
 >
-> ​	Consider a normalized operator multiplied by a^dagger on the left. Assuming this operator have **i** $a$ and **j** $a^{\dagger}$. Obviously the new operator can be decomposed into one normalized operator consisting of **i+1** $a$ and **j**  $a^{\dagger}$, and **j** normalized operators consisting of **i** $a$ and **j-1** $a^{\dagger}$. For example:
+> ​	Consider a normalized operator multiplied by $a$ on the left. Assuming this operator have **i** $a$ and **j** $a^{\dagger}$. Obviously the new operator can be decomposed into one normalized operator consisting of **i+1** $a$ and **j**  $a^{\dagger}$, and **j** normalized operators consisting of **i** $a$ and **j-1** $a^{\dagger}$. For example:
 
 $$
 a[a^{\dagger}a^{\dagger}aa]=a^{\dagger}a^{\dagger}aaa+2a^{\dagger}aa
@@ -44,7 +44,7 @@ $$
 
 > **Solution**:
 >
-> ​	Basing on the simply algorithm described above, we simply scanning the operator from right to left. Every time we come across $a$, we do the composition process above and keep the result in a queue. 
+> ​	Basing on the simple algorithm described above, we simply scanning the operator from right to left. Every time we come across $a$, we do the composition process above and keep the result in a queue. 
 
 > * **Step one:**
 >
@@ -82,13 +82,15 @@ $$
 \{aa...a^{\dagger}a^{\dagger}...baab....b^{\dagger}a^{\dagger}....cac^\dagger\} (length:m)
 $$
 
+> $$caa^{\dagger}c^{\dagger}b^{\dagger}b$$
+>
 > Following the rule of 
 
 $$
 [O_i,O_i^{\dagger}]=O_iO_i^{\dagger}-O_i^{\dagger}O_i=1
 $$
 
-> Decompose the input operator into several normalized operators which all the 'O_i^dag's are in front of 'O_i's and all different modes' operators are in alphabetical order.
+> Decompose the input operator into several normalized operators which all the $O_i^{\dagger}$'s are in front of $O_i$'s and all different modes' operators are in alphabetical order.
 
 > Output all the normalized operators and their coefficients due to the decomposition process.
 
