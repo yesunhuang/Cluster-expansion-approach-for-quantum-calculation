@@ -114,3 +114,9 @@
 > * Online Calculation
 >
 >   For certain input n-length-operator, we simply build an operator tree from the *Position Tree* **Delta-Tree(n)**. Output all the operators in the tree with the opposite number of the coefficient except for the operator <n> and we generate the cluster expansion approximation of the operator.
+
+## API
+
+```c#
+public static OPTree ClusterExpansion(int[] operator)
+```
