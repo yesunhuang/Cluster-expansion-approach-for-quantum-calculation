@@ -21,10 +21,14 @@
 
 #pragma endregion
 
+#pragma region 结构体及typedef定义区
+
+#pragma endregion
+
 #pragma region 函数声明区
 
-/** TODO: 需要问yesun这部分的具体情况
- * @ 函数: int Normalize(pOPArray arr, int len, pOPTree* outTree)
+/**
+ * @ 函数: int SONormalize(pOPArray arr, int len, pOPTree* outTree)
  *
  * @ 功能: 正交化并存入一棵新树中
  *
@@ -36,7 +40,22 @@
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int Normalize(pOPArray arr, int len, pOPTree* outTree);
+int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree);
+
+/**
+ * @ 函数: int MONormalize(pOPArray arr, int len, pOPTree* outTree)
+ *
+ * @ 功能: 多元符号正交化并存入一棵新树中
+ *
+ * @ param{arr}: operator的数组表达
+ *
+ * @ param{len}: operator的数组表达的长度
+ *
+ * @ param{outTree}: 存储的树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int MONormalize(pOPArray arr, int len, pOPTree* outTree);
 
 /**
  * @ 函数: int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen)

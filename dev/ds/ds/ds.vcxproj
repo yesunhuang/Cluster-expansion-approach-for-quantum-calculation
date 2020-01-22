@@ -131,16 +131,12 @@
     </ClCompile>
     <ClCompile Include="position_tree.c" />
     <ClCompile Include="queue.c" />
-    <ClCompile Include="simple_operator.c" />
-    <ClCompile Include="simple_operator_hashmap.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="normalizer.h" />
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />
     <ClInclude Include="queue.h" />
-    <ClInclude Include="simple_operator.h" />
-    <ClInclude Include="simple_operator_hashmap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

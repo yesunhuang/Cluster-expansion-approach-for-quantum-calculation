@@ -9,9 +9,138 @@
  */
 #include "normalizer.h"
 
-int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen) {
-	if (len1 <= 0 || len2 <= 0 || arr1 == NULL || arr2 == NULL)
+int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
+	/* 默认输入符合格式 */
+	if (len < 0) {
+		*outTree = NULL;
 		return 0;
+	}
+	else if (len == 0) {
+		return CreateOPTree(0, outTree);
+	}
+	
+	/* 做标记 */
+	int normal = ((arr[0] + 1) / 2) * 2;
+	int dagger = normal - 1;
+
+	int* buf = (int*)malloc(sizeof(int) * ((len / 2) + 1));
+	if (buf == NULL) return 0;
+	int zeroNum = 0;
+	memset(buf, 0, sizeof(int) * len);
+	if (arr[0] == normal)
+		buf[0] = 1;
+	for (int i = len - 2; i >= 0; --i) {
+		if (arr[i] == dagger) {
+			++zeroNum;
+		}
+		else {
+			/* arr[i] == normal */
+			for (int j = zeroNum - 1; j >= 0; --j) {
+				buf[j + 1] += buf[j] * (zeroNum - j);
+			}
+		}
+	}
+	
+	/* 构造树 */
+	CreateOPTree(csize, outTree);
+	UINT_L* tempbuf = (UINT_L*)malloc(sizeof(UINT_L) * len);
+	if (tempbuf == NULL) return 0;
+	for (int i = 0; i < zeroNum; ++i) {
+		tempbuf[i] = dagger;
+	}
+	for (int i = zeroNum; i < len; ++i) {
+		tempbuf[i] = normal;
+	}
+	InsertOfOPTree(*outTree, tempbuf, len, buf[0]);
+	for (int i = 1; i <= (len / 2); ++i) {
+		int arrlen = len - 2 * i;
+		if (buf[i] != 0) {
+			if (2 * i == len) {
+				/* 0次项 */
+				tempbuf[0] = 0;
+				InsertOfOPTree(*outTree, tempbuf, 1, buf[i]);
+			}
+			else {
+				tempbuf[zeroNum - 1 - i] = normal;
+				InsertOfOPTree(*outTree, tempbuf, len - 2 * i, buf[i]);
+			}
+		}
+	}
+	free(tempbuf);
+	free(buf);
+	return 0;
+}
+
+int MONormalize(pOPArray arr, int len, pOPTree* outTree) {
+	/* 默认输入符合格式,即无0 */
+	if (len <= 0) {
+		*outTree = NULL;
+		return 0;
+	}
+
+	_SortMOArray(arr, len);
+	int csize = -1;
+	for (int i = 0; i < len; ++i) {
+		csize = MAX(csize, arr[i]);
+	}
+	/* m为一个mode的系底 */
+	int m = (arr[0] + 1) / 2;
+	int start = 0, end = 0;
+	/* 确定第一棵 */
+	for (; end < len; ++end) {
+		if (end == len - 1) {
+			SONormalize(arr, len, csize, outTree);
+			return 1;
+		}
+		else if ((arr[end + 1] != m * 2) && (arr[end + 1] != m * 2 - 1)) {
+			SONormalize(arr, end + 1, csize, outTree);
+			start = end = end + 1;
+			m = (arr[start] + 1) / 2;
+			break;
+		}
+	}
+	/* 后续的乘树 */
+	while (1) {
+		if (end == len - 1) {
+			pOPTree tempTree, tempAns;
+			SONormalize(arr + start, end - start + 1, csize, tempTree);
+			MultiplyOfOPTree_TT(*outTree, tempTree, tempAns);
+			ExchangeOfOPTree(*outTree, tempAns);
+			FreeOPTree(tempAns);
+			FreeOPTree(tempTree);
+			return 1;
+		}
+		else if ((arr[end + 1] != m * 2) && (arr[end + 1] != m * 2 - 1)) {
+			pOPTree tempTree, tempAns;
+			SONormalize(arr + start, end - start + 1, csize, tempTree);
+			MultiplyOfOPTree_TT(*outTree, tempTree, tempAns);
+			ExchangeOfOPTree(*outTree, tempAns);
+			FreeOPTree(tempAns);
+			FreeOPTree(tempTree);
+			start = end = end + 1;
+			m = (arr[start] + 1) / 2;
+		}
+		else {
+			++end;
+		}
+	}
+
+	return 1;
+}
+
+int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen) {
+	if (len1 < 0 || len2 < 0 || arr1 == NULL || arr2 == NULL)
+		return 0;
+	else if (arr1[0] == 0) {
+		memcpy(output, arr2, len2);
+		*outLen = len2;
+		return 1;
+	}
+	else if (arr2[0] == 0) {
+		memcpy(output, arr1, len1);
+		*outLen = len1;
+		return 1;
+	}
 	int nowIndex1, nowIndex2;
 	nowIndex1 = nowIndex2 = 0;
 	int nextIndex1, nextIndex2;

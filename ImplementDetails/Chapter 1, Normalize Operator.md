@@ -82,8 +82,6 @@ $$
 \{aa...a^{\dagger}a^{\dagger}...baab....b^{\dagger}a^{\dagger}....cac^\dagger\} (length:m)
 $$
 
-> $$caa^{\dagger}c^{\dagger}b^{\dagger}b$$
->
 > Following the rule of 
 
 $$

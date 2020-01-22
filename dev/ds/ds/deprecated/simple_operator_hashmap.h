@@ -1,5 +1,6 @@
+// Deprecated. Yesun nmsl.
 /**
- * @ 文件名: so_hashmap.h
+ * @ 文件名: simple_operator_hashmap.h
  * @ 功能: 声明单模式operator哈希表的功能
  * @ 作者: AyajiLin
  * @ 邮箱: 493987054@qq.com
@@ -40,10 +41,12 @@ int AddNodeOfSOLink(pSOHashLink link, int indexData);
 int ClearSOLink(pSOHashLink link);
 int MoveSOLink(pSOHashLink srcLink, pSOHashLink dstLink);
 
-int InitSOHashmap(pSOHashmap hm, int expectSize);
+int CreateSOHashmap(pSOHashmap * phm, int expectSize);
+int _InitSOHashmap(pSOHashmap hm, int expectSize);
 int ClearSOHashmap(pSOHashmap hm);
 int MoveSOHashmap(pSOHashmap srcHm, pSOHashmap dstHm);
 int InsertSOHashmap(pSOHashmap hm, SimpleOperator so);
+int FreeSOHashmap(pSOHashmap hm);
 
 int _NearestLtEqPrime(int num, int* output);
 int _SOHashGen(SimpleOperator so, int capacity, int* output);

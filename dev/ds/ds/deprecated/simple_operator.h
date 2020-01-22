@@ -1,3 +1,4 @@
+// Deprecated. Yesun nmsl.
 /**
  * @ 文件名: simple_operator.h
  * @ 功能: 声明单模式operator

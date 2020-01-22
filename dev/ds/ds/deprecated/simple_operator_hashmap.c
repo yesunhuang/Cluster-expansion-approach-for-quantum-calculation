@@ -41,7 +41,7 @@ int ClearSOLink(pSOHashLink link) {
 			free(nowNode);
 			nowNode = temp;
 		}
-		link->head = link->tail = 0;
+		link->head = link->tail = NULL;
 	}
 	return 1;
 }
@@ -54,7 +54,13 @@ int MoveSOLink(pSOHashLink srcLink, pSOHashLink dstLink) {
 	return 1;
 }
 
-int InitSOHashmap(pSOHashmap hm, int expectSize) {
+int CreateSOHashmap(pSOHashmap * phm, int expectSize) {
+	*phm = (pSOHashmap)malloc(sizeof(SOHashmap));
+	_InitSOHashmap(*phm, expectSize);
+	return 0;
+}
+
+int _InitSOHashmap(pSOHashmap hm, int expectSize) {
 	int c = 0;
 	_NearestLtEqPrime(expectSize * 10, &c);
 	if (hm->data != NULL) free(hm->data);
@@ -101,8 +107,15 @@ int InsertSOHashmap(pSOHashmap hm, SimpleOperator so) {
 	}
 }
 
+int FreeSOHashmap(pSOHashmap hm) {
+	ClearSOHashmap(hm);
+	free(hm->data);
+	free(hm);
+	return 1;
+}
+
 int _NearestLtEqPrime(int num, int* output) {
-	// TODO: 用筛法找质数
+	/* 用筛法找质数 */
 	if (num == 1)
 		return 0;
 	else if (num == 2)

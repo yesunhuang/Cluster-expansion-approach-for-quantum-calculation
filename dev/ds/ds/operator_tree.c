@@ -88,6 +88,14 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
 int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef) {
 	if (tree == NULL || len <= 0)
 		return 0;
+	else if (arr[0] == 0) {
+		/* 0次项插入 */
+		if (tree->root->children[0] == NULL) {
+			MallocOPNode(0, coef, tree->childSize, tree->root, &tree->root->children[0]);
+		}
+		tree->root->children[0]->value = coef;
+		return 1;
+	}
 	pOPNode nowNode = tree->root;
 	for (int i = 0; i < len; ++i) {
 		if (nowNode->children[arr[i]] == NULL) {
@@ -111,6 +119,12 @@ int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len) {
 	return _DeleteNode(nowNode, tree);
 }
 
+int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2) {
+	SWAP(tree1->childSize, tree2->childSize, UINT_L);
+	SWAP(tree1->root, tree2->root, pOPNode);
+	return 1;
+}
+
 int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node) {
 	/* 获得另一个树的根节点和树指针 */
 	pOPNode otherRoot;
@@ -127,9 +141,11 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node) {
 	return _MultiplyOfOPTree_TO(tree, otherArray, depth, coef, otherTree);
 }
 
-int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree) {
+int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree) {
 	/* 定义一个简易的栈 */
 	UINT_L tree2Stack[MAX_OPERATOR_LENGTH];
+	CreateOPTree(MAX(tree1->childSize, tree2->childSize), outputTree);
+	if (*outputTree == NULL) return 0;
 	int ret = 1;
 	for (int i = 0; i <= tree2->childSize; ++i) {
 		if (tree2->root->children[i] != NULL) {

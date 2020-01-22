@@ -33,12 +33,6 @@
     <ClCompile Include="queue.c">
       <Filter>源文件\utils</Filter>
     </ClCompile>
-    <ClCompile Include="simple_operator.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_operator_hashmap.c">
-      <Filter>源文件\utils</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="operator_tree.h">
@@ -51,12 +45,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="queue.h">
-      <Filter>头文件\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_operator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="simple_operator_hashmap.h">
       <Filter>头文件\utils</Filter>
     </ClInclude>
   </ItemGroup>

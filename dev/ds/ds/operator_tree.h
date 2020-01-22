@@ -18,6 +18,7 @@
 #define OFFSETOF(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 #define MIN(a, b) (((a) < (b))? (a) : (b))
 #define MAX(a, b) (((a) > (b))? (a) : (b))
+#define SWAP(a, b, type) do{ type t = b; b = a; a = t; }while(0)
 /**
  * @ 宏定义: ROOT_TO_TREE(ROOT, TREE)
  *
@@ -218,6 +219,19 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef);
 int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len);
 
 /**
+ * @ 函数: int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2)
+ *
+ * @ 功能: 交换树1和树2的内容.
+ *
+ * @ param{tree1}: operator tree1
+ *
+ * @ param{tree2}: operator tree1
+ *
+ * @ 返回值: 成功删除时,返回值为1; 否则,返回值为0.
+ */
+int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2);
+
+/**
  * @ 函数: int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node)
  *
  * @ 功能: 用tree乘以node,结果保留至tree中,并删除node对应的结点.
@@ -243,7 +257,7 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node);
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree outputTree);
+int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree);
 
 /**
  * @ 函数: int NormalizeOPTree(pOPTree tree)
