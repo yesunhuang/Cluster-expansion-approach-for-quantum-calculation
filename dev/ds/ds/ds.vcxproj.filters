@@ -33,6 +33,9 @@
     <ClCompile Include="queue.c">
       <Filter>源文件\utils</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="operator_tree.h">

@@ -26,9 +26,10 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
 	int* buf = (int*)malloc(sizeof(int) * ((len / 2) + 1));
 	if (buf == NULL) return 0;
 	int zeroNum = 0;
-	memset(buf, 0, sizeof(int) * len);
-	if (arr[0] == normal)
-		buf[0] = 1;
+	memset(buf, 0, sizeof(int) * ((len / 2) + 1));
+	buf[0] = 1;
+	if (arr[len - 1] == dagger)
+		zeroNum = 1;
 	for (int i = len - 2; i >= 0; --i) {
 		if (arr[i] == dagger) {
 			++zeroNum;
@@ -53,7 +54,7 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
 	}
 	InsertOfOPTree(*outTree, tempbuf, len, buf[0]);
 	for (int i = 1; i <= (len / 2); ++i) {
-		int arrlen = len - 2 * i;
+		// int arrlen = len - 2 * i;
 		if (buf[i] != 0) {
 			if (2 * i == len) {
 				/* 0次项 */
@@ -61,11 +62,12 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
 				InsertOfOPTree(*outTree, tempbuf, 1, buf[i]);
 			}
 			else {
-				tempbuf[zeroNum - 1 - i] = normal;
+				tempbuf[zeroNum - i] = normal;
 				InsertOfOPTree(*outTree, tempbuf, len - 2 * i, buf[i]);
 			}
 		}
 	}
+	
 	free(tempbuf);
 	free(buf);
 	return 0;
@@ -102,18 +104,18 @@ int MONormalize(pOPArray arr, int len, pOPTree* outTree) {
 	/* 后续的乘树 */
 	while (1) {
 		if (end == len - 1) {
-			pOPTree tempTree, tempAns;
-			SONormalize(arr + start, end - start + 1, csize, tempTree);
-			MultiplyOfOPTree_TT(*outTree, tempTree, tempAns);
+			pOPTree tempTree = NULL, tempAns = NULL;
+			SONormalize(arr + start, end - start + 1, csize, &tempTree);
+			MultiplyOfOPTree_TT(*outTree, tempTree, &tempAns);
 			ExchangeOfOPTree(*outTree, tempAns);
 			FreeOPTree(tempAns);
 			FreeOPTree(tempTree);
 			return 1;
 		}
 		else if ((arr[end + 1] != m * 2) && (arr[end + 1] != m * 2 - 1)) {
-			pOPTree tempTree, tempAns;
-			SONormalize(arr + start, end - start + 1, csize, tempTree);
-			MultiplyOfOPTree_TT(*outTree, tempTree, tempAns);
+			pOPTree tempTree = NULL, tempAns = NULL;
+			SONormalize(arr + start, end - start + 1, csize, &tempTree);
+			MultiplyOfOPTree_TT(*outTree, tempTree, &tempAns);
 			ExchangeOfOPTree(*outTree, tempAns);
 			FreeOPTree(tempAns);
 			FreeOPTree(tempTree);
@@ -133,12 +135,12 @@ int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray
 		return 0;
 	else if (arr1[0] == 0) {
 		memcpy(output, arr2, len2);
-		*outLen = len2;
+		if (outLen != NULL) *outLen = len2;
 		return 1;
 	}
 	else if (arr2[0] == 0) {
 		memcpy(output, arr1, len1);
-		*outLen = len1;
+		if (outLen != NULL) *outLen = len1;
 		return 1;
 	}
 	int nowIndex1, nowIndex2;
@@ -195,7 +197,7 @@ int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray
 		/* nowIndex2 == len2 */
 		output[outputIndex++] = 0;
 		for (; nowIndex1 < len1; nowIndex1++) {
-			output[outputIndex++] = arr2[nowIndex1];
+			output[outputIndex++] = arr1[nowIndex1];
 		}
 	}
 
@@ -216,7 +218,7 @@ void _CompareOPArrayBuffer(pOPArray arr1, int len1, pOPArray arr2, int len2, int
 
 	/* 预处理,排除末尾0的影响 */
 	len1 = (arr1[len1 - 1] == 0) ? len1 - 1 : len1;
-	len2 = (arr1[len2 - 1] == 0) ? len2 - 1 : len2;
+	len2 = (arr2[len2 - 1] == 0) ? len2 - 1 : len2;
 	if (len1 <= 0) {
 		*result = -1;
 		return;
@@ -262,4 +264,29 @@ int _GetNextCPIndexFromOPArray(pOPArray arr, int len, int now, int* next) {
 			now++;
 		}
 	}
+}
+
+int _SortMOArray(pOPArray arr, int len) {
+	/* 冒泡排序,可stable */
+	/* 默认输入妹有0,且符合格式 */
+	if (arr == NULL || len <= 0)
+		return 0;
+
+	int lastChange = 0;
+	int isChange = 1;
+	while (lastChange < len - 1) {
+		if (!isChange)
+			return 1;
+		isChange = 0;
+		int tempLastChange = lastChange;
+		for (int i = len - 1; i > lastChange; --i) {
+			if (((arr[i] + 1) / 2) < ((arr[i - 1] + 1) / 2)) {
+				isChange = 1;
+				tempLastChange = i;
+				SWAP(arr[i], arr[i - 1], UINT_L);
+			}
+		}
+		lastChange = tempLastChange;
+	}
+	return 1;
 }

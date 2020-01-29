@@ -28,12 +28,14 @@
  *
  * @ param{TREE}: tree,类型为pOPTree
  */
-#define ROOT_TO_TREE(ROOT, TREE) do{ TREE = (OPTree*)((size_t)ROOT - OFFSETOF(OPTree, root));}while(0)
+#define ROOT_TO_TREE(ROOT, TREE) do{ TREE = (OPTree*)((size_t)&ROOT - OFFSETOF(OPTree, root));}while(0)
 
 #define UINT_V_ERROR 0xfefefefe
 // #define UINT_V_ADD_DELETE_FLAG 0xfefefefc
 /* operator的最大长度 */
 #define MAX_OPERATOR_LENGTH 256
+
+#define __DEBUG__
 
 #pragma endregion
 
@@ -41,6 +43,11 @@
 
 #include <malloc.h>
 #include <memory.h>
+
+#ifdef __DEBUG__
+#include <stdio.h>
+#endif // DEBUG
+
 
 #pragma endregion
 
@@ -77,7 +84,7 @@ typedef struct _OPTree OPTree, *pOPTree;
 
 #pragma region 函数声明区
 
-/**
+/** tested
  * @ 函数: int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p)
  *
  * @ 功能: 初始化结点.
@@ -96,7 +103,7 @@ typedef struct _OPTree OPTree, *pOPTree;
  */
 int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p);
 
-/**
+/** tested
  * @ 函数: int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** output)
  *
  * @ 功能: 申请一个新结点.
@@ -115,7 +122,7 @@ int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p
  */
 int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** output);
 
-/**
+/** tested
  * @ 函数: int GetRoot(struct _Node* node, struct _Node** output)
  *
  * @ 功能: 寻找某个节点的root结点
@@ -128,7 +135,7 @@ int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** o
  */
 int GetRoot(struct _Node* node, struct _Node** output);
 
-/**
+/** tested
  * @ 函数: int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr)
  *
  * @ 功能: 从某个节点生成数组形式的operator.
@@ -143,7 +150,7 @@ int GetRoot(struct _Node* node, struct _Node** output);
  */
 int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
 
-/**
+/** tested
  * @ 函数: int CreateOPTree(UINT_L csize, pOPTree* outputTree)
  *
  * @ 功能: 生成一棵新的树,与FreeOPTree搭配使用
@@ -169,7 +176,7 @@ int CreateOPTree(UINT_L csize, pOPTree* outputTree);
  */
 int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2);
 
-/**
+/** tested
  * @ 函数: int SearchOfOPTree(pOpTree tree, pOPArray arr, int len, UINT_V *output)
  *
  * @ 功能: 根据operator,搜索一个结点,并返回该结点的value.
@@ -186,7 +193,7 @@ int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2);
  */
 int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V *output);
 
-/**
+/** tested
  * @ 函数: int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef)
  *
  * @ 功能: 插入(或更新)tree中对应的operator.
@@ -231,20 +238,22 @@ int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len);
  */
 int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2);
 
-/**
- * @ 函数: int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node)
+/** tested
+ * @ 函数: int MultiplyOfOPTree_TO(pOPTree tree, pOPNode otherNode, pOPTree otherTree)
  *
- * @ 功能: 用tree乘以node,结果保留至tree中,并删除node对应的结点.
+ * @ 功能: 用tree乘以otherNode,结果保留至tree中,并删除otherTree中otherNode对应的结点.
  *
  * @ param{tree}: operator tree
  *
- * @ param{node}: operator的结点表达
+ * @ param{otherNode}: operator的结点表达
+ *
+ * @ param{otherTree}: operator的结点表达所在的树
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node);
+int MultiplyOfOPTree_TO(pOPTree tree, pOPNode otherNode, pOPTree otherTree);
 
-/**
+/** tested
  * @ 函数: int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree)
  *
  * @ 功能: 两树相乘,并放于outputTree中
@@ -259,7 +268,7 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode node);
  */
 int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree);
 
-/**
+/** tested?
  * @ 函数: int NormalizeOPTree(pOPTree tree)
  *
  * @ 功能: 从树的根节点,向下标准化operator tree
@@ -270,10 +279,10 @@ int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree);
  */
 int NormalizeOPTree(pOPTree tree);
 
-/**
+/** tested
  * @ 函数: int ReserveChildSize(pOPTree tree, UINT_L newCsize)
  *
- * @ 功能: 不改变拓扑结构的前提下,调整树的childsize.
+ * @ 功能: 在尽量不改变拓扑结构的前提下,调整树的childsize.
  *
  * @ param{tree}: operator tree
  *
@@ -510,6 +519,34 @@ int _NormalizeOPTree(pOPNode node, pOPTree tree);
  */
 int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize);
 #pragma endregion
+
+#pragma region 调试
+#ifdef __DEBUG__
+
+/** tested
+ * @ 函数: int PrintOPTree(pOPTree tree)
+ *
+ * @ 功能: 打印出树
+ *
+ * @ param{tree}: op树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int PrintOPTree(pOPTree tree);
+
+/** tested
+ * @ 函数: int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf)
+ *
+ * @ 功能: 打印出树
+ *
+ * @ param{tree}: op树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf);
+
+#endif // DEBUG
+
 
 #endif // !_OPERATOR_TREE_H_
 

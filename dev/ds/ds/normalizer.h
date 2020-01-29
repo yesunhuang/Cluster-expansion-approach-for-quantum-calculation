@@ -27,7 +27,7 @@
 
 #pragma region 函数声明区
 
-/**
+/** tested?
  * @ 函数: int SONormalize(pOPArray arr, int len, pOPTree* outTree)
  *
  * @ 功能: 正交化并存入一棵新树中
@@ -42,7 +42,7 @@
  */
 int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree);
 
-/**
+/** tested
  * @ 函数: int MONormalize(pOPArray arr, int len, pOPTree* outTree)
  *
  * @ 功能: 多元符号正交化并存入一棵新树中
@@ -57,7 +57,7 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree);
  */
 int MONormalize(pOPArray arr, int len, pOPTree* outTree);
 
-/**
+/** tested
  * @ 函数: int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen)
  *
  * @ 功能: 让两个operator相乘,生成新的结果
@@ -78,7 +78,7 @@ int MONormalize(pOPArray arr, int len, pOPTree* outTree);
  */
 int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen);
 
-/**
+/** tested
  * @ 函数: void _CompareOPArrayBuffer(pOPArray arr1, int len1, pOPArray arr2, int len2, int* result)
  *
  * @ 功能: 比较两个buffer中OPArray的大小
@@ -97,7 +97,7 @@ int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray
  */
 void _CompareOPArrayBuffer(pOPArray arr1, int len1, pOPArray arr2, int len2, int* result);
 
-/**
+/** tested
  * @ 函数: int _GetNextCPIndexFromOPArray(pOPArray arr, int len, int now, int* next)
  *
  * @ 功能: 获得下一跳的索引位置
@@ -113,5 +113,18 @@ void _CompareOPArrayBuffer(pOPArray arr1, int len1, pOPArray arr2, int len2, int
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _GetNextCPIndexFromOPArray(pOPArray arr, int len, int now, int* next);
+
+/** tested
+ * @ 函数: int _SortMOArray(pOPArray arr, int len)
+ *
+ * @ 功能: multimode排序
+ *
+ * @ param{arr}: operator的数组表达
+ *
+ * @ param{len}: operator的数组表达的长度
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _SortMOArray(pOPArray arr, int len);
 #pragma endregion
 #endif // !_NORMALIZER_H_
