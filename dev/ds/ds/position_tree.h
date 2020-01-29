@@ -28,11 +28,11 @@
 #define DeleteOfPTree(tree, arr, len) (DeleteOfOPTree((pOPTree)tree, arr, len))
 
 /**
- * @ 宏定义: DeleteOfPTree(pPTree tree, pOPArray arr, int len)
+ * @ 宏定义: DeleteOfPTree(pPTree tree, pOPArray arr, int len, int coef)
  *
  * @ 功能: 对应OPTree中相同功能
  */
-#define InsertOfPTree(tree, arr, len) (InsertOfOPTree((pOPTree)tree, arr, len))
+#define InsertOfPTree(tree, arr, len, coef) (InsertOfOPTree((pOPTree)tree, arr, len, coef))
 
 /**
  * @ 宏定义: ClearOfPTree(pPTree tree)

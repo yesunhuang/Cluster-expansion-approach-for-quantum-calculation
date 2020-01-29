@@ -34,7 +34,7 @@ int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPArray arr, int len, pOPN
 			if (opNode->children[nextChild] == NULL)
 				MallocOPNode(nextChild, 0, opCsize, opNode, &opNode->children[nextChild]);
 
-			opNode->children[nextChild]->value += posNode->value;
+			opNode->children[nextChild]->value += posNode->children[i]->value;
 			ret &= _BuildFromPTree(posNode->children[i], posCsize, arr, len, opNode->children[nextChild], opCsize);
 		}
 	}
