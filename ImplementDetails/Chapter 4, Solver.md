@@ -148,6 +148,8 @@ class CEBSolver:
     "聚类分解求解器"
     def _init_(self,InitialState,HamilitonOperator,CollapseOperator,TrackingOperator):
     	return IsSuccess
+    def InitialValue(self,Operators)
+    	return InitialValues
     def Derive(self,Operator):
     	return ExpressionTree
     def Assign(self,MaxLength):
