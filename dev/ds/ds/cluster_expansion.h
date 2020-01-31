@@ -66,7 +66,18 @@ int ClusterExpansion(pOPArray arr, int len, pOPTree* outTree);
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int DTToCEBT(pOPTree tree);
+int DTToBT(pOPTree tree);
+
+/**
+ * @ 函数: int DTToCEBT(pOPTree tree)
+ *
+ * @ 功能: 将B树转为CE中的B树
+ *
+ * @ param{tree}: B tree
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int BTToCEBT(pOPTree tree);
 
 /**
  * @ 函数: int _DT(int i, int N, int nextIndex, UINT_L* buf, pOPTree outTree)
@@ -102,7 +113,20 @@ int _DT(int i, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTree);
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _DTToCEBT(pOPNode node, pOPTree tree, int flag);
+int _DTToBT(pOPNode node, pOPTree tree, int flag);
+
+/**
+ * @ 函数: int _DTToCEBT(pOPNode node, pOPTree tree)
+ *
+ * @ 功能: 将B树转为CE中的B树
+ *
+ * @ param{node}: 节点
+ *
+ * @ param{tree}: 树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _BTToCEBT(pOPNode node, pOPTree tree);
 
 #pragma endregion
 

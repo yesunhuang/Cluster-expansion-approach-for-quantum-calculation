@@ -41,15 +41,24 @@ int ClusterExpansion(pOPArray arr, int len, pOPTree* outTree) {
 	pOPTree dtree = NULL;
 	DeltaTree(len, &dtree);
 	BuildFromPTree(dtree, arr, len, outTree);
-	DTToCEBT(*outTree);
+	DTToBT(*outTree);
+	BTToCEBT(*outTree);
 	FreeOPTree(dtree);
 	return 1;
 }
 
-int DTToCEBT(pOPTree tree) {
+int DTToBT(pOPTree tree) {
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL)
-			_DTToCEBT(tree->root->children[i], tree, 0);
+			_DTToBT(tree->root->children[i], tree, 0);
+	}
+	return 1;
+}
+
+int BTToCEBT(pOPTree tree) {
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL)
+			_BTToCEBT(tree->root->children[i], tree, 0);
 	}
 	return 1;
 }
@@ -103,22 +112,28 @@ int _DT(int nowi, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTre
 	return 1;
 }
 
-int _DTToCEBT(pOPNode node, pOPTree tree, int flag) {
-	if (_IsLeafNode(node, tree->childSize)) {
-		if (flag == 1) {
-			node->value = -node->value;
-		}
-		else {
-			_DeleteNode(node, tree);
-		}
+int _DTToBT(pOPNode node, pOPTree tree, int flag) {
+	flag = (node->label == 0) ? 1 : flag;
+	node->value = (flag == 1) ? -node->value : node->value;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (node->children[i] != NULL)
+			_DTToBT(node->children[i], tree, flag);
 	}
-	else {
-		flag = (node->label == 0) ? 1 : flag;
-		node->value = (flag == 1) ? -node->value : node->value;
-		for (int i = 0; i <= tree->childSize; ++i) {
-			if (node->children[i] != NULL)
-				_DTToCEBT(node->children[i], tree, flag);
+	return 1;
+}
+
+int _BTToCEBT(pOPNode node, pOPTree tree) {
+	if (_IsLeafNode(node, tree->childSize)) {
+		_DeleteNode(node, tree);
+		return 1;
+	}
+	int ret = 0;
+	for (int i = 1; i <= tree->childSize; ++i) {
+		if (node->children[i] != NULL) {
+			ret |= _BTToCEBT(node->children[i], tree);
 		}
+		if (ret == 1)
+			return 1;
 	}
 	return 1;
 }

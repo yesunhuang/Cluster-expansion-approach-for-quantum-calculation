@@ -8,7 +8,7 @@ UINT_L arr3[] = { 1,2 };
 UINT_L arr4[] = { 2,1,2,4,3 };
 UINT_L arr5[] = { 3,3,3 };
 UINT_L arr6[] = { 2, 1 };
-UINT_L arr7[] = { 2,4,6,8 };
+UINT_L arr7[] = { 2,4,6,8,10 };
 
 int main() {
 	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
@@ -46,8 +46,8 @@ int main() {
 
 
 	pOPTree tempTree = NULL;
-	//DeltaTree(3, &tempTree);
-	ClusterExpansion(arr5, 3, &tempTree);
+	//DeltaTree(5, &tempTree);
+	ClusterExpansion(arr7, 3, &tempTree);
 
 	PrintOPTree(tempTree);
 
