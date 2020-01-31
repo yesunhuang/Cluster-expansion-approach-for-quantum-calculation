@@ -36,6 +36,9 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="cluster_expansion.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="operator_tree.h">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="queue.h">
       <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="cluster_expansion.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

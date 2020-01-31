@@ -241,7 +241,7 @@ int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2);
 /** tested
  * @ 函数: int MultiplyOfOPTree_TO(pOPTree tree, pOPNode otherNode, pOPTree otherTree)
  *
- * @ 功能: 用tree乘以otherNode,结果保留至tree中,并删除otherTree中otherNode对应的结点.
+ * @ 功能: 用tree乘以otherNode,结果保留至othertree中,并删除otherTree中otherNode对应的结点.
  *
  * @ param{tree}: operator tree
  *
@@ -386,7 +386,7 @@ int _SearchOfOPTree(pOPTree tree, pOPArray arr, int len, pOPNode* output);
 int _InitOPTree(pOPTree tree, UINT_L csize);
 
 /**
- * @ 函数: int _SearchOfOPTree(pOpTree tree, pOPArray arr, int len, pOPNode* output)
+ * @ 函数: int _IsLeafNode(struct _Node* node, int csize)
  *
  * @ 功能: 判断一个结点是否为叶子节点.
  *

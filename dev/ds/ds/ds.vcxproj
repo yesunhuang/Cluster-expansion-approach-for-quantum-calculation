@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cluster_expansion.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="normalizer.c" />
     <ClCompile Include="operator_tree.c">
@@ -134,6 +135,7 @@
     <ClCompile Include="queue.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cluster_expansion.h" />
     <ClInclude Include="normalizer.h" />
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />

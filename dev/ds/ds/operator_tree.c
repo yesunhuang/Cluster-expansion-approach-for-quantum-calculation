@@ -91,6 +91,8 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
 int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef) {
 	if (tree == NULL || len <= 0)
 		return 0;
+	else if (coef == 0)
+		return 0;
 	else if (arr[0] == 0) {
 		/* 0次项插入 */
 		if (tree->root->children[0] == NULL) {
@@ -99,21 +101,15 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef) {
 		}
 
 		/* 判断是否更新root的value */
-		if (coef == 0) {
-			if (tree->root->children[0]->value != 0 && _IsLeafNode(tree->root->children[0], tree->childSize)) {
-				_DeleteNode(tree->root->children[0], tree);
-			}
-			else if (tree->root->children[0]->value != 0 && !_IsLeafNode(tree->root->children[0], tree->childSize)) {
-				tree->root->children[0]->value = 0;
-				--tree->root->value;
-			}
+		if (tree->root->children[0]->value == 0) {
+			++tree->root->value;
 		}
-		else {
-			if (tree->root->children[0]->value == 0) {
-				++tree->root->value;
-			}
-			tree->root->children[0]->value = coef;
+		tree->root->children[0]->value += coef;
+		/* 删除0结点 */
+		if (tree->root->children[0]->value == 0) {
+			_DeleteNode(tree->root->children[0], tree);
 		}
+
 		return 1;
 	}
 	pOPNode nowNode = tree->root;
@@ -126,21 +122,12 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef) {
 	}
 
 	/* 判断是否更新root的value */
-	if (coef == 0) {
-		if (nowNode->value != 0 && _IsLeafNode(nowNode, tree->childSize)) {
-			_DeleteNode(nowNode, tree);
-		}
-		else if (nowNode->value != 0 && !_IsLeafNode(nowNode, tree->childSize)) {
-			nowNode->value = 0;
-			--tree->root->value;
-		}
+	if (nowNode->value == 0) {
+		++tree->root->value;
 	}
-	else {
-		if (nowNode->value == 0) {
-			++tree->root->value;
-		}
-		nowNode->value = coef;
-	}
+	nowNode->value += coef;
+	if (nowNode->value == 0)
+		_DeleteNode(nowNode, tree);
 	
 	return 1;
 }
