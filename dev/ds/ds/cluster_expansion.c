@@ -18,7 +18,8 @@ int DeltaTree(int N, pOPTree* outTree) {
 	else if (N == 1) {
 		CreateOPTree(1, outTree);
 		UINT_L temparr[] = { 1 };
-		InsertOfOPTree(*outTree, temparr, 1, 1);
+		INT_V tempv = { 1, 0 };
+		InsertOfOPTree(*outTree, temparr, 1, tempv);
 		return 1;
 	}
 
@@ -33,7 +34,8 @@ int DeltaTree(int N, pOPTree* outTree) {
 	for (int i = 0; i < N; ++i) {
 		temparr[i] = i + 1;
 	}
-	InsertOfOPTree(*outTree, temparr, N, 1);
+	INT_V tempv = { 1, 0 };
+	InsertOfOPTree(*outTree, temparr, N, tempv);
 	return 1;
 }
 
@@ -89,7 +91,8 @@ int _DT(int nowi, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTre
 		}
 		buf1[nowi] = N;
 
-		InsertOfOPTree(outTree, buf2, N - nowi - 1, -1);
+		INT_V tempv = { -1, 0 };
+		InsertOfOPTree(outTree, buf2, N - nowi - 1, tempv);
 		pOPNode tempNode = NULL;
 		_SearchOfOPTree(outTree, buf2, N - nowi - 1, &tempNode);
 		pOPTree newDeltaTree;
@@ -114,7 +117,9 @@ int _DT(int nowi, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTre
 
 int _DTToBT(pOPNode node, pOPTree tree, int flag) {
 	flag = (node->label == 0) ? 1 : flag;
-	node->value = (flag == 1) ? -node->value : node->value;
+	if (flag == 1)
+		NegateOfComplex(node->value, &node->value);
+
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (node->children[i] != NULL)
 			_DTToBT(node->children[i], tree, flag);

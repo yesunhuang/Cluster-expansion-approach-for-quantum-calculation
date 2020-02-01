@@ -33,10 +33,16 @@
     <ClCompile Include="queue.c">
       <Filter>源文件\utils</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="cluster_expansion.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="cluster_expansion.c">
+    <ClCompile Include="complex.c">
+      <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="solver.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,6 +60,12 @@
       <Filter>头文件\utils</Filter>
     </ClInclude>
     <ClInclude Include="cluster_expansion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="complex.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="solver.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

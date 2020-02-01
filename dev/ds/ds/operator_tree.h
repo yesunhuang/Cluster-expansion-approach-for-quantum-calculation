@@ -30,7 +30,7 @@
  */
 #define ROOT_TO_TREE(ROOT, TREE) do{ TREE = (OPTree*)((size_t)&ROOT - OFFSETOF(OPTree, root));}while(0)
 
-#define UINT_V_ERROR 0xfefefefe
+// #define UINT_V_ERROR 0xfefefefe
 // #define UINT_V_ADD_DELETE_FLAG 0xfefefefc
 /* operator的最大长度 */
 #define MAX_OPERATOR_LENGTH 256
@@ -44,6 +44,8 @@
 #include <malloc.h>
 #include <memory.h>
 
+#include "complex.h"
+
 #ifdef __DEBUG__
 #include <stdio.h>
 #endif // DEBUG
@@ -52,10 +54,13 @@
 #pragma endregion
 
 #pragma region 结构体及typedef定义区
+
+
+
 /* _Node.label的数据类型 */
 typedef unsigned char UINT_L;
 /* _Node.value的数据类型 */
-typedef int INT_V;
+typedef Complex INT_V;
 /* operator的数组表示 */
 typedef UINT_L* pOPArray;
 
@@ -208,7 +213,7 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V *output);
  *
  * @ 返回值: 成功插入时,返回值为1; 否则,返回值为0.
  */
-int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, int coef);
+int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef);
 
 /**
  * @ 函数: int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len)

@@ -31,10 +31,12 @@ int _BuildFromPTree(pPNode posNode, UINT_L posCsize, pOPArray arr, int len, pOPN
 				return 0;
 			UINT_L nextChild = (posNode->children[i]->label == 0) ? 0 : arr[posNode->children[i]->label - 1];
 			/* 判断该子节点是否已经建立 */
-			if (opNode->children[nextChild] == NULL)
-				MallocOPNode(nextChild, 0, opCsize, opNode, &opNode->children[nextChild]);
+			if (opNode->children[nextChild] == NULL) {
+				INT_V tempv = { 0,0 };
+				MallocOPNode(nextChild, tempv, opCsize, opNode, &opNode->children[nextChild]);
+			}
 
-			opNode->children[nextChild]->value += posNode->children[i]->value;
+			AddOfComplex(opNode->children[nextChild]->value, posNode->children[i]->value, &opNode->children[nextChild]->value);
 			ret &= _BuildFromPTree(posNode->children[i], posCsize, arr, len, opNode->children[nextChild], opCsize);
 		}
 	}
