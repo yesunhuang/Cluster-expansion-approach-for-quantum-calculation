@@ -84,7 +84,7 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
 	}
 
 	/* 成功查询 */
-	*output = nowNode->value;
+	if (output != NULL) *output = nowNode->value;
 	return 1;
 }
 
@@ -93,7 +93,15 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef) {
 		return 0;
 	else if (IsZeroOfComplex(coef))
 		return 0;
-	else if (arr[0] == 0) {
+
+	/* 判断是否增大容量 */
+	UINT_L maxLabel = 0;
+	for (int i = 0; i < len; ++i)
+		maxLabel = MAX(maxLabel, arr[i]);
+	if (maxLabel > tree->childSize)
+		ReserveChildSize(tree, maxLabel);
+
+	if (arr[0] == 0) {
 		/* 0次项插入 */
 		if (tree->root->children[0] == NULL) {
 			if (IsZeroOfComplex(coef)) return 0;
@@ -140,6 +148,18 @@ int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len) {
 	pOPNode nowNode = tree->root;
 	_SearchOfOPTree(tree, arr, len, &nowNode);
 	return _DeleteNode(nowNode, tree);
+}
+
+int EachNodeOfOPTree(pOPTree tree, void* sth, int(*func)(pOPNode, void*)) {
+	if (tree == NULL || func == NULL)
+		return 0;
+	int ret = 1;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL)
+			ret &= _EachNodeOfOPTree(tree->root->children[i], tree->childSize, sth, func);
+	}
+
+	return ret;
 }
 
 int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2) {
@@ -242,12 +262,13 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 				/* node1中不存在此子节点 */
 				MallocOPNode(node2->label, node2->value, tree1->childSize, node1, &node1->children[i]);
 			}
+			_AddOfOPTree_TT(node1->children[i], node2->children[i], tree1, tree2);
 		}
-		_AddOfOPTree_TT(node1->children[i], node2->children[i], tree1, tree2);
 	}
 	/* 删除可能出现的"零"叶子结点 */
 	for (int i = 0; i <= tree2->childSize; ++i) {
-		if (IsZeroOfComplex(node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
+		if (node1->children[i] != NULL && 
+			IsZeroOfComplex(node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
 			free(node1->children[i]);
 			node1->children[i] = NULL;
 		}
@@ -341,6 +362,17 @@ int _DeleteNode(pOPNode node, pOPTree tree) {
 		}
 	}
 	return 1;
+}
+
+int _EachNodeOfOPTree(pOPNode node, int csize, void* sth, int(*func)(pOPNode, void*)) {
+	if (node == NULL)
+		return 0;
+	int ret = func(node, sth);
+	for (int i = 0; i <= csize; ++i) {
+		if (node->children[i] != NULL)
+			ret &= _EachNodeOfOPTree(node->children[i], csize, sth, func);
+	}
+	return ret;
 }
 
 void _FreeNode(struct _Node* node, int csize) {

@@ -30,9 +30,6 @@
     <ClCompile Include="normalizer.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="queue.c">
-      <Filter>源文件\utils</Filter>
-    </ClCompile>
     <ClCompile Include="cluster_expansion.c">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -55,9 +52,6 @@
     </ClInclude>
     <ClInclude Include="normalizer.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="queue.h">
-      <Filter>头文件\utils</Filter>
     </ClInclude>
     <ClInclude Include="cluster_expansion.h">
       <Filter>头文件</Filter>

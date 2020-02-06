@@ -192,7 +192,7 @@ int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2);
  *
  * @ param{len}: operator的数组表达的长度
  *
- * @ param{output}: 存储结果的变量(地址)
+ * @ param{output}: 存储结果的变量(地址),可为NULL
  *
  * @ 返回值: 若有,output值设为其coefficient,返回值为1; 否则,output值设为UINT_V_ERROR,返回值为0.
  */
@@ -229,6 +229,21 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef);
  * @ 返回值: 成功删除时,返回值为1; 否则,返回值为0.
  */
 int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len);
+
+/**
+ * @ 函数: int EachNodeOfOPTree(pOPTree tree, void* sth, int (*func)(pOPNode, void*))
+ *
+ * @ 功能: 对树中每个节点进行func操作. func的参数为{结点, void*}
+ *
+ * @ param{tree}: operator tree
+ *
+ * @ param{sth}: 某个需要传递的参数
+ *
+ * @ param{func}: 将对每个节点使用的函数指针
+ *
+ * @ 返回值: 成功删除时,返回值为1; 否则,返回值为0.
+ */
+int EachNodeOfOPTree(pOPTree tree, void* sth, int (*func)(pOPNode, void*));
 
 /**
  * @ 函数: int ExchangeOfOPTree(pOPTree tree1, pOPTree tree2)
@@ -415,6 +430,23 @@ int _IsLeafNode(struct _Node* node, int csize);
  * @ 返回值: 成功删除时,返回值为1; 否则,返回值为0.
  */
 int _DeleteNode(pOPNode node, pOPTree tree);
+
+/**
+ * @ 函数: int _EachNodeOfOPTree(pOPTree tree, int (*func)(pOPNode, void*))
+ *
+ * @ 功能: 对树中每个节点进行func操作. func的参数为{结点, void*}
+ *
+ * @ param{node}: 需要判断的结点
+ *
+ * @ param{csize}: 除0单元外,子节点的最大可能个数
+ *
+ * @ param{sth}: 某个需要传递的参数
+ *
+ * @ param{func}: 将对每个节点使用的函数指针
+ *
+ * @ 返回值: 成功删除时,返回值为1; 否则,返回值为0.
+ */
+int _EachNodeOfOPTree(pOPNode node, int csize, void* sth, int(*func)(pOPNode, void*));
 
 /**
  * @ 函数: void _FreeNode(struct _Node* node, int csize)
