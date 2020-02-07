@@ -12,6 +12,7 @@ UINT_L arr5[] = { 3,3,3 };
 UINT_L arr6[] = { 2, 1 };
 UINT_L arr7[] = { 2,4,6,8,10 };
 UINT_L arr8[] = { 1,1,2,2,5,5,5,6,6,6 };
+UINT_L arr9[] = { 0,1 };
 
 int main() {
 	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
@@ -65,6 +66,7 @@ int main() {
 	InitialValue(arr8, 10, temparr, 3, &ans);
 
 	printf("%lf", ans);
+
 	
 
 	while (1){

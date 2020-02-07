@@ -113,6 +113,15 @@ int Evolution(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef
 	pOPArray* inputArr_CO, int* inputArrLens_CO, Complex* inputArrCoef_CO, int inputArrLen_CO,
 	pOPArray userArr, int userArrLen, int maxOPLen, pOPTree* ho_outputArr, pOPTree* co_outputArr);
 
+/**
+ * @ 函数: int DeriveAssign(..., pDeriveData* outputpp)
+ *
+ * @ 功能: 对应第四章中的Derive And Assign过程
+ *
+ * @ param{outputpp}: 生成一个新的data, 内存交由调用者管理
+ *
+ * @ 返回值: 若成功时,返回值为1; 否则,返回值为0.
+ */
 int DeriveAssign(int* sArr, int sArrLen,
 	pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef_HO, int inputArrLen_HO,
 	pOPArray* inputArr_CO, int* inputArrLens_CO, Complex* inputArrCoef_CO, int inputArrLen_CO,
@@ -120,6 +129,25 @@ int DeriveAssign(int* sArr, int sArrLen,
 	pOPArray* inputArr_Track, int* inputArrLens_Track, int inputArrLen_Track,
 	int maxOPLen,
 	pDeriveData* outputpp);
+
+/**
+ * @ 函数: int CalEvolution(pDeriveData data, Complex** outputpp)
+ *
+ * @ 功能: 对应第四章中的Calculate Evolution过程
+ *
+ * @ param{data}: 生成一个新的data, 内存交由调用者管理
+ *
+ * @ param{outputpp}: 生成一个新的data, 内存交由调用者管理
+ *
+ * @ 返回值: 若成功时,返回值为1; 否则,返回值为0.
+ */
+int CalEvolution(pDeriveData data, Complex** outputpp);
+
+int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len);
+
+int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum);
+
+int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int nextIndex, Complex* psum);
 
 /**
  * @ 函数: int _DeleteAndCE(pOPTree tree, int maxOPLen)
@@ -162,7 +190,7 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen);
  *
  * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
  */
-int _DeriveAT(pOPTree evoTree, pDeriveData data);
+int _DeriveAT(pOPTree evoTree, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data);
 
 /**
  * @ 函数: int __DeriveAT(pOPTree evoTree, pDeriveData data)
@@ -175,7 +203,8 @@ int _DeriveAT(pOPTree evoTree, pDeriveData data);
  *
  * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
  */
-int __DeriveAT(pOPNode node, int csize, pDeriveData data, UINT_L* buf, int nextIndex);
+int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data, 
+	UINT_L* buf, int nextIndex);
 
 /**
  * @ 函数: int _Evolution_HO(pOPArray* inputArr, int* intputArrCoef, int inputArrLen, pOPArray userArr, int userArrLen,
@@ -261,6 +290,17 @@ int _MultiplyNodeWithComplex(pOPNode node, void* sth);
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _NegateNode(pOPNode node, void* sth);
+
+/**
+ * @ 函数: int _UpdateDDTTreeValue(pDeriveData data)
+ *
+ * @ 功能: 把tracking tree中结点的value设为其current value
+ *
+ * @ param{data}: 类型为pDeriveData
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _UpdateDDTTreeValue(pDeriveData data);
 
 #pragma endregion
 #endif // !_SOLVER_H_
