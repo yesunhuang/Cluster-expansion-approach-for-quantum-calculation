@@ -42,6 +42,9 @@
     <ClCompile Include="solver.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="static_dtree.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="operator_tree.h">
@@ -60,6 +63,9 @@
       <Filter>头文件\utils</Filter>
     </ClInclude>
     <ClInclude Include="solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="static_dtree.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -52,10 +52,10 @@ int ReserveOfDData(pDeriveData data, int newCap);
 
 #pragma region 函数声明区
 
-/**
+/** tested
  * @ 函数: int InitialValue(pOPArray arr, int len, int* sArr, int sArrLen, double* output)
  *
- * @ 功能: 对应第四章的InitialValue操作。默认输入为合法。
+ * @ 功能: 对应第四章的InitialValue操作。默认输入为合法。零次项输出1.
  *
  * @ 说明: sArr[0]对应{1,2}的初值,sArr[1]对应{3,4}的初值......以此类推.
  *
@@ -73,7 +73,7 @@ int ReserveOfDData(pDeriveData data, int newCap);
  */
 int InitialValue(pOPArray arr, int len, int* sArr, int sArrLen, double* output);
 
-/**
+/** tested?
  * @ 函数: int _Evolution_HO(pOPArray* inputArr, int* intputArrCoef, int inputArrLen, pOPArray userArr, int userArrLen,
 	pOPTree* ho_outputArr)
  *
@@ -122,10 +122,9 @@ int Evolution(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef
  *
  * @ 返回值: 若成功时,返回值为1; 否则,返回值为0.
  */
-int DeriveAssign(int* sArr, int sArrLen,
-	pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef_HO, int inputArrLen_HO,
+int DeriveAssign(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef_HO, int inputArrLen_HO,
 	pOPArray* inputArr_CO, int* inputArrLens_CO, Complex* inputArrCoef_CO, int inputArrLen_CO,
-	pOPArray inputArr_Init, int inputArrLen_Init,
+	int* inputArr_Init, int inputArrLen_Init,
 	pOPArray* inputArr_Track, int* inputArrLens_Track, int inputArrLen_Track,
 	int maxOPLen,
 	pDeriveData* outputpp);

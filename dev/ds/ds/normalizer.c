@@ -191,14 +191,16 @@ int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray
 		// do nothing
 	}
 	else if (nowIndex1 == len1) {
-		output[outputIndex++] = 0;
+		if (outputIndex >= 1 && output[outputIndex - 1] != 0)
+			output[outputIndex++] = 0;
 		for (; nowIndex2 < len2; nowIndex2++) {
 			output[outputIndex++] = arr2[nowIndex2];
 		}
 	}
 	else {
 		/* nowIndex2 == len2 */
-		output[outputIndex++] = 0;
+		if (outputIndex >= 1 && output[outputIndex - 1] != 0)
+			output[outputIndex++] = 0;
 		for (; nowIndex1 < len1; nowIndex1++) {
 			output[outputIndex++] = arr1[nowIndex1];
 		}

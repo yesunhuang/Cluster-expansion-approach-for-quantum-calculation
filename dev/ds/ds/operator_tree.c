@@ -260,7 +260,7 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 			}
 			else {
 				/* node1中不存在此子节点 */
-				MallocOPNode(node2->label, node2->value, tree1->childSize, node1, &node1->children[i]);
+				MallocOPNode(node2->children[i]->label, node2->children[i]->value, tree1->childSize, node1, &node1->children[i]);
 			}
 			_AddOfOPTree_TT(node1->children[i], node2->children[i], tree1, tree2);
 		}
@@ -510,6 +510,19 @@ int PrintOPTree(pOPTree tree) {
 	return 1;
 }
 
+int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2) {
+	int o1cnt = 0;
+	int o2cnt = 0;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL) {
+			output1[o1cnt++] = tree->root->children[i]->label;
+			output2[o2cnt++] = tree->root->children[i]->value.real;
+			_PrintOrderOPTree(tree->root->children[i], tree->childSize, output1, output2, &o1cnt, &o2cnt);
+		}
+	}
+	return o2cnt;
+}
+
 int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf) {
 	buf[nextIndex] = node->label;
 	if (!IsZeroOfComplex(node->value)) {
@@ -526,5 +539,21 @@ int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf) {
 		if (node->children[i] != NULL)
 			_PrintOPTree(node->children[i], csize, nextIndex + 1, buf);
 	}
+	return 1;
+}
+
+int _PrintOrderOPTree(pOPNode node, UINT_L csize, UINT_L* output1, int* output2, 
+	int* output1_cnt, int* output2_cnt) {
+	for (int i = 0; i <= csize; ++i) {
+		if (node->children[i] != NULL) {
+			output1[*output1_cnt] = node->children[i]->label;
+			output2[*output2_cnt] = node->children[i]->value.real;
+			++(*output1_cnt);
+			++(*output2_cnt);
+			_PrintOrderOPTree(node->children[i], csize, output1, output2, output1, output1);
+		}
+	}
+	output1[*output1_cnt] = MAX_UINT_L;
+	++(*output1_cnt);
 	return 1;
 }

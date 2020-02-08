@@ -28,8 +28,6 @@ int CreateOfDData(int capacity, int csize, int hoSize, int coSize, pDeriveData* 
 	p->trackNodes = (pOPNode*)malloc(capacity * sizeof(pOPNode)); ASSERTNULL(p->trackNodes);
 	if (CreateOPTree(csize, &p->trackTree) == 0) return 0;
 	memset(p->curValues, 0, capacity * sizeof(Complex));
-	memset(p->evoTrees_HO, 0, capacity * sizeof(pOPTree*));
-	memset(p->evoTrees_CO, 0, capacity * sizeof(pOPTree*));
 	for (int i = 0; i < capacity; ++i) {
 		memset(p->evoTrees_HO[i], 0, hoSize * sizeof(pOPTree));
 		memset(p->evoTrees_CO[i], 0, coSize * sizeof(pOPTree));
@@ -92,9 +90,9 @@ int ReserveOfDData(pDeriveData data, int newCap) {
 		tempp = realloc(data->curValues, newCap * sizeof(Complex)); ASSERTNULL(tempp);
 		data->curValues = (Complex*)tempp;
 		tempp = realloc(data->evoTrees_HO, newCap * sizeof(pOPTree*)); ASSERTNULL(tempp);
-		data->evoTrees_HO = (pOPTree*)tempp;
+		data->evoTrees_HO = (pOPTree**)tempp;
 		tempp = realloc(data->evoTrees_CO, newCap * sizeof(pOPTree*)); ASSERTNULL(tempp);
-		data->evoTrees_CO = (pOPTree*)tempp;
+		data->evoTrees_CO = (pOPTree**)tempp;
 		tempp = realloc(data->trackNodes, newCap * sizeof(pOPNode)); ASSERTNULL(tempp);
 		data->trackNodes = (pOPNode*)tempp;
 		data->capacity = newCap;
@@ -120,9 +118,9 @@ int ReserveOfDData(pDeriveData data, int newCap) {
 			free(data->evoTrees_CO[i]);
 		}
 		tempp = realloc(data->evoTrees_HO, newCap * sizeof(pOPTree*)); ASSERTNULL(tempp);
-		data->evoTrees_HO = (pOPTree*)tempp;
+		data->evoTrees_HO = (pOPTree**)tempp;
 		tempp = realloc(data->evoTrees_CO, newCap * sizeof(pOPTree*)); ASSERTNULL(tempp);
-		data->evoTrees_CO = (pOPTree*)tempp;
+		data->evoTrees_CO = (pOPTree**)tempp;
 		tempp = realloc(data->trackNodes, newCap * sizeof(pOPNode)); ASSERTNULL(tempp);
 		data->trackNodes = (pOPNode*)tempp;
 		data->capacity = newCap;
@@ -230,17 +228,16 @@ int Evolution(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef
 	pOPArray* inputArr_CO, int* inputArrLens_CO, Complex* inputArrCoef_CO, int inputArrLen_CO, 
 	pOPArray userArr, int userArrLen, int maxOPLen, pOPTree* ho_output, pOPTree* co_output) {
 	int ret = 1;
-	ret |= _Evolution_HO(inputArr_HO, inputArrLens_HO, inputArrCoef_HO, inputArrLen_HO,
+	ret &= _Evolution_HO(inputArr_HO, inputArrLens_HO, inputArrCoef_HO, inputArrLen_HO,
 		userArr, userArrLen, maxOPLen, ho_output);
-	ret |= _Evolution_CO(inputArr_CO, inputArrLens_CO, inputArrCoef_CO, inputArrLen_CO,
+	ret &= _Evolution_CO(inputArr_CO, inputArrLens_CO, inputArrCoef_CO, inputArrLen_CO,
 		userArr, userArrLen, maxOPLen, co_output);
 	return ret;
 }
 
-int DeriveAssign(int* sArr, int sArrLen, 
-	pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef_HO, int inputArrLen_HO, 
+int DeriveAssign(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrCoef_HO, int inputArrLen_HO, 
 	pOPArray* inputArr_CO, int* inputArrLens_CO, Complex* inputArrCoef_CO, int inputArrLen_CO, 
-	pOPArray inputArr_Init, int inputArrLen_Init, 
+	int* inputArr_Init, int inputArrLen_Init, 
 	pOPArray* inputArr_Track, int* inputArrLens_Track, int inputArrLen_Track, 
 	int maxOPLen, 
 	pDeriveData* outputpp){
@@ -248,7 +245,7 @@ int DeriveAssign(int* sArr, int sArrLen,
 	/* 首先确定csize,并创建data实体 */
 	UINT_L maxInitTrackLabel = 0;
 	for (int i = 0; i < inputArrLen_Track; ++i) {
-		for (int j = 0; j < inputArrLens_Track; ++j) {
+		for (int j = 0; j < inputArrLens_Track[i]; ++j) {
 			maxInitTrackLabel = MAX(maxInitTrackLabel, inputArr_Track[i][j]);
 		}
 	}
@@ -362,12 +359,14 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 }
 
 int _DeleteAndCE(pOPTree tree, int maxOPLen) {
-	if (tree == NULL || maxOPLen < 0)
+	if (tree == NULL || maxOPLen <= 0)
 		return 0;
 	int ret = 0;
-	for (int i = 0; i <= tree->childSize; ++i) {
+	for (int i = 1; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL)
 			ret |= _DeleteAndCE_(tree->root->children[i], tree, maxOPLen, 1);
+		if (ret)
+			return 1;
 	}
 	return ret;
 }
@@ -376,8 +375,12 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 	if (nextLen <= maxOPLen) {
 		int ret = 0;
 		for (int i = 0; i <= tree->childSize; ++i) {
-			if (node->children[i] != NULL)
-				ret |= _DeleteAndCE_(node->children[i], tree, maxOPLen, nextLen + 1);
+			if (node->children[i] != NULL) {
+				if (i == 0)
+					ret |= _DeleteAndCE_(node->children[i], tree, maxOPLen, 0);
+				else
+					ret |= _DeleteAndCE_(node->children[i], tree, maxOPLen, nextLen + 1);
+			}
 			if (ret) {
 				return 1;
 			}
@@ -387,10 +390,57 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 	else {
 		if (!IsZeroOfComplex(node->value)) {
 			UINT_L buf[MAX_OPERATOR_LENGTH];
-			ArrayFromNode(node, nextLen, buf);
-			pOPTree newTree;
-			ClusterExpansion(buf, nextLen, &newTree);
+			Complex originCoef = node->value;
+			int totalLen = GetRoot(node, NULL);
+			ArrayFromNode(node, totalLen, buf);
 			_DeleteNode(node, tree);
+
+			/* 将multi-op分拆为single-op,并Multiply_TT */
+			pOPTree treeBuf[MAX_OPERATOR_TREE_LENGTH];
+			memset(treeBuf, 0, MAX_OPERATOR_TREE_LENGTH * sizeof(pOPTree));
+			int treeCount = 0;
+			int nowIndex = 0;
+			int nextIndex = 0;
+			_GetNextCPIndexFromOPArray(buf, totalLen, nowIndex, &nextIndex);
+			while (nowIndex < totalLen) {
+				int singleLen;
+				if (nextIndex == totalLen)
+					singleLen = nextIndex - nowIndex;
+				else
+					singleLen = nextIndex - nowIndex - 1;
+				
+
+				if (singleLen > maxOPLen) {
+					ClusterExpansion(buf + nowIndex, singleLen, &treeBuf[treeCount]);
+				}
+				else {
+					CreateOPTree(tree->childSize, &treeBuf[treeCount]);
+					Complex tempc = { 1, 0 };
+					InsertOfOPTree(treeBuf[treeCount], buf + nowIndex, singleLen, tempc);
+				}
+
+				nowIndex = nextIndex;
+				++treeCount;
+				_GetNextCPIndexFromOPArray(buf, totalLen, nowIndex, &nextIndex);
+			}
+
+			pOPTree newTree = NULL;
+			if (treeCount == 1) {
+				newTree = treeBuf[0];
+			}
+			else {
+				MultiplyOfOPTree_TT(treeBuf[0], treeBuf[1], &newTree);
+				// PrintOPTree(newTree);
+				for (int i = 2; i < treeCount; ++i) {
+					pOPTree temp = NULL;
+					MultiplyOfOPTree_TT(newTree, treeBuf[i], &temp);
+					FreeOPTree(newTree);
+					newTree = temp;
+				}
+			}
+
+			/* TODO: 原系数需要乘上去 */
+			EachNodeOfOPTree(newTree, &originCoef, _MultiplyNodeWithComplex);
 
 			AddOfOPTree_TT(tree, newTree);
 			FreeOPTree(newTree);
@@ -399,8 +449,9 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 		else {
 			int ret = 0;
 			for (int i = 0; i <= tree->childSize; ++i) {
-				if (node->children[i] != NULL)
-					ret |= _DeleteAndCE_(node->children[i], tree, maxOPLen, nextLen + 1);
+				if (node->children[i] != NULL) {
+					ret |= _DeleteAndCE_(node->children[i], tree, maxOPLen, maxOPLen + 1);
+				}
 				if (ret) {
 					return 1;
 				}
@@ -428,7 +479,6 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 			/* 先找正常项 */
 			if (SearchOfOPTree(data->trackTree, buf, 1, NULL) == 1)
 				return 1;
-			/* TODO: 再找共轭项?(0次项处理方式未知) */
 
 			/* 最后可才插入 */
 			Complex tempc = { 1, 0 };
@@ -471,6 +521,40 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 			data->curValues[data->size - 1] = tempc;
 			return 1;
 		}
+	}
+	else if (_IsLeafNode(node, csize)) {
+		int prev = nextIndex - 1;
+		for (; prev >= 0; --prev) {
+			if (buf[prev] == 0)
+				break;
+		}
+		int len = nextIndex - prev;
+
+		/* 先找正常项 */
+		if (SearchOfOPTree(data->trackTree, buf + prev + 1, len, NULL) == 1)
+			return 1;
+
+		/* 再找共轭项 */
+		UINT_L dbuf[MAX_OPERATOR_LENGTH];
+		for (int i = 0; i < len; ++i) {
+			dbuf[i] = (((*(buf + prev + 1 + i)) - 1) ^ 1) + 1;
+		}
+		pOPNode tempnode = NULL;
+		if (_SearchOfOPTree(data->trackTree, dbuf, len, &tempnode) == 1) {
+			for (int i = 0; i < data->size; ++i) {
+				if (data->trackNodes[i] == tempnode) {
+					data->curValues[i].image = -(data->curValues[i].image);
+				}
+			}
+			return 1;
+		}
+
+		/* 最后可才插入 */
+		Complex tempc = { 1, 0 };
+		InsertOfDData(data, tempc, buf + prev + 1, len);
+		InitialValue(buf, 1, inputArr_Init, inputArrLen_Init, &tempc.real);
+		data->curValues[data->size - 1] = tempc;
+		return 1;
 	}
 	else {
 		for (int i = 0; i <= csize; ++i) {

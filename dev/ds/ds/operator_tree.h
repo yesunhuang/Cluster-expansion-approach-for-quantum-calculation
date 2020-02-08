@@ -34,6 +34,8 @@
 // #define UINT_V_ADD_DELETE_FLAG 0xfefefefc
 /* operator的最大长度 */
 #define MAX_OPERATOR_LENGTH 256
+#define MAX_OPERATOR_TREE_LENGTH 128
+#define MAX_UINT_L 255
 
 #define __DEBUG__
 
@@ -168,7 +170,7 @@ int ArrayFromNode(pOPNode node, int depth, pOPArray outputArr);
  */
 int CreateOPTree(UINT_L csize, pOPTree* outputTree);
 
-/**
+/** tested
  * @ 函数: int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
  *
  * @ 功能: 将tree2中的每个元素插入至tree1中.
@@ -571,6 +573,21 @@ int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize);
  */
 int PrintOPTree(pOPTree tree);
 
+/**
+ * @ 函数: int PrintOPTree(pOPTree tree)
+ *
+ * @ 功能: 按顺序递归顺序打印出树,return的表示值为MAX_UINT_L
+ *
+ * @ param{tree}: op树
+ *
+ * @ param{output1}: 存储地址,须预先有足够的空间
+ *
+ * @ param{output2}: 存储地址,须预先有足够的空间
+ *
+ * @ 返回值: 成功时,返回值为记录的结点个数; 否则,返回值为0.
+ */
+int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2);
+
 /** tested
  * @ 函数: int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf)
  *
@@ -581,6 +598,23 @@ int PrintOPTree(pOPTree tree);
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf);
+
+/**
+ * @ 函数: int PrintOPTree(pOPTree tree)
+ *
+ * @ 功能: 按顺序递归顺序打印出树,return的表示值为MAX_UINT_L
+ *
+ * @ param{node}: 结点
+ *
+ * @ param{csize}: csize
+ *
+ * @ param{output1}: 存储地址,须预先有足够的空间
+ *
+ * @ param{output2}: 存储地址,须预先有足够的空间
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _PrintOrderOPTree(pOPNode node, UINT_L csize, UINT_L* output1, int* output2, int* output1_cnt, int* output2_cnt);
 
 #endif // DEBUG
 

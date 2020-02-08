@@ -129,13 +129,16 @@
   <ItemGroup>
     <ClCompile Include="cluster_expansion.c" />
     <ClCompile Include="complex.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="main.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="normalizer.c" />
     <ClCompile Include="operator_tree.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="position_tree.c" />
     <ClCompile Include="solver.c" />
+    <ClCompile Include="static_dtree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cluster_expansion.h" />
@@ -144,6 +147,7 @@
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />
     <ClInclude Include="solver.h" />
+    <ClInclude Include="static_dtree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
