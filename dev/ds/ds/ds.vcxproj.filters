@@ -45,6 +45,9 @@
     <ClCompile Include="static_dtree.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="main_wrapper.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="operator_tree.h">
