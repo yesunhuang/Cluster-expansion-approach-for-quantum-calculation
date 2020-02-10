@@ -130,9 +130,11 @@
     <ClCompile Include="cluster_expansion.c" />
     <ClCompile Include="complex.c" />
     <ClCompile Include="main.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main_wrapper.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="main_wrapper.c" />
     <ClCompile Include="normalizer.c" />
     <ClCompile Include="operator_tree.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
