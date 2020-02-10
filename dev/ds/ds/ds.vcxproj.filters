@@ -30,8 +30,23 @@
     <ClCompile Include="normalizer.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="queue.c">
+    <ClCompile Include="cluster_expansion.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="complex.c">
       <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="solver.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="static_dtree.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_wrapper.c">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -44,8 +59,17 @@
     <ClInclude Include="normalizer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="queue.h">
+    <ClInclude Include="cluster_expansion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="complex.h">
       <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="static_dtree.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -69,13 +69,17 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>F:\Program Files\Python\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>6386;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,18 +127,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cluster_expansion.c" />
+    <ClCompile Include="complex.c" />
+    <ClCompile Include="main.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main_wrapper.c" />
     <ClCompile Include="normalizer.c" />
     <ClCompile Include="operator_tree.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="position_tree.c" />
-    <ClCompile Include="queue.c" />
+    <ClCompile Include="solver.c" />
+    <ClCompile Include="static_dtree.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cluster_expansion.h" />
+    <ClInclude Include="complex.h" />
     <ClInclude Include="normalizer.h" />
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />
-    <ClInclude Include="queue.h" />
+    <ClInclude Include="solver.h" />
+    <ClInclude Include="static_dtree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
