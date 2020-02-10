@@ -19,31 +19,56 @@ UINT_L arr10[] = { 1 };
 UINT_L arr11[] = { 1,0,1,0,1 };
 UINT_L arr12[] = { 1,1,2 };
 
-Complex c_1 = { 1,0 };
-Complex c_2 = { 2,0 };
-Complex c_3 = { 0,1 };
-int init_arr1[] = { 3,2,3,4 };
-UINT_L ho_arr1[] = { 1,1 };
-int ho_lens_arr1[] = { 2 };
-Complex ho_coef_arr1[1];
-pOPArray ho_arrs[1];
-UINT_L co_arr1[] = { 3,4 };
-int co_lens_arr1[] = { 2 };
-Complex co_coef_arr1[1];
-pOPArray co_arrs[1];
+Complex c_1 = { 0.8,0 };
+Complex c_2 = { 1.6,0 };
+Complex c_3 = { 0.3,0 };
+Complex c_4 = { 0.3,0 };
+Complex c_5 = { 0.106,0 };
+Complex c_6 = { 0.106,0 };
+Complex c_7 = { 2,0 };
+Complex c_8 = { 4,0 };
+int init_arr1[] = { 0,0 };
+UINT_L ho_arr1[] = { 1,2 };
+UINT_L ho_arr2[] = { 3,4 };
+UINT_L ho_arr3[] = { 1,1,4 };
+UINT_L ho_arr4[] = { 2,2,3 };
+UINT_L ho_arr5[] = { 1 };
+UINT_L ho_arr6[] = { 2 };
+int ho_lens_arr1[] = { 2,2,3,3,1,1 };
+Complex ho_coef_arr1[6];
+pOPArray ho_arrs[6];
+UINT_L co_arr1[] = { 2 };
+UINT_L co_arr2[] = { 4 };
+int co_lens_arr1[] = { 1,1 };
+Complex co_coef_arr1[2];
+pOPArray co_arrs[2];
 UINT_L track_arr1[] = { 1,2 };
-int track_lens_arr1[] = { 2 };
-pOPArray track_arrs[1];
+UINT_L track_arr2[] = { 3,4 };
+int track_lens_arr1[] = { 2,2 };
+pOPArray track_arrs[2];
 
 
 int main() {
-	ho_coef_arr1[0] = c_2;
+	ho_coef_arr1[0] = c_1;
+	ho_coef_arr1[1] = c_2;
+	ho_coef_arr1[2] = c_3;
+	ho_coef_arr1[3] = c_4;
+	ho_coef_arr1[4] = c_5;
+	ho_coef_arr1[5] = c_6;
 	ho_arrs[0] = ho_arr1;
+	ho_arrs[1] = ho_arr2;
+	ho_arrs[2] = ho_arr3;
+	ho_arrs[3] = ho_arr4;
+	ho_arrs[4] = ho_arr5;
+	ho_arrs[5] = ho_arr6;
 
-	co_coef_arr1[0] = c_2;
+	co_coef_arr1[0] = c_7;
+	co_coef_arr1[1] = c_8;
 	co_arrs[0] = co_arr1;
+	co_arrs[1] = co_arr2;
 
 	track_arrs[0] = track_arr1;
+	track_arrs[1] = track_arr2;
 
 	// pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
 	
@@ -88,7 +113,7 @@ int main() {
 	PrintOPTree(tree);
 	*/
 	
-	///*
+	/*
 	pOPTree tempTree = NULL;
 	DeltaTree(10, &tempTree);
 	//ClusterExpansion(arr12, 3, &tempTree);
@@ -107,21 +132,22 @@ int main() {
 	/* Evolution()的测试用例
 	pOPTree ho_output[1];
 	pOPTree co_output[1];
-	Evolution(ho_arrs, ho_lens_arr1, ho_coef_arr1, 1,
-		co_arrs, co_lens_arr1, co_coef_arr1, 1,
-		arr3, 2, 20, ho_output, co_output);
+	Evolution(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
+		co_arrs, co_lens_arr1, co_coef_arr1, 2,
+		track_arr1, 2, 22, ho_output, co_output);
 
 	PrintOPTree(ho_output[0]);
 	//*/
 
-	/* CalEvolution()的测试过程
+	///* CalEvolution()的测试过程
 	pDeriveData data = NULL;
-	DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 1,
-		co_arrs, co_lens_arr1, co_coef_arr1, 1,
-		init_arr1, 4, track_arrs, track_lens_arr1, 1, 10, &data);
+	DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
+		co_arrs, co_lens_arr1, co_coef_arr1, 2,
+		init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
 
-	PrintOPTree(data->evoTrees_HO[0][0]);
-	PrintOPTree(data->evoTrees_CO[0][0]);
+	//PrintOPTree(data->evoTrees_HO[0][0]);
+	//PrintOPTree(data->evoTrees_CO[0][0]);
+	PrintOPTree(data->trackTree);
 	
 	Complex* ans = NULL;
 	CalEvolution(data, &ans);

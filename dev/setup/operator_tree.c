@@ -87,6 +87,7 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
 	_SearchOfOPTree(tree, arr, len, &nowNode);
 	if (nowNode == NULL) {
 		// 不存在此节点的情况
+
 		return 0;
 	}
 
