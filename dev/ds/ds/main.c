@@ -155,6 +155,11 @@ int main() {
 		co_arrs, co_lens_arr1, co_coef_arr1, 2,
 		init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
 
+	Complex iv[8];
+	memset(iv, 0, 8 * sizeof(Complex));
+	iv[2].real = 1;
+	SetCurrentValueOfDData(data, iv, 8);
+
 	//PrintOPTree(data->evoTrees_HO[0][0]);
 	//PrintOPTree(data->evoTrees_CO[0][0]);
 	for (int i = 0; i < data->size; ++i) {
@@ -169,12 +174,12 @@ int main() {
 	}
 	int treenumber = 0;
 	for (int i = 0; i < data->hoSize; ++i) {
-		printf("Tree_HO %d\n", i);
+		printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
 		PrintOPTree(data->evoTrees_HO[treenumber][i]);
 		putchar('\n');
 	}
 	for (int i = 0; i < data->coSize; ++i) {
-		printf("Tree_CO %d\n", i);
+		printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
 		PrintOPTree(data->evoTrees_CO[treenumber][i]);
 		putchar('\n');
 	}

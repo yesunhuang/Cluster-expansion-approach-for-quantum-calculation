@@ -353,9 +353,10 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 		int head = 0;
 		int tail = 0;
 		_GetNextCPIndexFromOPArray(buf, len, head, &tail);
+		Complex tempc = { 1,0 };
 		while (head < len) {
+			Complex tempnodev = { 0,0 };
 			pOPNode tempnode = NULL;
-			Complex tempnodev;
 			if (tail == len) {
 				_SearchOfOPTree(data->trackTree, buf + head, tail - head, &tempnode);
 				if (tempnode != NULL) {
@@ -388,13 +389,14 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 					tempnodev.image = -tempnodev.image;
 				}
 			}
-			Complex tempc = { 0, 0 };
-			MultiplyOfComplex(tree->root->value, node->value, &tempc);
+
 			MultiplyOfComplex(tempc, tempnodev, &tempc);
-			AddOfComplex(tempc, *psum, psum);
 			head = tail;
 			_GetNextCPIndexFromOPArray(buf, len, head, &tail);
 		}
+		MultiplyOfComplex(tempc, tree->root->value, &tempc);
+		MultiplyOfComplex(tempc, node->value, &tempc);
+		AddOfComplex(tempc, *psum, psum);
 	}
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (node->children[i] != NULL) {
