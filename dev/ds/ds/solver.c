@@ -24,6 +24,8 @@ int CreateOfDData(int capacity, int csize, int hoSize, int coSize, pDeriveData* 
 	for (int i = 0; i < capacity; ++i) {
 		p->evoTrees_HO[i] = (pOPTree*)malloc(hoSize * sizeof(pOPTree)); ASSERTNULL(p->evoTrees_HO[i]);
 		p->evoTrees_CO[i] = (pOPTree*)malloc(coSize * sizeof(pOPTree)); ASSERTNULL(p->evoTrees_CO[i]);
+		memset(p->evoTrees_HO[i], 0, hoSize * sizeof(pOPTree));
+		memset(p->evoTrees_CO[i], 0, coSize * sizeof(pOPTree));
 	}
 	p->trackNodes = (pOPNode*)malloc(capacity * sizeof(pOPNode)); ASSERTNULL(p->trackNodes);
 	if (CreateOPTree(csize, &p->trackTree) == 0) return 0;
@@ -99,6 +101,8 @@ int ReserveOfDData(pDeriveData data, int newCap) {
 		for (int i = data->capacity; i < newCap; ++i) {
 			data->evoTrees_HO[i] = (pOPTree*)malloc(data->hoSize * sizeof(pOPTree)); ASSERTNULL(data->evoTrees_HO[i]);
 			data->evoTrees_CO[i] = (pOPTree*)malloc(data->coSize * sizeof(pOPTree)); ASSERTNULL(data->evoTrees_CO[i]);
+			memset(data->evoTrees_HO[i], 0, data->hoSize * sizeof(pOPTree));
+			memset(data->evoTrees_CO[i], 0, data->coSize * sizeof(pOPTree));
 		}
 		tempp = realloc(data->trackNodes, newCap * sizeof(pOPNode)); ASSERTNULL(tempp);
 		data->trackNodes = (pOPNode*)tempp;

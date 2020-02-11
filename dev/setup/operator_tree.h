@@ -37,7 +37,7 @@
 #define MAX_OPERATOR_TREE_LENGTH 128
 #define MAX_UINT_L 255
 
-//#define __DEBUG__
+#define __DEBUG__
 
 #pragma endregion
 
