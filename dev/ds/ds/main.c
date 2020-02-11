@@ -12,7 +12,7 @@ UINT_L arr3[] = { 1,3 };
 UINT_L arr4[] = { 2,1,2,4,3 };
 UINT_L arr5[] = { 3,0,3,3,0,3 };
 UINT_L arr6[] = { 2, 1 };
-UINT_L arr7[] = { 2,4,6,8 };
+UINT_L arr7[] = { 2,2,3,1 };
 UINT_L arr8[] = { 1,1,2,2,5,5,5,6,6,6 };
 UINT_L arr9[] = { 0,1 };
 UINT_L arr10[] = { 1 };
@@ -27,7 +27,7 @@ Complex c_5 = { 0.106,0 };
 Complex c_6 = { 0.106,0 };
 Complex c_7 = { 2,0 };
 Complex c_8 = { 4,0 };
-int init_arr1[] = { 0,0 };
+int init_arr1[] = { 1,1 };
 UINT_L ho_arr1[] = { 1,2 };
 UINT_L ho_arr2[] = { 3,4 };
 UINT_L ho_arr3[] = { 1,1,4 };
@@ -70,7 +70,7 @@ int main() {
 	track_arrs[0] = track_arr1;
 	track_arrs[1] = track_arr2;
 
-	// pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
+	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
 	
 	/*
 	pOPTree tree1;
@@ -97,7 +97,7 @@ int main() {
 	//*/
 	/*
 	pOPTree tree;
-	MONormalize(arr12, 5, &tree);
+	MONormalize(arr7, 4, &tree);
 	PrintOPTree(tree);
 	//*/
 
@@ -147,7 +147,27 @@ int main() {
 
 	//PrintOPTree(data->evoTrees_HO[0][0]);
 	//PrintOPTree(data->evoTrees_CO[0][0]);
-	PrintOPTree(data->trackTree);
+	for (int i = 0; i < data->size; ++i) {
+		int len;
+		len = GetRoot(data->trackNodes[i], NULL);
+		ArrayFromNode(data->trackNodes[i], len, buf);
+		printf("TrackNodes[%d]:{", i);
+		for (int j = 0; j < len; ++j) {
+			printf("%d, ", buf[j]);
+		}
+		printf("}\n");
+	}
+	for (int i = 0; i < data->hoSize; ++i) {
+		printf("Tree_HO %d\n", i);
+		PrintOPTree(data->evoTrees_HO[4][i]);
+		putchar('\n');
+	}
+	for (int i = 0; i < data->coSize; ++i) {
+		printf("Tree_CO %d\n", i);
+		PrintOPTree(data->evoTrees_CO[4][i]);
+		putchar('\n');
+	}
+	//PrintOPTree(data->trackTree);
 	
 	Complex* ans = NULL;
 	CalEvolution(data, &ans);

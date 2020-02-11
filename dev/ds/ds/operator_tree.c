@@ -204,6 +204,20 @@ int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree) {
 	return ret;
 }
 
+int MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree) {
+	/* 定义一个简易的栈 */
+	UINT_L tree2Stack[MAX_OPERATOR_LENGTH];
+	CreateOPTree(MAX(tree1->childSize, tree2->childSize), outputTree);
+	if (*outputTree == NULL) return 0;
+	int ret = 1;
+	for (int i = 0; i <= tree2->childSize; ++i) {
+		if (tree2->root->children[i] != NULL) {
+			ret &= _MultiplyConnectOfOPTree_TT(tree1, tree2->root->children[i], tree2->childSize, tree2Stack, 0, *outputTree);
+		}
+	}
+	return ret;
+}
+
 int NormalizeOPTree(pOPTree tree) {
 	tree->root->value.real = 0;
 	int ret = 1;
@@ -455,6 +469,32 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 	return ret;
 }
 
+int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
+	UINT_L* tree2Stack, int nextIndex, pOPTree outputTree) {
+	if (nextIndex >= MAX_OPERATOR_LENGTH)
+		return 0;
+	tree2Stack[nextIndex] = tree2node->label;
+	int ret = 1;
+
+	if (!IsZeroOfComplex(tree2node->value)) {
+		/* 定义一个简易的栈 */
+		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
+		for (int i = 0; i <= tree1->childSize; ++i) {
+			if (tree1->root->children[i] != NULL) {
+				ret &= _MultiplyConnectNodeWithOP(tree1->root->children[i], tree1->childSize,
+					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
+			}
+		}
+	}
+
+	for (int i = 0; i <= tree2csize; ++i) {
+		if (tree2node->children[i] != NULL)
+			ret &= _MultiplyConnectOfOPTree_TT(tree1, tree2node->children[i], tree2csize, tree2Stack, nextIndex + 1, outputTree);
+	}
+
+	return ret;
+}
+
 int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
 	UINT_L* lStack, int nextIndex, pOPTree otherTree) {
 	if (nextIndex >= MAX_OPERATOR_LENGTH)
@@ -472,6 +512,31 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 		int newLen = ((nextIndex + 1) + len + 1);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
+		INT_V tempv;
+		MultiplyOfComplex(coef, node->value, &tempv);
+		InsertOfOPTree(otherTree, ans, newLen, tempv);
+		free(ans);
+	}
+	return ret;
+}
+
+int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef,
+	UINT_L* lStack, int nextIndex, pOPTree otherTree) {
+	if (nextIndex >= MAX_OPERATOR_LENGTH)
+		return 0;
+	lStack[nextIndex] = node->label;
+	int ret = 1;
+	if (IsZeroOfComplex(node->value)) {
+		for (int i = 0; i <= csize; ++i) {
+			if (node->children[i] != NULL) {
+				ret &= _MultiplyConnectNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
+			}
+		}
+	}
+	else {
+		int newLen = ((nextIndex + 1) + len);
+		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
+		MultiplyConnectOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
 		INT_V tempv;
 		MultiplyOfComplex(coef, node->value, &tempv);
 		InsertOfOPTree(otherTree, ans, newLen, tempv);
@@ -559,7 +624,7 @@ int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2, int* output1_l
 int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf) {
 	buf[nextIndex] = node->label;
 	if (!IsZeroOfComplex(node->value)) {
-		printf("%lf  ", node->value.real);
+		printf("%.3lf+(%.3lfj)  ", node->value.real, node->value.image);
 		putchar('{');
 		printf("%d", buf[0]);
 		for (int i = 1; i <= nextIndex; ++i) {

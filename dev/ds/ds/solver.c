@@ -529,12 +529,14 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 					break;
 			}
 			int len = nextIndex - prev - 1;
+			int isExist = 0;
 
 			/* 先找正常项 */
 			pOPNode tempnode = NULL;
 			_SearchOfOPTree(data->trackTree, buf + prev + 1, len, &tempnode);
-			if (tempnode != NULL && !IsZeroOfComplex(tempnode->value))
-				return 1;
+			if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
+				isExist = 1;
+			}
 
 			/* 再找共轭项 */
 			UINT_L dbuf[MAX_OPERATOR_LENGTH];
@@ -543,14 +545,17 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 			}
 			tempnode = NULL;
 			_SearchOfOPTree(data->trackTree, dbuf, len, &tempnode);
-			if (tempnode != NULL && !IsZeroOfComplex(tempnode->value))
-				return 1;
+			if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
+				isExist = 1;
+			}
 
 			/* 最后可才插入 */
-			Complex tempc = { 1, 0 };
-			InsertOfDData(data, tempc, buf + prev + 1, len);
-			InitialValue(buf, 1, inputArr_Init, inputArrLen_Init, &tempc.real);
-			data->curValues[data->size - 1] = tempc;
+			if (!isExist) {
+				Complex tempc = { 1, 0 };
+				InsertOfDData(data, tempc, buf + prev + 1, len);
+				InitialValue(buf, 1, inputArr_Init, inputArrLen_Init, &tempc.real);
+				data->curValues[data->size - 1] = tempc;
+			}
 		}
 
 		for (int i = 0; i <= csize; ++i) {
@@ -568,12 +573,14 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 				break;
 		}
 		int len = nextIndex - prev;
+		int isExist = 0;
 
 		/* 先找正常项 */
 		pOPNode tempnode = NULL;
 		_SearchOfOPTree(data->trackTree, buf + prev + 1, len, &tempnode);
-		if (tempnode != NULL && !IsZeroOfComplex(tempnode->value))
-			return 1;
+		if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
+			isExist = 1;
+		}
 
 		/* 再找共轭项 */
 		UINT_L dbuf[MAX_OPERATOR_LENGTH];
@@ -582,15 +589,18 @@ int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_
 		}
 		tempnode = NULL;
 		_SearchOfOPTree(data->trackTree, dbuf, len, &tempnode);
-		if (tempnode != NULL && !IsZeroOfComplex(tempnode->value))
-			return 1;
+		if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
+			isExist = 1;
+		}
 
 		/* 最后可才插入 */
-		Complex tempc = { 1, 0 };
-		InsertOfDData(data, tempc, buf + prev + 1, len);
-		InitialValue(buf, 1, inputArr_Init, inputArrLen_Init, &tempc.real);
-		data->curValues[data->size - 1] = tempc;
-		return 1;
+		if (!isExist) {
+			Complex tempc = { 1, 0 };
+			InsertOfDData(data, tempc, buf + prev + 1, len);
+			InitialValue(buf, 1, inputArr_Init, inputArrLen_Init, &tempc.real);
+			data->curValues[data->size - 1] = tempc;
+			return 1;
+		}
 	}
 	else {
 		for (int i = 0; i <= csize; ++i) {
@@ -613,16 +623,19 @@ int _Evolution_HO(pOPArray* inputArr, int* inputArrLens,
 		memcpy(buf + inputArrLens[i], userArr, userArrLen * sizeof(UINT_L));
 		pOPTree OA_Tree = NULL;
 		MONormalize(buf, inputArrLens[i] + userArrLen, &OA_Tree);
+		//PrintOPTree(OA_Tree);
 
 		/* 再构造<A_i O_j> */
 		memcpy(buf, userArr, userArrLen * sizeof(UINT_L));
 		memcpy(buf + userArrLen, inputArr[i], inputArrLens[i] * sizeof(UINT_L));
 		pOPTree AO_Tree = NULL;
 		MONormalize(buf, inputArrLens[i] + userArrLen, &AO_Tree);
+		//PrintOPTree(AO_Tree);
 
 		/* 两树相减 */
 		EachNodeOfOPTree(AO_Tree, NULL, _NegateNode);
 		AddOfOPTree_TT(OA_Tree, AO_Tree);
+		//PrintOPTree(OA_Tree);
 
 		/* 去除长度超过范围的 */
 		/* TODO: 这个方法很蠢,日后需要优化 */
