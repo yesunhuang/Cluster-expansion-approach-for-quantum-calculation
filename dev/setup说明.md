@@ -66,3 +66,30 @@ cluster.SetCurrentValue(data, list)
 
 * 无
 
+#### 4. GetCurrentValue(DeriveData data)
+
+```python
+cluster.GetCurrentValue(data)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+
+屏幕输出：
+
+* 当前的CurrentValue
+
+#### 5. PrintData(DeriveData data)
+
+```python
+cluster.PrintData(data)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+
+屏幕输出：
+
+* 所有的TrackingNodes和每个TrackingNode的所有演化树

@@ -343,13 +343,15 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 	for (int i = 0; i < data->size; ++i) {
 		printf("Tracking Operator %d :\n", i);
 		for (int j = 0; j < data->hoSize; j++) {
-			printf("HO_Tree %d:\n", j);
+			printf("HO_Tree %d, coef is %.3lf+(%.3lf)j:\n", j, 
+				data->evoTrees_HO[i][j]->root->value.real, data->evoTrees_HO[i][j]->root->value.image);
 			PrintOPTree(data->evoTrees_HO[i][j]);
 			putchar('\n');
 		}
 		putchar('\n');
 		for (int j = 0; j < data->coSize; j++) {
-			printf("CO_Tree %d:\n", j);
+			printf("CO_Tree %d:, coef is %.3lf+(%.3lf)j:\n", j,
+				data->evoTrees_HO[i][j]->root->value.real, data->evoTrees_HO[i][j]->root->value.image);
 			PrintOPTree(data->evoTrees_CO[i][j]);
 			putchar('\n');
 		}

@@ -443,6 +443,18 @@ int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTre
 	return ret;
 }
 
+int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree) {
+	/* 定义一个简易的栈 */
+	UINT_L lStack[MAX_OPERATOR_LENGTH];
+	int ret = 1;
+	for (int i = 0; i <= tree->childSize; ++i) {
+		if (tree->root->children[i] != NULL) {
+			ret &= _MultiplyConnectNodeWithOP(tree->root->children[i], tree->childSize, arr, len, coef, lStack, 0, otherTree);
+		}
+	}
+	return ret;
+}
+
 int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 	UINT_L* tree2Stack, int nextIndex, pOPTree outputTree) {
 	if (nextIndex >= MAX_OPERATOR_LENGTH)
@@ -452,6 +464,7 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 
 	if (!IsZeroOfComplex(tree2node->value)) {
 		/* 定义一个简易的栈 */
+		/*
 		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
 		for (int i = 0; i <= tree1->childSize; ++i) {
 			if (tree1->root->children[i] != NULL) {
@@ -459,6 +472,12 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
 			}
 		}
+		*/
+		pOPTree tempTree = NULL;
+		CreateOPTree(MAX(tree2csize, tree1->childSize), &tempTree);
+		_MultiplyOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, tree2node->value, tempTree);
+		AddOfOPTree_TT(outputTree, tempTree);
+		FreeOPTree(tempTree);
 	}
 
 	for (int i = 0; i <= tree2csize; ++i) {
@@ -478,6 +497,7 @@ int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize
 
 	if (!IsZeroOfComplex(tree2node->value)) {
 		/* 定义一个简易的栈 */
+		/*
 		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
 		for (int i = 0; i <= tree1->childSize; ++i) {
 			if (tree1->root->children[i] != NULL) {
@@ -485,6 +505,12 @@ int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize
 					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
 			}
 		}
+		*/
+		pOPTree tempTree = NULL;
+		CreateOPTree(MAX(tree2csize, tree1->childSize), &tempTree);
+		_MultiplyConnectOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, tree2node->value, tempTree);
+		AddOfOPTree_TT(outputTree, tempTree);
+		FreeOPTree(tempTree);
 	}
 
 	for (int i = 0; i <= tree2csize; ++i) {
@@ -502,13 +528,6 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 	lStack[nextIndex] = node->label;
 	int ret = 1;
 	if (IsZeroOfComplex(node->value)) {
-		for (int i = 0; i <= csize; ++i) {
-			if (node->children[i] != NULL) {
-				ret &= _MultiplyNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
-			}
-		}
-	}
-	else {
 		int newLen = ((nextIndex + 1) + len + 1);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
@@ -517,6 +536,13 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 		InsertOfOPTree(otherTree, ans, newLen, tempv);
 		free(ans);
 	}
+
+	for (int i = 0; i <= csize; ++i) {
+		if (node->children[i] != NULL) {
+			ret &= _MultiplyNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
+		}
+	}
+
 	return ret;
 }
 
@@ -526,15 +552,8 @@ int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len
 		return 0;
 	lStack[nextIndex] = node->label;
 	int ret = 1;
-	if (IsZeroOfComplex(node->value)) {
-		for (int i = 0; i <= csize; ++i) {
-			if (node->children[i] != NULL) {
-				ret &= _MultiplyConnectNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
-			}
-		}
-	}
-	else {
-		int newLen = ((nextIndex + 1) + len);
+	if (!IsZeroOfComplex(node->value)) {
+		int newLen = (nextIndex + 1 + len);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyConnectOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
 		INT_V tempv;
@@ -542,6 +561,13 @@ int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len
 		InsertOfOPTree(otherTree, ans, newLen, tempv);
 		free(ans);
 	}
+
+	for (int i = 0; i <= csize; ++i) {
+		if (node->children[i] != NULL) {
+			ret &= _MultiplyConnectNodeWithOP(node->children[i], csize, arr, len, coef, lStack, nextIndex + 1, otherTree);
+		}
+	}
+
 	return ret;
 }
 

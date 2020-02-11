@@ -9,8 +9,8 @@
 UINT_L arr1[] = { 2,4,4,0,1,3,4,6 };
 UINT_L arr2[] = { 2,0,4,4,6,0,2,4,4,6 };
 UINT_L arr3[] = { 1,3 };
-UINT_L arr4[] = { 2,1,2,4,3 };
-UINT_L arr5[] = { 3,0,3,3,0,3 };
+UINT_L arr4[] = { 1,1,4,1,2 };
+UINT_L arr5[] = { 1,2,1,1,4 };
 UINT_L arr6[] = { 2, 1 };
 UINT_L arr7[] = { 2,2,3,1 };
 UINT_L arr8[] = { 1,1,2,2,5,5,5,6,6,6 };
@@ -107,7 +107,7 @@ int main() {
 	//*/
 	/*
 	pOPTree tree;
-	MONormalize(arr7, 4, &tree);
+	MONormalize(arr5, 5, &tree);
 	PrintOPTree(tree);
 	//*/
 
@@ -167,14 +167,15 @@ int main() {
 		}
 		printf("}\n");
 	}
+	int treenumber = 0;
 	for (int i = 0; i < data->hoSize; ++i) {
 		printf("Tree_HO %d\n", i);
-		PrintOPTree(data->evoTrees_HO[2][i]);
+		PrintOPTree(data->evoTrees_HO[treenumber][i]);
 		putchar('\n');
 	}
 	for (int i = 0; i < data->coSize; ++i) {
 		printf("Tree_CO %d\n", i);
-		PrintOPTree(data->evoTrees_CO[2][i]);
+		PrintOPTree(data->evoTrees_CO[treenumber][i]);
 		putchar('\n');
 	}
 	//PrintOPTree(data->trackTree);

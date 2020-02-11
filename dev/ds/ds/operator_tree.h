@@ -303,6 +303,21 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode otherNode, pOPTree otherTree);
  */
 int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree);
 
+/** tested
+ * @ 函数: int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree)
+ *
+ * @ 功能: 两树相乘,并放于outputTree中
+ *
+ * @ param{tree1}: operator tree 1
+ *
+ * @ param{tree2}: operator tree 2
+ *
+ * @ param{outputTree}: 结果存放
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree);
+
 /** tested?
  * @ 函数: int NormalizeOPTree(pOPTree tree)
  *
@@ -509,6 +524,25 @@ void _FreeNode(struct _Node* node, int csize);
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree);
+
+/**
+ * @ 函数: int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree)
+ *
+ * @ 功能: 用tree乘以node,结果保留至tree中,并删除node对应的结点.
+ *
+ * @ param{tree}: 第一棵operator tree
+ *
+ * @ param{arr}: 乘数operator的数组表达
+ *
+ * @ param{len}: 乘数operator的数组表达长度
+ *
+ * @ param{coef}: 乘数operator的系数
+ *
+ * @ param{otherTree}: 乘数operator所在的树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree);
 
 /**
  * @ 函数: int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize, UINT_L* tree2Stack, int nextIndex, pOPTree outputTree)
