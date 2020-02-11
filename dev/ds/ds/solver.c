@@ -328,6 +328,12 @@ int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len) {
 
 int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum) {
 	UINT_L buf[MAX_OPERATOR_LENGTH];
+	/* 零算符 */
+	if (evoTree->root->children[0] != NULL) {
+		AddOfComplex(*psum, evoTree->root->value, psum);
+	}
+
+	/* 其他算符 */
 	for (int i = 1; i <= evoTree->childSize; ++i) {
 		if (evoTree->root->children[i] != NULL) {
 			__CalEvo(evoTree->root->children[i], evoTree, data, buf, 0, psum);
@@ -359,6 +365,7 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 					}
 					_SearchOfOPTree(data->trackTree, dbuf, tail - head, &tempnode);
 					tempnodev = tempnode->value;
+					tempnodev.image = -tempnodev.image;
 				}
 			}
 			else {
@@ -374,6 +381,7 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 					}
 					_SearchOfOPTree(data->trackTree, dbuf, tail - head - 1, &tempnode);
 					tempnodev = tempnode->value;
+					tempnodev.image = -tempnodev.image;
 				}
 			}
 			Complex tempc = { 0, 0 };
