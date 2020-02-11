@@ -72,7 +72,7 @@ int DTToBT(pOPTree tree) {
 int BTToCEBT(pOPTree tree) {
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL)
-			_BTToCEBT(tree->root->children[i], tree, 0);
+			_BTToCEBT(tree->root->children[i], tree);
 	}
 	return 1;
 }
