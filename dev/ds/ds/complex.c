@@ -12,7 +12,7 @@
 int AddOfComplex(Complex c1, Complex c2, Complex* out) {
 	if (out == NULL) return 0;
 	out->real = c1.real + c2.real;
-	out->image = c2.image + c2.image;
+	out->image = c1.image + c2.image;
 	return 1;
 }
 

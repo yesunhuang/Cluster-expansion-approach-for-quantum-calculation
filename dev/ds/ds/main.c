@@ -21,13 +21,23 @@ UINT_L arr12[] = { 1,1,2 };
 
 Complex c_1 = { 0.8,0 };
 Complex c_2 = { 1.6,0 };
-Complex c_3 = { 0.3,0 };
-Complex c_4 = { 0.3,0 };
+Complex c_3 = { 0.333,0 };
+Complex c_4 = { 0.333,0 };
 Complex c_5 = { 0.106,0 };
 Complex c_6 = { 0.106,0 };
 Complex c_7 = { 2,0 };
 Complex c_8 = { 4,0 };
-int init_arr1[] = { 1,1 };
+/*
+Complex c_1 = { 0.8,0 };
+Complex c_2 = { 1.6,0 };
+Complex c_3 = { 0.333,0 };
+Complex c_4 = { 0.333,0 };
+Complex c_5 = { 0.106,0 };
+Complex c_6 = { 0.106,0 };
+Complex c_7 = { 2,0 };
+Complex c_8 = { 4,0 };
+*/
+int init_arr1[] = { 0,0 };
 UINT_L ho_arr1[] = { 1,2 };
 UINT_L ho_arr2[] = { 3,4 };
 UINT_L ho_arr3[] = { 1,1,4 };
@@ -159,12 +169,12 @@ int main() {
 	}
 	for (int i = 0; i < data->hoSize; ++i) {
 		printf("Tree_HO %d\n", i);
-		PrintOPTree(data->evoTrees_HO[4][i]);
+		PrintOPTree(data->evoTrees_HO[2][i]);
 		putchar('\n');
 	}
 	for (int i = 0; i < data->coSize; ++i) {
 		printf("Tree_CO %d\n", i);
-		PrintOPTree(data->evoTrees_CO[4][i]);
+		PrintOPTree(data->evoTrees_CO[2][i]);
 		putchar('\n');
 	}
 	//PrintOPTree(data->trackTree);
