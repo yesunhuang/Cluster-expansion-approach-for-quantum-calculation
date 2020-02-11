@@ -24,7 +24,7 @@ void destructDataCapsule(PyObject * capsule) {
 	return;
 }
 
-void CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd) {
+int CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd) {
 	if (!PyCapsule_CheckExact(dataobjct)) {
 		/* 检查是否为capsule */
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
@@ -34,7 +34,7 @@ void CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
 	}
 	*outputdd = (pDeriveData)PyCapsule_GetPointer(dataobjct, "ClusterData");
-	return;
+	return 1;
 }
 
 /**
@@ -74,6 +74,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArr_Init[i] = PyLong_AsLong(tempobj);
 	}
+#ifdef __DEBUG__
+	printf("object[0]\n");
+#endif // __DEBUG__
 	// [Hamiton算符...], [Hamilton算符系数...]
 	if (!PyList_CheckExact(objects[1])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 2nd arg isn't a list.");
@@ -88,7 +91,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArrLens_HO[i] = PyList_Size(tempobj);
 		inputArr_HO[i] = (pOPArray)malloc(inputArrLens_HO[i] * sizeof(UINT_L)); ASSERTNULL(inputArr_HO[i]);
-		for (int j = 0; j < inputArrLens_HO; ++j) {
+		for (int j = 0; j < inputArrLens_HO[i]; ++j) {
 			PyObject* tt = PyList_GetItem(tempobj, j);
 			if (!PyLong_Check(tt)) {
 				RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton operator isn't long type.");
@@ -102,12 +105,25 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 	inputArrCoef_HO = (Complex*)malloc(inputArrLen_HO * sizeof(Complex)); ASSERTNULL(inputArrCoef_HO);
 	for (int i = 0; i < inputArrLen_HO; ++i) {
 		PyObject* tempc = PyList_GetItem(objects[2], i);
-		if (!PyComplex_CheckExact(tempc)) {
-			RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton coef list isn't complex type.");
+		if (PyComplex_CheckExact(tempc)) {
+			inputArrCoef_HO[i].real = PyComplex_RealAsDouble(tempc);
+			inputArrCoef_HO[i].image = PyComplex_ImagAsDouble(tempc);
 		}
-		inputArrCoef_HO[i].real = PyComplex_RealAsDouble(tempc);
-		inputArrCoef_HO[i].image = PyComplex_ImagAsDouble(tempc);
+		else if (PyLong_Check(tempc)) {
+			inputArrCoef_HO[i].real = PyLong_AsDouble(tempc);
+			inputArrCoef_HO[i].image = 0.0;
+		}
+		else if (PyFloat_Check(tempc)) {
+			inputArrCoef_HO[i].real = PyFloat_AsDouble(tempc);
+			inputArrCoef_HO[i].image = 0.0;
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton coef list isn't complex or long or float type.");
+		}
 	}
+#ifdef __DEBUG__
+	printf("object[1,2]\n");
+#endif // __DEBUG__
 	// [Collapse算符...], [Collapse算符系数...]
 	if (!PyList_CheckExact(objects[3])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 4th arg isn't a list.");
@@ -122,7 +138,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArrLens_CO[i] = PyList_Size(tempobj);
 		inputArr_CO[i] = (pOPArray)malloc(inputArrLens_CO[i] * sizeof(UINT_L)); ASSERTNULL(inputArr_CO[i]);
-		for (int j = 0; j < inputArrLens_CO; ++j) {
+		for (int j = 0; j < inputArrLens_CO[i]; ++j) {
 			PyObject* tt = PyList_GetItem(tempobj, j);
 			if (!PyLong_Check(tt)) {
 				RAISE_PY_ERROR(PyExc_TypeError, "The arg in collapse operator isn't long type.");
@@ -136,18 +152,32 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 	inputArrCoef_CO = (Complex*)malloc(inputArrLen_CO * sizeof(Complex)); ASSERTNULL(inputArrCoef_CO);
 	for (int i = 0; i < inputArrLen_CO; ++i) {
 		PyObject* tempc = PyList_GetItem(objects[4], i);
-		if (!PyComplex_CheckExact(tempc)) {
-			RAISE_PY_ERROR(PyExc_TypeError, "The arg in collapse coef list isn't complex type.");
+		if (PyComplex_CheckExact(tempc)) {
+			inputArrCoef_CO[i].real = PyComplex_RealAsDouble(tempc);
+			inputArrCoef_CO[i].image = PyComplex_ImagAsDouble(tempc);
 		}
-		inputArrCoef_CO[i].real = PyComplex_RealAsDouble(tempc);
-		inputArrCoef_CO[i].image = PyComplex_ImagAsDouble(tempc);
+		else if (PyLong_Check(tempc)) {
+			inputArrCoef_CO[i].real = PyLong_AsDouble(tempc);
+			inputArrCoef_CO[i].image = 0.0;
+		}
+		else if (PyFloat_Check(tempc)) {
+			inputArrCoef_CO[i].real = PyFloat_AsDouble(tempc);
+			inputArrCoef_CO[i].image = 0.0;
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton coef list isn't complex or long or float type.");
+		}
 	}
+#ifdef __DEBUG__
+	printf("object[3,4]\n");
+#endif // __DEBUG__
 	// [Tracking算符...]
 	if (!PyList_CheckExact(objects[5])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 6th arg isn't a list.");
 	}
 	inputArrLen_Track = PyList_Size(objects[5]);
-	inputArr_Track = (pOPArray*)malloc(inputArrLen_CO * sizeof(pOPArray)); ASSERTNULL(inputArr_Track);
+	inputArr_Track = (pOPArray*)malloc(inputArrLen_Track * sizeof(pOPArray)); ASSERTNULL(inputArr_Track);
+	inputArrLens_Track = (int*)malloc(inputArrLen_Track * sizeof(int)); ASSERTNULL(inputArrLens_Track);
 	for (int i = 0; i < inputArrLen_Track; ++i) {
 		PyObject* tempobj = PyList_GetItem(objects[5], i);
 		if (!PyList_CheckExact(tempobj)) {
@@ -155,7 +185,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArrLens_Track[i] = PyList_Size(tempobj);
 		inputArr_Track[i] = (pOPArray)malloc(inputArrLens_Track[i] * sizeof(UINT_L)); ASSERTNULL(inputArr_Track[i]);
-		for (int j = 0; j < inputArrLens_Track; ++j) {
+		for (int j = 0; j < inputArrLens_Track[i]; ++j) {
 			PyObject* tt = PyList_GetItem(tempobj, j);
 			if (!PyLong_Check(tt)) {
 				RAISE_PY_ERROR(PyExc_TypeError, "The arg in tracking operator isn't long type.");
@@ -163,7 +193,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 			inputArr_Track[i][j] = PyLong_AsLong(tt);
 		}
 	}
-
+#ifdef __DEBUG__
+	printf("object[5]\n");
+#endif // __DEBUG__
 	/* 生成data */
 	pDeriveData data = NULL;
 	DeriveAssign(inputArr_HO, inputArrLens_HO, inputArrCoef_HO, inputArrLen_HO,
@@ -213,7 +245,7 @@ cluster_CalEvolution(PyObject* self, PyObject* args) {
 	PyObject* comList = PyList_New(size);
 	for (int i = 0; i < size; ++i) {
 		PyObject* c = PyComplex_FromDoubles(output[i].real, output[i].image);
-		PyList_Insert(comList, i, c);
+		PyList_SetItem(comList, i, c);
 	}
 	free(output);
 
@@ -240,11 +272,21 @@ cluster_SetCurrentValue(PyObject* self, PyObject* args) {
 	memset(buf, 0, data->size * sizeof(Complex));
 	for (int i = 0; i < MIN(listSize, data->size); ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
-		if (!PyComplex_CheckExact(temp)) {
-			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't Complexes.");
+		if (PyComplex_CheckExact(temp)) {
+			buf[i].real = PyComplex_RealAsDouble(temp);
+			buf[i].image = PyComplex_ImagAsDouble(temp);
 		}
-		buf[i].real = PyComplex_RealAsDouble(temp);
-		buf[i].image = PyComplex_ImagAsDouble(temp);
+		else if (PyFloat_Check(temp)) {
+			buf[i].real = PyFloat_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else if (PyLong_Check(temp)) {
+			buf[i].real = PyLong_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
+		}
 	}
 	SetCurrentValueOfDData(data, buf, MIN(listSize, data->size));
 	free(buf);
