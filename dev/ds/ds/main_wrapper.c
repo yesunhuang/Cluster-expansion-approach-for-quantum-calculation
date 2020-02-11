@@ -293,10 +293,84 @@ cluster_SetCurrentValue(PyObject* self, PyObject* args) {
 	Py_RETURN_NONE;
 }
 
+static PyObject*
+cluster_GetCurrentValue(PyObject* self, PyObject* args) {
+	PyObject* pyData = NULL;
+	if (PyTuple_Size(args) != 1) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
+	}
+	if (!PyArg_ParseTuple(args, "O", &pyData)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a object.");
+	}
+	pDeriveData data = NULL;
+	CheckArgsDData(pyData, &data);
+
+	PyObject* ansList = PyList_New(data->size);
+	for (int i = 0; i < data->size; ++i) {
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->curValues[i].real, data->curValues[i].image));
+	}
+
+	return ansList;
+}
+
+#ifdef __DEBUG__
+static PyObject*
+cluster_PrintData(PyObject* self, PyObject* args) {
+	PyObject* pyData = NULL;
+	if (PyTuple_Size(args) != 1) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
+	}
+	if (!PyArg_ParseTuple(args, "O", &pyData)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a object.");
+	}
+	pDeriveData data = NULL;
+	CheckArgsDData(pyData, &data);
+
+	printf("---------------------------\n");
+	UINT_L buf[256];
+	printf("Tracking Nodes:\n");
+	for (int i = 0; i < data->size; ++i) {
+		int len = GetRoot(data->trackNodes[i], NULL);
+		ArrayFromNode(data->trackNodes[i], len, buf);
+		printf("Nodes[%d]:  {%d", i, (int)buf[0]);
+		for (int j = 1; j < len; ++j)
+			printf(", %d", (int)buf[j]);
+		printf("}\n");
+	}
+	printf("---------------------------");
+	printf("\n\n\n");
+
+	for (int i = 0; i < data->size; ++i) {
+		printf("Tracking Operator %d :\n", i);
+		for (int j = 0; j < data->hoSize; j++) {
+			printf("HO_Tree %d:\n", j);
+			PrintOPTree(data->evoTrees_HO[i][j]);
+			putchar('\n');
+		}
+		putchar('\n');
+		for (int j = 0; j < data->coSize; j++) {
+			printf("CO_Tree %d:\n", j);
+			PrintOPTree(data->evoTrees_CO[i][j]);
+			putchar('\n');
+		}
+		printf("---------------------------");
+		printf("\n\n\n");
+	}
+
+	Py_RETURN_NONE;
+}
+#endif // __DEBUG__
+
+
 static PyMethodDef clusterMethods[] = {
 	{"DeriveAssign",  cluster_DeriveAssign, METH_VARARGS, NULL},
 	{"CalEvolution",  cluster_CalEvolution, METH_VARARGS, NULL},
 	{"SetCurrentValue",  cluster_SetCurrentValue, METH_VARARGS, NULL},
+	{"GetCurrentValue",  cluster_GetCurrentValue, METH_VARARGS, NULL},
+#ifdef __DEBUG__
+	{"PrintData",  cluster_PrintData, METH_VARARGS, NULL},
+#endif // __DEBUG__
+
 	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

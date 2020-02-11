@@ -181,6 +181,7 @@ int main() {
 	
 	Complex* ans = NULL;
 	CalEvolution(data, &ans);
+	FreeOfDData(data);
 	//*/
 
 	/* 静态Delta树创建过程
