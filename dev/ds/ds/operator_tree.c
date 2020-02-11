@@ -290,7 +290,7 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 		}
 	}
 	/* 删除可能出现的"零"叶子结点 */
-	for (int i = 0; i <= tree2->childSize; ++i) {
+	for (int i = 0; i <= tree1->childSize; ++i) {
 		if (node1->children[i] != NULL && 
 			IsZeroOfComplex(node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
 			free(node1->children[i]);

@@ -19,14 +19,23 @@ UINT_L arr10[] = { 1 };
 UINT_L arr11[] = { 1,0,1,0,1 };
 UINT_L arr12[] = { 1,1,2 };
 
-Complex c_1 = { 0.8,0 };
-Complex c_2 = { 1.6,0 };
-Complex c_3 = { 0.333,0 };
-Complex c_4 = { 0.333,0 };
-Complex c_5 = { 0.106,0 };
-Complex c_6 = { 0.106,0 };
+Complex c_1 = { 1,0 };
+Complex c_2 = { 2,0 };
+Complex c_3 = { 1,0 };
+Complex c_4 = { 1,0 };
+Complex c_5 = { 4,0 };
+Complex c_6 = { 4,0 };
 Complex c_7 = { 2,0 };
 Complex c_8 = { 4,0 };
+Complex c_9 = { 0,1 };
+Complex c_101 = { -4.08882178, 18.29923689 };
+Complex c_102 = { 1.73468242, 7.08095777 };
+Complex c_103 = { -1.28476883, 1.71422315 }; 
+Complex c_104 = { 1.20668679 ,1.12993801 };
+Complex c_105 = { -10.36820398 , 2.11902594 };
+Complex c_106 = { -7.57890953 , 1.9988545 };
+Complex c_107 = { -4.24721871 , 1.32406149 };
+Complex c_108 = { 1.36923721 , 1.93532253 };
 /*
 Complex c_1 = { 0.8,0 };
 Complex c_2 = { 1.6,0 };
@@ -86,47 +95,60 @@ int main() {
 	pOPTree tree1;
 	pOPTree tree2;
 	
-	CreateOPTree(3, &tree1);
-	// CreateOPTree(3, &tree2);
-	INT_V tempv = { 1, 0 };
-	InsertOfOPTree(tree1, arr11, 5, tempv);
-	// tempv.real = 2;
-	// InsertOfOPTree(tree1, arr2, 10, tempv);
-	// tempv.real = 1;
-	//InsertOfOPTree(tree2, arr7, 4, tempv);
-	InsertOfOPTree(tree1, arr5, 6, tempv);
-	FreeOPTree(tree1);
+	for (int i = 0; i < 1000; ++i) {
+		CreateOPTree(4, &tree1);
+		CreateOPTree(4, &tree2);
+		INT_V tempv = { 1, 0 };
+		InsertOfOPTree(tree1, arr11, 5, tempv);
+		// tempv.real = 2;
+		// InsertOfOPTree(tree1, arr2, 10, tempv);
+		// tempv.real = 1;
+		//InsertOfOPTree(tree2, arr7, 4, tempv);
+		InsertOfOPTree(tree2, arr5, 6, tempv);
+		AddOfOPTree_TT(tree1, tree2);
+		FreeOPTree(tree1);
+		FreeOPTree(tree2);
+	}
 	pOPTree tree3;
 	// CopyCreateOPTree(tree1, &tree3);
 	//MultiplyOfOPTree_TT(tree1, tree2, &tree3);
 	//_DeleteAndCE(tree2, 1);
 	
-	PrintOPTree(tree1);
-	printf("%lf", tree3->root->value.real);
+	//PrintOPTree(tree1);
+	//printf("%lf", tree3->root->value.real);
 	
-	//*/
-	/*
-	pOPTree tree;
-	MONormalize(arr5, 5, &tree);
-	PrintOPTree(tree);
 	//*/
 
 	/*
+	for (int i = 0; i < 100; ++i) {
+		pOPTree tree;
+		MONormalize(arr5, 5, &tree);
+		FreeOPTree(tree);
+	}
+	//*/
+
+	/*
+	for (int i = 0; i < 100; ++i) {
+
 	pPTree posTree = NULL;
-	CreatePTree(3, &posTree);
-	InsertOfPTree(posTree, arr3, 2, 1);
+	CreatePTree(6, &posTree);
+	InsertOfPTree(posTree, arr3, 2, c_1);
 	//InsertOfPTree(posTree, arr5, 3, 1);
-	InsertOfPTree(posTree, arr6, 2, -1);
+	InsertOfPTree(posTree, arr6, 2, c_2);
 	pOPTree tree;
 	BuildFromPTree(posTree, arr5, 3, &tree);
 
-	PrintOPTree(tree);
-	*/
+	FreeOPTree(tree);
+	FreeOPTree(posTree);
+	}
+	//*/
 	
 	/*
-	pOPTree tempTree = NULL;
-	DeltaTree(10, &tempTree);
-	//ClusterExpansion(arr12, 3, &tempTree);
+	for (int i = 0; i < 10000; ++i) {
+		pOPTree tempTree = NULL;
+		ClusterExpansion(arr12, 3, &tempTree);
+		FreeOPTree(tempTree);
+	}
 
 	// PrintOPTree(tempTree);
 	//*/
@@ -139,56 +161,82 @@ int main() {
 	printf("%lf", ans);
 	*/
 	
-	/* Evolution()的测试用例
-	pOPTree ho_output[1];
-	pOPTree co_output[1];
-	Evolution(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
-		co_arrs, co_lens_arr1, co_coef_arr1, 2,
-		track_arr1, 2, 22, ho_output, co_output);
-
-	PrintOPTree(ho_output[0]);
+	///* Evolution()的测试用例
+	for (int i = 0; i < 10000; ++i) {
+		pOPTree ho_output[6];
+		pOPTree co_output[2];
+		Evolution(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
+			co_arrs, co_lens_arr1, co_coef_arr1, 2,
+			track_arr1, 2, 22, ho_output, co_output);
+		for (int j = 0; j < 6; ++j) {
+			FreeOPTree(ho_output[j]);
+		}
+		for (int j = 0; j < 2; ++j) {
+			FreeOPTree(co_output[j]);
+		}
+	}
+	//PrintOPTree(ho_output[0]);
 	//*/
 
-	///* CalEvolution()的测试过程
-	pDeriveData data = NULL;
-	DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
-		co_arrs, co_lens_arr1, co_coef_arr1, 2,
-		init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
+	/* CalEvolution()的测试过程
 
-	Complex iv[8];
-	memset(iv, 0, 8 * sizeof(Complex));
-	for (int i = 0; i < 8; ++i)
-		iv[i].real = 1;
-	SetCurrentValueOfDData(data, iv, 8);
-
-	//PrintOPTree(data->evoTrees_HO[0][0]);
-	//PrintOPTree(data->evoTrees_CO[0][0]);
-	for (int i = 0; i < data->size; ++i) {
-		int len;
-		len = GetRoot(data->trackNodes[i], NULL);
-		ArrayFromNode(data->trackNodes[i], len, buf);
-		printf("TrackNodes[%d]:{", i);
-		for (int j = 0; j < len; ++j) {
-			printf("%d, ", buf[j]);
+		
+		pDeriveData data = NULL;
+		for (int i = 0; i < 100; ++i) {
+			DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
+				co_arrs, co_lens_arr1, co_coef_arr1, 2,
+				init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
+			FreeOfDData(data);
 		}
-		printf("}\n");
-	}
-	int treenumber = 1;
-	for (int i = 0; i < data->hoSize; ++i) {
-		printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
-		PrintOPTree(data->evoTrees_HO[treenumber][i]);
-		putchar('\n');
-	}
-	for (int i = 0; i < data->coSize; ++i) {
-		printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_CO[treenumber][i]->root->value.real, data->evoTrees_CO[treenumber][i]->root->value.image);
-		PrintOPTree(data->evoTrees_CO[treenumber][i]);
-		putchar('\n');
-	}
-	//PrintOPTree(data->trackTree);
+		Complex iv[8];
+		/*
+		iv[0] = c_101;
+		iv[1] = c_102;
+		iv[2] = c_103;
+		iv[3] = c_104;
+		iv[4] = c_105;
+		iv[5] = c_106;
+		iv[6] = c_107;
+		iv[7] = c_108;
+		*/
+		/*
+		for (int i = 0; i < 8; ++i) {
+			iv[i] = c_9;
+		}
+		SetCurrentValueOfDData(data, iv, 8);
+		//*/
+
+		//PrintOPTree(data->evoTrees_HO[0][0]);
+		//PrintOPTree(data->evoTrees_CO[0][0]);
+		/*
+		for (int i = 0; i < data->size; ++i) {
+			int len;
+			len = GetRoot(data->trackNodes[i], NULL);
+			ArrayFromNode(data->trackNodes[i], len, buf);
+			printf("TrackNodes[%d]:{", i);
+			for (int j = 0; j < len; ++j) {
+				printf("%d, ", buf[j]);
+			}
+			printf("}\n");
+		}
+		int treenumber = 2;
+		for (int i = 0; i < data->hoSize; ++i) {
+			printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
+			PrintOPTree(data->evoTrees_HO[treenumber][i]);
+			putchar('\n');
+		}
+		for (int i = 0; i < data->coSize; ++i) {
+			printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_CO[treenumber][i]->root->value.real, data->evoTrees_CO[treenumber][i]->root->value.image);
+			PrintOPTree(data->evoTrees_CO[treenumber][i]);
+			putchar('\n');
+		}
+		//PrintOPTree(data->trackTree);
+		*/
+		Complex* ans = NULL;
+		//CalEvolution(data, &ans);
+
+
 	
-	Complex* ans = NULL;
-	CalEvolution(data, &ans);
-	FreeOfDData(data);
 	//*/
 
 	/* 静态Delta树创建过程
@@ -211,15 +259,16 @@ int main() {
 	//*/
 
 	/* 内存泄漏检验
-	{
-	for (int i = 0; i < 100; ++i) {
+	for (int i = 0; i < 10000; ++i) {
 		pOPTree tempTree = NULL;
-		DeltaTree(5, &tempTree);
+		DeltaTree(7, &tempTree);
 		FreeOPTree(tempTree);
 	}
-	}
+
+	
 	
 	//*/
+	_CrtDumpMemoryLeaks();
 	while (1){
 	
 

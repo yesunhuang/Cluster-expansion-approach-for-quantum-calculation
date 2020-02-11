@@ -327,7 +327,7 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 
 	printf("---------------------------\n");
-	UINT_L buf[256];
+	UINT_L buf[MAX_OPERATOR_LENGTH];
 	printf("Tracking Nodes:\n");
 	for (int i = 0; i < data->size; ++i) {
 		int len = GetRoot(data->trackNodes[i], NULL);
