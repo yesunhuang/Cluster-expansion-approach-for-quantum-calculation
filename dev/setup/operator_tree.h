@@ -37,7 +37,7 @@
 #define MAX_OPERATOR_TREE_LENGTH 128
 #define MAX_UINT_L 255
 
-// #define __DEBUG__
+//#define __DEBUG__
 
 #pragma endregion
 
@@ -533,6 +533,28 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 	UINT_L* tree2Stack, int nextIndex, pOPTree outputTree);
 
 /**
+ * @ 函数: int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize, UINT_L* tree2Stack, int nextIndex, pOPTree outputTree)
+ *
+ * @ 功能: 两树相乘,并生成一颗新树,放于outputTree中
+ *
+ * @ param{tree1}: 第一棵operator tree
+ *
+ * @ param{tree2node}: 第二棵tree的某个结点
+ *
+ * @ param{tree2csize}: 第二棵tree的csize
+ *
+ * @ param{tree2Stack}: 第二棵tree的遍历栈
+ *
+ * @ param{nextIndex}: 栈顶的第一个空闲空间的索引号
+ *
+ * @ param{outputTree}: 输出的树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
+	UINT_L* tree2Stack, int nextIndex, pOPTree outputTree);
+
+/**
  * @ 函数: int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, UINT_L* lStack, int nextIndex, pOPTree otherTree);
  *
  * @ 功能: 用tree乘以node,结果保留至tree中,并删除node对应的结点.
@@ -556,6 +578,32 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
+	UINT_L* lStack, int nextIndex, pOPTree otherTree);
+
+/**
+ * @ 函数: int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, UINT_L* lStack, int nextIndex, pOPTree otherTree);
+ *
+ * @ 功能: 用tree乘以node,结果保留至tree中,并删除node对应的结点.
+ *
+ * @ param{node}: 某个结点
+ *
+ * @ param{csize}: 除0单元外,子节点的最大可能个数
+ *
+ * @ param{arr}: 乘数operator的数组表达
+ *
+ * @ param{len}: 乘数operator的数组表达长度
+ *
+ * @ param{coef}: 乘数operator的系数
+ *
+ * @ param{lStack}: 栈
+ *
+ * @ param{nextIndex}: 栈顶的第一个空闲空间的索引号
+ *
+ * @ param{otherTree}: 乘数operator所在的树
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef,
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
 
 /**

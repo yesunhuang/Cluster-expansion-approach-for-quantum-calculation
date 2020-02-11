@@ -79,6 +79,27 @@ int MONormalize(pOPArray arr, int len, pOPTree* outTree);
 int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen);
 
 /** tested
+ * @ 函数: int MultiplyConnectOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen)
+ *
+ * @ 功能: 让两个operator相乘,生成新的结果
+ *
+ * @ param{arr1}: operator的数组表达
+ *
+ * @ param{len1}: operator的数组表达的长度
+ *
+ * @ param{arr2}: operator的数组表达
+ *
+ * @ param{len2}: operator的数组表达的长度
+ *
+ * @ param{output}: 输出结果(需保证空间足够)
+ *
+ * @ param{outLen}: 输出结果的长度(可省略为NULL)
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int MultiplyConnectOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen);
+
+/** tested
  * @ 函数: void _CompareOPArrayBuffer(pOPArray arr1, int len1, pOPArray arr2, int len2, int* result)
  *
  * @ 功能: 比较两个buffer中OPArray的大小

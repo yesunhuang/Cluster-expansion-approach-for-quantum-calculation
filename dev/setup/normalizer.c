@@ -109,7 +109,7 @@ int MONormalize(pOPArray arr, int len, pOPTree* outTree) {
 		if (end == len - 1) {
 			pOPTree tempTree = NULL, tempAns = NULL;
 			SONormalize(arr + start, end - start + 1, csize, &tempTree);
-			MultiplyOfOPTree_TT(*outTree, tempTree, &tempAns);
+			MultiplyConnectOfOPTree_TT(*outTree, tempTree, &tempAns);
 			ExchangeOfOPTree(*outTree, tempAns);
 			FreeOPTree(tempAns);
 			FreeOPTree(tempTree);
@@ -118,7 +118,7 @@ int MONormalize(pOPArray arr, int len, pOPTree* outTree) {
 		else if ((arr[end + 1] != m * 2) && (arr[end + 1] != m * 2 - 1)) {
 			pOPTree tempTree = NULL, tempAns = NULL;
 			SONormalize(arr + start, end - start + 1, csize, &tempTree);
-			MultiplyOfOPTree_TT(*outTree, tempTree, &tempAns);
+			MultiplyConnectOfOPTree_TT(*outTree, tempTree, &tempAns);
 			ExchangeOfOPTree(*outTree, tempAns);
 			FreeOPTree(tempAns);
 			FreeOPTree(tempTree);
@@ -208,6 +208,36 @@ int MultiplyOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray
 
 	if (outLen != NULL)
 		*outLen = outputIndex;
+	return 1;
+}
+
+int MultiplyConnectOfOPArray(pOPArray arr1, int len1, pOPArray arr2, int len2, pOPArray output, int* outLen) {
+	if (len1 < 0 || len2 < 0 || arr1 == NULL || arr2 == NULL)
+		return 0;
+	else if (arr1[0] == 0) {
+		memcpy(output, arr2, len2);
+		if (outLen != NULL) *outLen = len2;
+		return 1;
+	}
+	else if (arr2[0] == 0) {
+		memcpy(output, arr1, len1);
+		if (outLen != NULL) *outLen = len1;
+		return 1;
+	}
+
+	if (arr1[0] <= arr2[0]) {
+		for (int i = 0; i < len1; ++i)
+			output[i] = arr1[i];
+		for (int i = 0; i < len2; ++i)
+			output[len1 + i] = arr2[i];
+	}
+	else {
+		for (int i = 0; i < len2; ++i)
+			output[i] = arr2[i];
+		for (int i = 0; i < len1; ++i)
+			output[len2 + i] = arr1[i];
+	}
+	if (outLen != NULL) *outLen = len1 + len2;
 	return 1;
 }
 
