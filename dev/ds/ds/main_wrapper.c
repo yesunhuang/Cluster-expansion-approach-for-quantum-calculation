@@ -351,7 +351,7 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 		putchar('\n');
 		for (int j = 0; j < data->coSize; j++) {
 			printf("CO_Tree %d:, coef is %.3lf+(%.3lf)j:\n", j,
-				data->evoTrees_HO[i][j]->root->value.real, data->evoTrees_HO[i][j]->root->value.image);
+				data->evoTrees_CO[i][j]->root->value.real, data->evoTrees_CO[i][j]->root->value.image);
 			PrintOPTree(data->evoTrees_CO[i][j]);
 			putchar('\n');
 		}

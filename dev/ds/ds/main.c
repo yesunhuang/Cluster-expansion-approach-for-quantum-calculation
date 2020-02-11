@@ -157,7 +157,8 @@ int main() {
 
 	Complex iv[8];
 	memset(iv, 0, 8 * sizeof(Complex));
-	iv[2].real = 1;
+	for (int i = 0; i < 8; ++i)
+		iv[i].real = 1;
 	SetCurrentValueOfDData(data, iv, 8);
 
 	//PrintOPTree(data->evoTrees_HO[0][0]);
@@ -172,14 +173,14 @@ int main() {
 		}
 		printf("}\n");
 	}
-	int treenumber = 0;
+	int treenumber = 1;
 	for (int i = 0; i < data->hoSize; ++i) {
 		printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
 		PrintOPTree(data->evoTrees_HO[treenumber][i]);
 		putchar('\n');
 	}
 	for (int i = 0; i < data->coSize; ++i) {
-		printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_HO[treenumber][i]->root->value.real, data->evoTrees_HO[treenumber][i]->root->value.image);
+		printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->evoTrees_CO[treenumber][i]->root->value.real, data->evoTrees_CO[treenumber][i]->root->value.image);
 		PrintOPTree(data->evoTrees_CO[treenumber][i]);
 		putchar('\n');
 	}

@@ -29,6 +29,7 @@ int CreateOfDData(int capacity, int csize, int hoSize, int coSize, pDeriveData* 
 	}
 	p->trackNodes = (pOPNode*)malloc(capacity * sizeof(pOPNode)); ASSERTNULL(p->trackNodes);
 	if (CreateOPTree(csize, &p->trackTree) == 0) return 0;
+	if (CreateOPTree(csize, &p->trackValueTree) == 0) return 0;
 	memset(p->curValues, 0, capacity * sizeof(Complex));
 	for (int i = 0; i < capacity; ++i) {
 		memset(p->evoTrees_HO[i], 0, hoSize * sizeof(pOPTree));
@@ -53,8 +54,7 @@ int InsertOfDData(pDeriveData data, Complex c, pOPArray arr, int arrLen) {
 		data->evoTrees_CO[data->size][i] = NULL;
 	Complex tempc = { 1, 0 };
 	InsertOfOPTree(data->trackTree, arr, arrLen, tempc);
-	// PrintOPTree(data->trackTree);
-	// putchar('\n');
+	InsertOfOPTree(data->trackValueTree, arr, arrLen, tempc);
 	_SearchOfOPTree(data->trackTree, arr, arrLen, &data->trackNodes[data->size]);
 	++(data->size);
 	
@@ -294,7 +294,7 @@ int DeriveAssign(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrC
 		}
 	}
 
-	/* 把tracking tree中结点的value设为其current value */
+	/* 把trackValueTree中结点的value设为其current value */
 	_UpdateDDTTreeValue(outputData);
 
 	return 1;
@@ -359,7 +359,8 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 			pOPNode tempnode = NULL;
 			if (tail == len) {
 				_SearchOfOPTree(data->trackTree, buf + head, tail - head, &tempnode);
-				if (tempnode != NULL) {
+				if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
+					_SearchOfOPTree(data->trackValueTree, buf + head, tail - head, &tempnode);
 					tempnodev = tempnode->value;
 				}
 				else {
@@ -368,15 +369,16 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 					for (int i = 0; i < tail - head; ++i) {
 						dbuf[i] = (((*(buf + head + i)) - 1) ^ 1) + 1;
 					}
-					_SearchOfOPTree(data->trackTree, dbuf, tail - head, &tempnode);
+					_SearchOfOPTree(data->trackValueTree, dbuf, tail - head, &tempnode);
 					tempnodev = tempnode->value;
 					tempnodev.image = -tempnodev.image;
 				}
 			}
 			else {
 				_SearchOfOPTree(data->trackTree, buf + head, tail - head - 1, &tempnode);
-				if (tempnode != NULL) {
+				if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
 					tempnodev = tempnode->value;
+					_SearchOfOPTree(data->trackValueTree, buf + head, tail - head - 1, &tempnode);
 				}
 				else {
 					/* dagger的共轭现象 */
@@ -384,7 +386,7 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 					for (int i = 0; i < tail - head - 1; ++i) {
 						dbuf[i] = (((*(buf + head + i)) - 1) ^ 1) + 1;
 					}
-					_SearchOfOPTree(data->trackTree, dbuf, tail - head - 1, &tempnode);
+					_SearchOfOPTree(data->trackValueTree, dbuf, tail - head - 1, &tempnode);
 					tempnodev = tempnode->value;
 					tempnodev.image = -tempnodev.image;
 				}
@@ -487,7 +489,7 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 				}
 			}
 
-			/* TODO: 原系数需要乘上去 */
+			/* 原系数需要乘上去 */
 			EachNodeOfOPTree(newTree, &originCoef, _MultiplyNodeWithComplex);
 
 			AddOfOPTree_TT(tree, newTree);
@@ -737,9 +739,14 @@ int _NegateNode(pOPNode node, void* sth) {
 
 int _UpdateDDTTreeValue(pDeriveData data) {
 	ASSERTNULL(data);
+	UINT_L buf[MAX_OPERATOR_LENGTH];
 	for (int i = 0; i < data->size; ++i) {
 		ASSERTNULL(data->trackNodes[i]);
-		data->trackNodes[i]->value = data->curValues[i];
+		int len = GetRoot(data->trackNodes[i], NULL);
+		pOPNode tempnode = NULL;
+		ArrayFromNode(data->trackNodes[i], len, buf);
+		_SearchOfOPTree(data->trackValueTree, buf, len, &tempnode);
+		tempnode->value = data->curValues[i];
 	}
 	return 1;
 }

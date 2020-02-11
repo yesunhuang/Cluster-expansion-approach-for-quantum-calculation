@@ -30,6 +30,7 @@ struct _DeriveData {
 	int hoSize;
 	int coSize;
 	pOPTree trackTree;
+	pOPTree trackValueTree;
 	Complex* curValues;
 	pOPTree** evoTrees_HO;
 	pOPTree** evoTrees_CO;
