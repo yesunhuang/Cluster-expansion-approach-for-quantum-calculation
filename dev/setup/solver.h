@@ -25,10 +25,10 @@
 
 #pragma region 结构体及typedef定义区
 struct _DeriveData {
-	int size;
-	int capacity;
-	int hoSize;
-	int coSize;
+	int32_t size;
+	int32_t capacity;
+	int32_t hoSize;
+	int32_t coSize;
 	pOPTree trackTree;
 	pOPTree trackValueTree;
 	Complex* curValues;
@@ -144,6 +144,10 @@ int DeriveAssign(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrC
 int CalEvolution(pDeriveData data, Complex** outputpp);
 
 int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len);
+
+int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len);
+
+int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len);
 
 int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum);
 

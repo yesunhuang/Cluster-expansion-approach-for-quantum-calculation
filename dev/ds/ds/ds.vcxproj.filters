@@ -19,57 +19,75 @@
     <Filter Include="源文件\utils">
       <UniqueIdentifier>{73fcd5e2-732b-44dc-974d-3806f63201be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\core">
+      <UniqueIdentifier>{e2575ec2-d39a-405b-a9c9-3278e965511c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\core">
+      <UniqueIdentifier>{c0be1558-8b71-4aec-a549-a57deef7c3a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\file">
+      <UniqueIdentifier>{89465902-ef5a-49d8-ad08-f424a7492e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\file">
+      <UniqueIdentifier>{f8f64412-f27f-41b1-96a5-b5274a4505db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="operator_tree.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="position_tree.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="normalizer.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="cluster_expansion.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="complex.c">
       <Filter>源文件\utils</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="solver.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="static_dtree.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main_wrapper.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="cluster_expansion.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="normalizer.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="operator_tree.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="position_tree.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="solver.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="static_dtree.c">
+      <Filter>源文件\core</Filter>
+    </ClCompile>
+    <ClCompile Include="datafile.c">
+      <Filter>源文件\file</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="operator_tree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="position_tree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="normalizer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="cluster_expansion.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="complex.h">
       <Filter>头文件\utils</Filter>
     </ClInclude>
-    <ClInclude Include="solver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="static_dtree.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="solver.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="position_tree.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="operator_tree.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="cluster_expansion.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="normalizer.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
+    <ClInclude Include="datafile.h">
+      <Filter>头文件\file</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

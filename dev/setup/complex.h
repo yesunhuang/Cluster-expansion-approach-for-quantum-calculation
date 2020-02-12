@@ -20,7 +20,7 @@
 #define SQUARE(x) ((x) * (x))
 #define ABS(x) ((x < 0)? -x : x )
 
-#define EPISILON ((double)0.00001)
+#define EPISILON ((double)10e-10)
 #pragma endregion
 
 #pragma region 结构体及typedef定义区

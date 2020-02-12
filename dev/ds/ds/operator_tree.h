@@ -37,7 +37,8 @@
 #define MAX_OPERATOR_TREE_LENGTH 128
 #define MAX_UINT_L 255
 
-#define __DEBUG__
+#define __TREEDEBUG__
+// #define __CRTDEBUG__
 
 #pragma endregion
 
@@ -45,12 +46,13 @@
 
 #include <malloc.h>
 #include <memory.h>
+#include <stdint.h>
 
 #include "complex.h"
 
-#ifdef __DEBUG__
+#ifdef __TREEDEBUG__
 #include <stdio.h>
-#endif // DEBUG
+#endif // TREEDEBUG
 
 
 #pragma endregion
@@ -60,7 +62,7 @@
 
 
 /* _Node.label的数据类型 */
-typedef unsigned char UINT_L;
+typedef int8_t UINT_L;
 /* _Node.value的数据类型 */
 typedef Complex INT_V;
 /* operator的数组表示 */
@@ -670,7 +672,7 @@ int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize);
 #pragma endregion
 
 #pragma region 调试
-#ifdef __DEBUG__
+#ifdef __TREEDEBUG__
 
 /** tested
  * @ 函数: int PrintOPTree(pOPTree tree)

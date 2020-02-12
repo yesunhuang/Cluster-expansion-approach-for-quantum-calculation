@@ -24,16 +24,27 @@ void destructDataCapsule(PyObject * capsule) {
 	return;
 }
 
-int CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd) {
-	if (!PyCapsule_CheckExact(dataobjct)) {
+/**
+ * @ 函数: int CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd)
+ *
+ * @ 功能: 将被包装的pDeriveData数据解包, 并传回c语言指针
+ *
+ * @ param{dataobject}: 被包装的pDeriveData数据
+ *
+ * @ param{outputdd}: 解包的pDeriveData指针输出
+ *
+ * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
+ */
+int CheckArgsDData(PyObject* dataobject, pDeriveData* outputdd) {
+	if (!PyCapsule_CheckExact(dataobject)) {
 		/* 检查是否为capsule */
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
 	}
-	if (strcmp(PyCapsule_GetName(dataobjct), "ClusterData") != 0) {
+	if (strcmp(PyCapsule_GetName(dataobject), "ClusterData") != 0) {
 		/* 检查是否为cluster的数据 */
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
 	}
-	*outputdd = (pDeriveData)PyCapsule_GetPointer(dataobjct, "ClusterData");
+	*outputdd = (pDeriveData)PyCapsule_GetPointer(dataobject, "ClusterData");
 	return 1;
 }
 
@@ -74,9 +85,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArr_Init[i] = PyLong_AsLong(tempobj);
 	}
-#ifdef __DEBUG__
+#ifdef __TREEDEBUG__
 	printf("object[0]\n");
-#endif // __DEBUG__
+#endif // __TREEDEBUG__
 	// [Hamiton算符...], [Hamilton算符系数...]
 	if (!PyList_CheckExact(objects[1])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 2nd arg isn't a list.");
@@ -121,9 +132,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton coef list isn't complex or long or float type.");
 		}
 	}
-#ifdef __DEBUG__
+#ifdef __CRTDEBUG__
 	printf("object[1,2]\n");
-#endif // __DEBUG__
+#endif // __CRTDEBUG__
 	// [Collapse算符...], [Collapse算符系数...]
 	if (!PyList_CheckExact(objects[3])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 4th arg isn't a list.");
@@ -168,9 +179,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The arg in hamilton coef list isn't complex or long or float type.");
 		}
 	}
-#ifdef __DEBUG__
+#ifdef __CRTDEBUG__
 	printf("object[3,4]\n");
-#endif // __DEBUG__
+#endif // __CRTDEBUG__
 	// [Tracking算符...]
 	if (!PyList_CheckExact(objects[5])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 6th arg isn't a list.");
@@ -193,9 +204,9 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 			inputArr_Track[i][j] = PyLong_AsLong(tt);
 		}
 	}
-#ifdef __DEBUG__
+#ifdef __CRTDEBUG__
 	printf("object[5]\n");
-#endif // __DEBUG__
+#endif // __CRTDEBUG__
 	/* 生成data */
 	pDeriveData data = NULL;
 	DeriveAssign(inputArr_HO, inputArrLens_HO, inputArrCoef_HO, inputArrLen_HO,
@@ -294,6 +305,88 @@ cluster_SetCurrentValue(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
+cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
+	if (PyTuple_Size(args) != 2) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
+	}
+	PyObject* pyData, * pyList;
+	if (!PyArg_ParseTuple(args, "OO", &pyData, &pyList))
+	{
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed args aren't objects.");
+	}
+	if (!PyList_CheckExact(pyList)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The second arg isn't a strict list.");
+	}
+	pDeriveData data;
+	CheckArgsDData(pyData, &data);
+	int listSize = PyList_Size(pyList);
+	Complex* buf = (Complex*)malloc(data->hoSize * sizeof(Complex)); ASSERTNULL(buf);
+	memset(buf, 0, data->size * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+		PyObject* temp = PyList_GetItem(pyList, i);
+		if (PyComplex_CheckExact(temp)) {
+			buf[i].real = PyComplex_RealAsDouble(temp);
+			buf[i].image = PyComplex_ImagAsDouble(temp);
+		}
+		else if (PyFloat_Check(temp)) {
+			buf[i].real = PyFloat_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else if (PyLong_Check(temp)) {
+			buf[i].real = PyLong_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
+		}
+	}
+	SetHOCoefOfDData(data, buf, MIN(listSize, data->size));
+	free(buf);
+	Py_RETURN_NONE;
+}
+
+static PyObject*
+cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
+	if (PyTuple_Size(args) != 2) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
+	}
+	PyObject* pyData, * pyList;
+	if (!PyArg_ParseTuple(args, "OO", &pyData, &pyList))
+	{
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed args aren't objects.");
+	}
+	if (!PyList_CheckExact(pyList)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The second arg isn't a strict list.");
+	}
+	pDeriveData data;
+	CheckArgsDData(pyData, &data);
+	int listSize = PyList_Size(pyList);
+	Complex* buf = (Complex*)malloc(data->coSize * sizeof(Complex)); ASSERTNULL(buf);
+	memset(buf, 0, data->size * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+		PyObject* temp = PyList_GetItem(pyList, i);
+		if (PyComplex_CheckExact(temp)) {
+			buf[i].real = PyComplex_RealAsDouble(temp);
+			buf[i].image = PyComplex_ImagAsDouble(temp);
+		}
+		else if (PyFloat_Check(temp)) {
+			buf[i].real = PyFloat_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else if (PyLong_Check(temp)) {
+			buf[i].real = PyLong_AsDouble(temp);
+			buf[i].image = 0.0;
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
+		}
+	}
+	SetCOCoefOfDData(data, buf, MIN(listSize, data->size));
+	free(buf);
+	Py_RETURN_NONE;
+}
+
+static PyObject*
 cluster_GetCurrentValue(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
@@ -313,7 +406,53 @@ cluster_GetCurrentValue(PyObject* self, PyObject* args) {
 	return ansList;
 }
 
-#ifdef __DEBUG__
+static PyObject*
+cluster_GetHamiltonCoef(PyObject* self, PyObject* args) {
+	PyObject* pyData = NULL;
+	if (PyTuple_Size(args) != 1) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
+	}
+	if (!PyArg_ParseTuple(args, "O", &pyData)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a object.");
+	}
+	pDeriveData data = NULL;
+	CheckArgsDData(pyData, &data);
+
+	if (data->size == 0) {
+		RAISE_PY_ERROR(PyExc_RuntimeError, "The data is empty.");
+	}
+	PyObject* ansList = PyList_New(data->hoSize);
+	for (int i = 0; i < data->hoSize; ++i) {
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_HO[0][i]->root->value.real, data->evoTrees_HO[0][i]->root->value.image));
+	}
+
+	return ansList;
+}
+
+static PyObject*
+cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
+	PyObject* pyData = NULL;
+	if (PyTuple_Size(args) != 1) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
+	}
+	if (!PyArg_ParseTuple(args, "O", &pyData)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a object.");
+	}
+	pDeriveData data = NULL;
+	CheckArgsDData(pyData, &data);
+
+	if (data->size == 0) {
+		RAISE_PY_ERROR(PyExc_RuntimeError, "The data is empty.");
+	}
+	PyObject* ansList = PyList_New(data->coSize);
+	for (int i = 0; i < data->coSize; ++i) {
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real, data->evoTrees_CO[0][i]->root->value.image));
+	}
+
+	return ansList;
+}
+
+#ifdef __TREEDEBUG__
 static PyObject*
 cluster_PrintData(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
@@ -327,7 +466,7 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 
 	printf("---------------------------\n");
-	UINT_L buf[256];
+	UINT_L buf[MAX_OPERATOR_LENGTH];
 	printf("Tracking Nodes:\n");
 	for (int i = 0; i < data->size; ++i) {
 		int len = GetRoot(data->trackNodes[i], NULL);
@@ -361,7 +500,7 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 
 	Py_RETURN_NONE;
 }
-#endif // __DEBUG__
+#endif // __TREEDEBUG__
 
 
 static PyMethodDef clusterMethods[] = {
@@ -369,9 +508,13 @@ static PyMethodDef clusterMethods[] = {
 	{"CalEvolution",  cluster_CalEvolution, METH_VARARGS, NULL},
 	{"SetCurrentValue",  cluster_SetCurrentValue, METH_VARARGS, NULL},
 	{"GetCurrentValue",  cluster_GetCurrentValue, METH_VARARGS, NULL},
-#ifdef __DEBUG__
+	{"SetHamiltonCoef",  cluster_SetHamiltonCoef, METH_VARARGS, NULL},
+	{"SetCollapseCoef",  cluster_SetCollapseCoef, METH_VARARGS, NULL},
+	{"GetHamiltonCoef",  cluster_GetHamiltonCoef, METH_VARARGS, NULL},
+	{"GetCollapseCoef",  cluster_GetCollapseCoef, METH_VARARGS, NULL},
+#ifdef __TREEDEBUG__
 	{"PrintData",  cluster_PrintData, METH_VARARGS, NULL},
-#endif // __DEBUG__
+#endif // __TREEDEBUG__
 
 	{NULL, NULL, 0, NULL}        /* Sentinel */
 };

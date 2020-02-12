@@ -129,6 +129,9 @@
   <ItemGroup>
     <ClCompile Include="cluster_expansion.c" />
     <ClCompile Include="complex.c" />
+    <ClCompile Include="datafile.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -146,6 +149,9 @@
   <ItemGroup>
     <ClInclude Include="cluster_expansion.h" />
     <ClInclude Include="complex.h" />
+    <ClInclude Include="datafile.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="normalizer.h" />
     <ClInclude Include="operator_tree.h" />
     <ClInclude Include="position_tree.h" />

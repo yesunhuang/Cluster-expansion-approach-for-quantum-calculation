@@ -616,7 +616,7 @@ int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize) {
 	return 1;
 }
 
-#ifdef __DEBUG__
+#ifdef __TREEDEBUG__
 
 
 int PrintOPTree(pOPTree tree) {
@@ -682,4 +682,4 @@ int _PrintOrderOPTree(pOPNode node, UINT_L csize, UINT_L* output1, int* output2,
 	return 1;
 }
 
-#endif // __DEBUG__
+#endif // __TREEDEBUG__

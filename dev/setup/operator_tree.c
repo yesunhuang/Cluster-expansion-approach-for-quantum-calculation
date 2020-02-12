@@ -290,7 +290,7 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 		}
 	}
 	/* 删除可能出现的"零"叶子结点 */
-	for (int i = 0; i <= tree2->childSize; ++i) {
+	for (int i = 0; i <= tree1->childSize; ++i) {
 		if (node1->children[i] != NULL && 
 			IsZeroOfComplex(node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
 			free(node1->children[i]);
@@ -616,7 +616,7 @@ int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize) {
 	return 1;
 }
 
-#ifdef __DEBUG__
+#ifdef __TREEDEBUG__
 
 
 int PrintOPTree(pOPTree tree) {
@@ -682,4 +682,4 @@ int _PrintOrderOPTree(pOPNode node, UINT_L csize, UINT_L* output1, int* output2,
 	return 1;
 }
 
-#endif // __DEBUG__
+#endif // __TREEDEBUG__

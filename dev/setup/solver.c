@@ -62,10 +62,6 @@ int InsertOfDData(pDeriveData data, Complex c, pOPArray arr, int arrLen) {
 }
 
 int FreeOfDData(pDeriveData data) {
-	for (int i = 0; i < data->size; ++i) {
-		if (data->trackNodes[i] != NULL)
-			_DeleteNode(data->trackNodes[i], data->trackTree);
-	}
 	free(data->curValues);
 	for (int i = 0; i < data->capacity; ++i) {
 		for (int j = 0; j < data->hoSize; ++j) {
@@ -81,6 +77,7 @@ int FreeOfDData(pDeriveData data) {
 	free(data->evoTrees_CO);
 	free(data->trackNodes);
 	FreeOPTree(data->trackTree);
+	FreeOPTree(data->trackValueTree);
 	free(data);
 	return 1;
 }
@@ -330,6 +327,27 @@ int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len) {
 	return 1;
 }
 
+int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len) {
+	ASSERTNULL(data);
+	for (int i = 0; i < data->size; ++i) {
+		for (int j = 0; j < MIN(data->hoSize, len); ++j) {
+			data->evoTrees_HO[i][j]->root->value = arr[j];
+		}
+	}
+	return 1;
+}
+
+int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len) {
+	ASSERTNULL(data);
+	for (int i = 0; i < data->size; ++i) {
+		for (int j = 0; j < MIN(data->hoSize, len); ++j) {
+			data->evoTrees_CO[i][j]->root->value.real = arr[j].real / 2.0;
+			data->evoTrees_CO[i][j]->root->value.image = arr[j].image / 2.0;
+		}
+	}
+	return 1;
+}
+
 int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum) {
 	UINT_L buf[MAX_OPERATOR_LENGTH];
 	/* 零算符 */
@@ -377,8 +395,8 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 			else {
 				_SearchOfOPTree(data->trackTree, buf + head, tail - head - 1, &tempnode);
 				if (tempnode != NULL && !IsZeroOfComplex(tempnode->value)) {
-					tempnodev = tempnode->value;
 					_SearchOfOPTree(data->trackValueTree, buf + head, tail - head - 1, &tempnode);
+					tempnodev = tempnode->value;
 				}
 				else {
 					/* dagger的共轭现象 */
@@ -494,6 +512,8 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 
 			AddOfOPTree_TT(tree, newTree);
 			FreeOPTree(newTree);
+			for (int i = 1; i < MAX_OPERATOR_TREE_LENGTH; ++i)
+				FreeOPTree(treeBuf[i]);
 			return 1;
 		}
 		else {
