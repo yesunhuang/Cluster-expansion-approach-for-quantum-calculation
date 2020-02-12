@@ -80,7 +80,65 @@ cluster.GetCurrentValue(data)
 
 * 当前的CurrentValue
 
-#### 5. PrintData(DeriveData data)
+#### 5. SetHamiltonCoef(DeriveData data, PyList list)
+
+```python
+cluster.SetCurrentValue(data, list)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+* list: 新的Hamilton Coefficient的list。初值设置的个数取决于data中
+
+返回值：
+
+* 无
+
+#### 6. GetHamiltonCoef(DeriveData data)
+
+```python
+cluster.GetCurrentValue(data)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+
+屏幕输出：
+
+* 当前的Hamilton Coefficient
+
+#### 7. SetCollapseCoef(DeriveData data, PyList list)
+
+```python
+cluster.SetCurrentValue(data, list)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+* list: 新的Collapse Coefficient的list。初值设置的个数取决于data中
+
+返回值：
+
+* 无
+
+#### 8. GetCollapseCoef(DeriveData data)
+
+```python
+cluster.GetCurrentValue(data)
+```
+
+参数说明：
+
+* data: DeriveAssign(...)方法产生的DeriveData对象
+
+屏幕输出：
+
+* 当前的Collapse Coefficient
+
+#### 9. PrintData(DeriveData data)
 
 ```python
 cluster.PrintData(data)

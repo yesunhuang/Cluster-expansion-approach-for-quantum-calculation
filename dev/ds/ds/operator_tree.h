@@ -62,7 +62,7 @@
 
 
 /* _Node.label的数据类型 */
-typedef int8_t UINT_L;
+typedef uint8_t UINT_L;
 /* _Node.value的数据类型 */
 typedef Complex INT_V;
 /* operator的数组表示 */
