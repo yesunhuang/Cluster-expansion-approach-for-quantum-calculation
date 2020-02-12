@@ -13,7 +13,7 @@ UINT_L arr4[] = { 1,1,4,1,2 };
 UINT_L arr5[] = { 1,2,1,1,4 };
 UINT_L arr6[] = { 2, 1 };
 UINT_L arr7[] = { 2,2,3,1 };
-UINT_L arr8[] = { 1,1,2,2,5,5,5,6,6,6 };
+UINT_L arr8[] = { 1,1,4,1,1,3,3,3 };
 UINT_L arr9[] = { 0,1 };
 UINT_L arr10[] = { 1 };
 UINT_L arr11[] = { 1,0,1,0,1 };
@@ -143,14 +143,13 @@ int main() {
 	}
 	//*/
 	
-	/*
-	for (int i = 0; i < 10000; ++i) {
-		pOPTree tempTree = NULL;
-		ClusterExpansion(arr12, 3, &tempTree);
-		FreeOPTree(tempTree);
-	}
+	//*
+	pOPTree tempTree = NULL;
+	//DeltaTree(6, &tempTree);
+	ClusterExpansion(arr8, 10, &tempTree);
+	//FreeOPTree(tempTree);
 
-	// PrintOPTree(tempTree);
+	PrintOPTree(tempTree);
 	//*/
 
 	/*
@@ -178,7 +177,7 @@ int main() {
 	//PrintOPTree(ho_output[0]);
 	//*/
 
-	///* CalEvolution()的测试过程
+	/* CalEvolution()的测试过程
 
 		
 		pDeriveData data = NULL;
@@ -186,7 +185,7 @@ int main() {
 			co_arrs, co_lens_arr1, co_coef_arr1, 2,
 			init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
 		Complex iv[8];
-		/*
+		
 		iv[0] = c_101;
 		iv[1] = c_102;
 		iv[2] = c_103;
@@ -195,7 +194,7 @@ int main() {
 		iv[5] = c_106;
 		iv[6] = c_107;
 		iv[7] = c_108;
-		*/
+		
 		
 		for (int i = 0; i < 8; ++i) {
 			iv[i] = c_9;
