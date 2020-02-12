@@ -7,7 +7,7 @@
 // #include <Python.h>
 
 UINT_L arr1[] = { 2,4,4,0,1,3,4,6 };
-UINT_L arr2[] = { 2,0,4,4,6,0,2,4,4,6 };
+UINT_L arr2[] = { 2,1,1,1,1,4,4,3 };
 UINT_L arr3[] = { 1,3 };
 UINT_L arr4[] = { 1,1,4,1,2 };
 UINT_L arr5[] = { 1,2,1,1,4 };
@@ -19,12 +19,12 @@ UINT_L arr10[] = { 1 };
 UINT_L arr11[] = { 1,0,1,0,1 };
 UINT_L arr12[] = { 1,1,2 };
 
-Complex c_1 = { 1,0 };
-Complex c_2 = { 2,0 };
+Complex c_1 = { 0.8,0 };
+Complex c_2 = { 1.6,0 };
 Complex c_3 = { 1,0 };
 Complex c_4 = { 1,0 };
-Complex c_5 = { 4,0 };
-Complex c_6 = { 4,0 };
+Complex c_5 = { 2,0 };
+Complex c_6 = { 2,0 };
 Complex c_7 = { 2,0 };
 Complex c_8 = { 4,0 };
 Complex c_9 = { 0,1 };
@@ -120,11 +120,10 @@ int main() {
 	//*/
 
 	/*
-	for (int i = 0; i < 100; ++i) {
-		pOPTree tree;
-		MONormalize(arr5, 5, &tree);
-		FreeOPTree(tree);
-	}
+	pOPTree tree;
+	SONormalize(arr2, 5, 2, &tree);
+	//FreeOPTree(tree);
+	PrintOPTree(tree);
 	//*/
 
 	/*
@@ -143,13 +142,13 @@ int main() {
 	}
 	//*/
 	
-	//*
+	/*
 	pOPTree tempTree = NULL;
-	//DeltaTree(6, &tempTree);
-	ClusterExpansion(arr8, 10, &tempTree);
+	DeltaTree(10, &tempTree);
+	//ClusterExpansion(arr8, 10, &tempTree);
 	//FreeOPTree(tempTree);
 
-	PrintOPTree(tempTree);
+	//PrintOPTree(tempTree);
 	//*/
 
 	/*
@@ -177,30 +176,20 @@ int main() {
 	//PrintOPTree(ho_output[0]);
 	//*/
 
-	/* CalEvolution()的测试过程
+	//* CalEvolution()的测试过程
 
 		
 		pDeriveData data = NULL;
 		DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
 			co_arrs, co_lens_arr1, co_coef_arr1, 2,
-			init_arr1, 2, track_arrs, track_lens_arr1, 2, 2, &data);
+			init_arr1, 2, track_arrs, track_lens_arr1, 2, 7, &data);
 		Complex iv[8];
-		
-		iv[0] = c_101;
-		iv[1] = c_102;
-		iv[2] = c_103;
-		iv[3] = c_104;
-		iv[4] = c_105;
-		iv[5] = c_106;
-		iv[6] = c_107;
-		iv[7] = c_108;
-		
-		
+		/*
 		for (int i = 0; i < 8; ++i) {
 			iv[i] = c_9;
 		}
 		SetCurrentValueOfDData(data, iv, 8);
-		
+		*/
 
 		//PrintOPTree(data->evoTrees_HO[0][0]);
 		//PrintOPTree(data->evoTrees_CO[0][0]);
