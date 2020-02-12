@@ -104,7 +104,7 @@ $$
 
 > * **Final step:**
 >
->   Multiply all the operators together based on the distributive law and we get all the normalized operators and their coefficients.
+>   Connect all the operators together based on the distributive law and we get all the normalized operators and their coefficients.
 
 ### Multiplied Operators
 

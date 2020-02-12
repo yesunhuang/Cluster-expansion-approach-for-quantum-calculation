@@ -14,8 +14,8 @@
 > $$
 > Recall the basic relation of the basic operators:	
 > $$
-> \beta^{\dagger}|n_\alpha>=\delta_{\alpha\beta}(n_\alpha+1)|n_\alpha+1>
-> \\\beta|n_\alpha>=\delta_{\alpha\beta}n_\alpha|n_\alpha-1>
+> \beta^{\dagger}|n_\alpha>=\delta_{\alpha\beta}\sqrt{(n_\alpha+1)}|n_\alpha+1>
+> \\\beta|n_\alpha>=\delta_{\alpha\beta}\sqrt{n_\alpha}|n_\alpha-1>
 > \\<n_\alpha|n_\beta>=\delta_{\alpha\beta}\delta_{n_\alpha n_\beta}
 > $$
 
@@ -123,7 +123,7 @@
 >
 >  Travelling through dynamic array, if the value of the address of its evolution-expression is null, derive the expression for it. Do DFS in the evolution-expression tree. If we come across any single operator which is not exist in the tracking tree, repeat step two for it.
 >
->* Finial Step:
+>* Final Step:
 >
 >  Repeat Step Three until all the values of the references of operators ' evolution-expressions are not null.
 
@@ -131,7 +131,7 @@
 
 >Create a new dynamic array whose size is equal to the existed one to store the increment (This is needed in most of the differential equation solver). 
 >
->For each tracking operator, do DFS in its evolution-expression tree. For single operator, multiply its current value with its coefficient. For multiplied operators, multiply all the current value of single operator which it consist of ad its coefficient  together. 
+>For each tracking operator, do DFS in its evolution-expression tree. For single operator, multiply its current value with its coefficient. For multiplied operators, multiply all the current value of single operator which it consist of and its coefficient  together. 
 >
 >Add up the sum and store it in the new dynamic array.
 >
