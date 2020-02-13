@@ -47,6 +47,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "complex.h"
 

@@ -161,7 +161,7 @@ int main() {
 	printf("%lf", ans);
 	*/
 	
-	/* Evolution()µÄ²âÊÔÓÃÀı
+	/* Evolution()çš„æµ‹è¯•ç”¨ä¾‹
 	for (int i = 0; i < 10000; ++i) {
 		pOPTree ho_output[6];
 		pOPTree co_output[2];
@@ -178,7 +178,7 @@ int main() {
 	//PrintOPTree(ho_output[0]);
 	//*/
 
-	///* CalEvolution()µÄ²âÊÔ¹ı³Ì
+	///* CalEvolution()çš„æµ‹è¯•è¿‡ç¨‹
 
 		
 		pDeriveData data = NULL;
@@ -236,7 +236,7 @@ int main() {
 	
 	//*/
 
-	/* ¾²Ì¬DeltaÊ÷´´½¨¹ı³Ì
+	/* é™æ€Deltaæ ‘åˆ›å»ºè¿‡ç¨‹
 	UINT_L output1[1024];
 	int output2[1024];
 	int output1_len, output2_len;
@@ -255,7 +255,7 @@ int main() {
 	printf("\nOutput2_Len: %d\n", output2_len);
 	//*/
 
-	/* ÄÚ´æĞ¹Â©¼ìÑé
+	/* å†…å­˜æ³„æ¼æ£€éªŒ
 	for (int i = 0; i < 10000; ++i) {
 		pOPTree tempTree = NULL;
 		DeltaTree(7, &tempTree);

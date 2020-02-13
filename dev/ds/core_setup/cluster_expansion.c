@@ -11,7 +11,7 @@
 #include "cluster_expansion.h"
 
 int DeltaTree(int N, pOPTree* outTree) {
-	/* TODO: 加入静态数据 */
+	/* 加入静态数据 */
 	if (N <= 0) {
 		return 0;
 	}

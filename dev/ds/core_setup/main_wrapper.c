@@ -521,14 +521,14 @@ static PyMethodDef clusterMethods[] = {
 
 static struct PyModuleDef clusterModule = {
 	PyModuleDef_HEAD_INIT,
-	"core",		/* name of module */
-	"The core for QCLSolver.",			/* module documentation, may be NULL */
+	"cluster",		/* name of module */
+	"A solver tool for cluster expansion",			/* module documentation, may be NULL */
 	-1,				/* size of per-interpreter state of the module,
 						or -1 if the module keeps state in global variables. */
 	clusterMethods
 };
 
 PyMODINIT_FUNC
-PyInit_core(void) {
+PyInit_cluster(void) {
 	return PyModule_Create(&clusterModule);
 }
