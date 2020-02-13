@@ -527,7 +527,7 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 		return 0;
 	lStack[nextIndex] = node->label;
 	int ret = 1;
-	if (IsZeroOfComplex(node->value)) {
+	if (!IsZeroOfComplex(node->value)) {
 		int newLen = ((nextIndex + 1) + len + 1);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);

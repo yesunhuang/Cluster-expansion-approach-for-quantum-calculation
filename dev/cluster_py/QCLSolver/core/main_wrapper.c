@@ -1,10 +1,10 @@
 /**
- * @ ÎÄ¼şÃû: main_wrapper.c
- * @ ¹¦ÄÜ: ·â×°, ²¢Ìá¹©ÓëPythonµÄ½»»¥½Ó¿Ú
- * @ ×÷Õß: AyajiLin & YesunHuang
- * @ ÓÊÏä: 493987054@qq.com & 944812203@qq.com
+ * @ æ–‡ä»¶å: main_wrapper.c
+ * @ åŠŸèƒ½: å°è£…, å¹¶æä¾›ä¸Pythonçš„äº¤äº’æ¥å£
+ * @ ä½œè€…: AyajiLin & YesunHuang
+ * @ é‚®ç®±: 493987054@qq.com & 944812203@qq.com
  * @ github: https://github.com/leonardodalinky & https://github.com/yesunhuang
- * @ ÈÕÆÚ: 2020Äê2ÔÂ9ÈÕ
+ * @ æ—¥æœŸ: 2020å¹´2æœˆ9æ—¥
  *
  */
 
@@ -25,23 +25,23 @@ void destructDataCapsule(PyObject * capsule) {
 }
 
 /**
- * @ º¯Êı: int CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd)
+ * @ å‡½æ•°: int CheckArgsDData(PyObject* dataobjct, pDeriveData* outputdd)
  *
- * @ ¹¦ÄÜ: ½«±»°ü×°µÄpDeriveDataÊı¾İ½â°ü, ²¢´«»ØcÓïÑÔÖ¸Õë
+ * @ åŠŸèƒ½: å°†è¢«åŒ…è£…çš„pDeriveDataæ•°æ®è§£åŒ…, å¹¶ä¼ å›cè¯­è¨€æŒ‡é’ˆ
  *
- * @ param{dataobject}: ±»°ü×°µÄpDeriveDataÊı¾İ
+ * @ param{dataobject}: è¢«åŒ…è£…çš„pDeriveDataæ•°æ®
  *
- * @ param{outputdd}: ½â°üµÄpDeriveDataÖ¸ÕëÊä³ö
+ * @ param{outputdd}: è§£åŒ…çš„pDeriveDataæŒ‡é’ˆè¾“å‡º
  *
- * @ ·µ»ØÖµ: Èô´æÔÚÉ¾³ı²¢³É¹¦Ê±,·µ»ØÖµÎª1; ·ñÔò,·µ»ØÖµÎª0.
+ * @ è¿”å›å€¼: è‹¥å­˜åœ¨åˆ é™¤å¹¶æˆåŠŸæ—¶,è¿”å›å€¼ä¸º1; å¦åˆ™,è¿”å›å€¼ä¸º0.
  */
 int CheckArgsDData(PyObject* dataobject, pDeriveData* outputdd) {
 	if (!PyCapsule_CheckExact(dataobject)) {
-		/* ¼ì²éÊÇ·ñÎªcapsule */
+		/* æ£€æŸ¥æ˜¯å¦ä¸ºcapsule */
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
 	}
 	if (strcmp(PyCapsule_GetName(dataobject), "ClusterData") != 0) {
-		/* ¼ì²éÊÇ·ñÎªclusterµÄÊı¾İ */
+		/* æ£€æŸ¥æ˜¯å¦ä¸ºclusterçš„æ•°æ® */
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed arg isn't a cluster data object.");
 	}
 	*outputdd = (pDeriveData)PyCapsule_GetPointer(dataobject, "ClusterData");
@@ -49,20 +49,20 @@ int CheckArgsDData(PyObject* dataobject, pDeriveData* outputdd) {
 }
 
 /**
- * @ º¯Êı: static PyObject* cluster_DeriveAssign(PyObject* self, PyObject* args)
+ * @ å‡½æ•°: static PyObject* core_DeriveAssign(PyObject* self, PyObject* args)
  *
- * @ ¹¦ÄÜ: ¸ù¾İ´«ÈëµÄ²ÎÊı, ½øĞĞDeriveAndAssign¹ı³Ì
+ * @ åŠŸèƒ½: æ ¹æ®ä¼ å…¥çš„å‚æ•°, è¿›è¡ŒDeriveAndAssignè¿‡ç¨‹
  *
- * @ Æß¸ö²ÎÊıËµÃ÷: [Initial×´Ì¬], [HamiltonËã·û...], [HamiltonËã·ûÏµÊı], [CollapseËã·û...], [CollapseËã·ûÏµÊı], [TrackingËã·û...], ×î³¤Ëã·û³¤¶È
+ * @ ä¸ƒä¸ªå‚æ•°è¯´æ˜: [InitialçŠ¶æ€], [Hamiltonç®—ç¬¦...], [Hamiltonç®—ç¬¦ç³»æ•°], [Collapseç®—ç¬¦...], [Collapseç®—ç¬¦ç³»æ•°], [Trackingç®—ç¬¦...], æœ€é•¿ç®—ç¬¦é•¿åº¦
  *
- * @ ·µ»ØÖµ: Èô´æÔÚÉ¾³ı²¢³É¹¦Ê±,·µ»ØÖµÎª1; ·ñÔò,·µ»ØÖµÎª0.
+ * @ è¿”å›å€¼: è‹¥å­˜åœ¨åˆ é™¤å¹¶æˆåŠŸæ—¶,è¿”å›å€¼ä¸º1; å¦åˆ™,è¿”å›å€¼ä¸º0.
  */
 static PyObject*
-cluster_DeriveAssign(PyObject* self, PyObject* args) {
+core_DeriveAssign(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 7) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
-	/* ¶ÁÈëÊı¾İ²¢×ª»»ÀàĞÍ */
+	/* è¯»å…¥æ•°æ®å¹¶è½¬æ¢ç±»å‹ */
 	pOPArray* inputArr_HO; int* inputArrLens_HO; Complex* inputArrCoef_HO; int inputArrLen_HO;
 	pOPArray* inputArr_CO; int* inputArrLens_CO; Complex* inputArrCoef_CO; int inputArrLen_CO;
 	int* inputArr_Init; int inputArrLen_Init;
@@ -72,7 +72,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 	if (!PyArg_ParseTuple(args, "OOOOOOI", objects, objects + 1, objects + 2, objects + 3, objects + 4, objects + 5, &maxOPLen)) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The passed args aren't valid.");
 	}
-	// [Initial×´Ì¬]
+	// [InitialçŠ¶æ€]
 	if (!PyList_CheckExact(objects[0])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 1st arg isn't a list.");
 	}
@@ -88,7 +88,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 #ifdef __TREEDEBUG__
 	printf("object[0]\n");
 #endif // __TREEDEBUG__
-	// [HamitonËã·û...], [HamiltonËã·ûÏµÊı...]
+	// [Hamitonç®—ç¬¦...], [Hamiltonç®—ç¬¦ç³»æ•°...]
 	if (!PyList_CheckExact(objects[1])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 2nd arg isn't a list.");
 	}
@@ -135,7 +135,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 #ifdef __CRTDEBUG__
 	printf("object[1,2]\n");
 #endif // __CRTDEBUG__
-	// [CollapseËã·û...], [CollapseËã·ûÏµÊı...]
+	// [Collapseç®—ç¬¦...], [Collapseç®—ç¬¦ç³»æ•°...]
 	if (!PyList_CheckExact(objects[3])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 4th arg isn't a list.");
 	}
@@ -182,7 +182,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 #ifdef __CRTDEBUG__
 	printf("object[3,4]\n");
 #endif // __CRTDEBUG__
-	// [TrackingËã·û...]
+	// [Trackingç®—ç¬¦...]
 	if (!PyList_CheckExact(objects[5])) {
 		RAISE_PY_ERROR(PyExc_TypeError, "The 6th arg isn't a list.");
 	}
@@ -207,16 +207,16 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 #ifdef __CRTDEBUG__
 	printf("object[5]\n");
 #endif // __CRTDEBUG__
-	/* Éú³Édata */
+	/* ç”Ÿæˆdata */
 	pDeriveData data = NULL;
 	DeriveAssign(inputArr_HO, inputArrLens_HO, inputArrCoef_HO, inputArrLen_HO,
 		inputArr_CO, inputArrLens_CO, inputArrCoef_CO, inputArrLen_CO,
 		inputArr_Init, inputArrLen_Init, inputArr_Track, inputArrLens_Track, inputArrLen_Track, maxOPLen, &data);
 
-	/* capsule°ü×° */
+	/* capsuleåŒ…è£… */
 	PyObject* cap = PyCapsule_New(data, "ClusterData", destructDataCapsule);
 
-	/* ÊÍ·ÅÉêÇëµÄÄÚ´æ */
+	/* é‡Šæ”¾ç”³è¯·çš„å†…å­˜ */
 	for (int i = 0; i < inputArrLen_HO; ++i) {
 		free(inputArr_HO[i]);
 	}
@@ -237,7 +237,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_CalEvolution(PyObject* self, PyObject* args) {
+core_CalEvolution(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -264,7 +264,7 @@ cluster_CalEvolution(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetCurrentValue(PyObject* self, PyObject* args) {
+core_SetCurrentValue(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -305,7 +305,7 @@ cluster_SetCurrentValue(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
+core_SetHamiltonCoef(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -346,7 +346,7 @@ cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
+core_SetCollapseCoef(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -387,7 +387,7 @@ cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetCurrentValue(PyObject* self, PyObject* args) {
+core_GetCurrentValue(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -407,7 +407,7 @@ cluster_GetCurrentValue(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetHamiltonCoef(PyObject* self, PyObject* args) {
+core_GetHamiltonCoef(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -430,7 +430,7 @@ cluster_GetHamiltonCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
+core_GetCollapseCoef(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -454,7 +454,7 @@ cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
 
 #ifdef __TREEDEBUG__
 static PyObject*
-cluster_PrintData(PyObject* self, PyObject* args) {
+core_PrintData(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -503,32 +503,32 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 #endif // __TREEDEBUG__
 
 
-static PyMethodDef clusterMethods[] = {
-	{"DeriveAssign",  cluster_DeriveAssign, METH_VARARGS, NULL},
-	{"CalEvolution",  cluster_CalEvolution, METH_VARARGS, NULL},
-	{"SetCurrentValue",  cluster_SetCurrentValue, METH_VARARGS, NULL},
-	{"GetCurrentValue",  cluster_GetCurrentValue, METH_VARARGS, NULL},
-	{"SetHamiltonCoef",  cluster_SetHamiltonCoef, METH_VARARGS, NULL},
-	{"SetCollapseCoef",  cluster_SetCollapseCoef, METH_VARARGS, NULL},
-	{"GetHamiltonCoef",  cluster_GetHamiltonCoef, METH_VARARGS, NULL},
-	{"GetCollapseCoef",  cluster_GetCollapseCoef, METH_VARARGS, NULL},
+static PyMethodDef coreMethods[] = {
+	{"DeriveAssign",  core_DeriveAssign, METH_VARARGS, NULL},
+	{"CalEvolution",  core_CalEvolution, METH_VARARGS, NULL},
+	{"SetCurrentValue",  core_SetCurrentValue, METH_VARARGS, NULL},
+	{"GetCurrentValue",  core_GetCurrentValue, METH_VARARGS, NULL},
+	{"SetHamiltonCoef",  core_SetHamiltonCoef, METH_VARARGS, NULL},
+	{"SetCollapseCoef",  core_SetCollapseCoef, METH_VARARGS, NULL},
+	{"GetHamiltonCoef",  core_GetHamiltonCoef, METH_VARARGS, NULL},
+	{"GetCollapseCoef",  core_GetCollapseCoef, METH_VARARGS, NULL},
 #ifdef __TREEDEBUG__
-	{"PrintData",  cluster_PrintData, METH_VARARGS, NULL},
+	{"PrintData",  core_PrintData, METH_VARARGS, NULL},
 #endif // __TREEDEBUG__
 
 	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-static struct PyModuleDef clusterModule = {
+static struct PyModuleDef coreModule = {
 	PyModuleDef_HEAD_INIT,
-	"cluster",		/* name of module */
-	"A solver tool for cluster expansion",			/* module documentation, may be NULL */
+	"core",		/* name of module */
+	"The core for QCLSolver.",			/* module documentation, may be NULL */
 	-1,				/* size of per-interpreter state of the module,
 						or -1 if the module keeps state in global variables. */
-	clusterMethods
+	coreMethods
 };
 
 PyMODINIT_FUNC
-PyInit_cluster(void) {
-	return PyModule_Create(&clusterModule);
+PyInit_core(void) {
+	return PyModule_Create(&coreModule);
 }

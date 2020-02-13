@@ -36,7 +36,7 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
 		}
 		else {
 			/* arr[i] == normal */
-			for (int j = zeroNum - 1; j >= 0; --j) {
+			for (int j = MIN(zeroNum - 1, (len / 2)); j >= 0; --j) {
 				buf[j + 1] += buf[j] * (zeroNum - j);
 			}
 		}
