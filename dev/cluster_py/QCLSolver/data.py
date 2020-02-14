@@ -1,4 +1,4 @@
-import cluster as clucore
+import QCLSolver.core as clucore
 import copy
 
 
