@@ -340,7 +340,7 @@ core_SetHamiltonCoef(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
 		}
 	}
-	SetHOCoefOfDData(data, buf, MIN(listSize, data->size));
+	SetHOCoefOfDData(data, buf, MIN(listSize, data->hoSize));
 	free(buf);
 	Py_RETURN_NONE;
 }
@@ -381,7 +381,7 @@ core_SetCollapseCoef(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
 		}
 	}
-	SetCOCoefOfDData(data, buf, MIN(listSize, data->size));
+	SetCOCoefOfDData(data, buf, MIN(listSize, data->coSize));
 	free(buf);
 	Py_RETURN_NONE;
 }
