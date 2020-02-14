@@ -182,7 +182,7 @@ int main() {
 		pDeriveData data = NULL;
 		DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
 			co_arrs, co_lens_arr1, co_coef_arr1, 2,
-			init_arr1, 2, track_arrs, track_lens_arr1, 2, 7, &data);
+			init_arr1, 2, track_arrs, track_lens_arr1, 2, 6, &data);
 		Complex iv[8];
 		/*
 		for (int i = 0; i < 8; ++i) {

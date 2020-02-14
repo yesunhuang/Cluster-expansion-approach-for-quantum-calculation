@@ -7,25 +7,11 @@ import functools
 import copy
 
 
-def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, method='RK45',
+def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
-    # 检查输入正确性, 并返回raw数据
-    (HOList, rawHOCoefList, COList, rawCOCoefList) = __CheckAndParse(H, Co_ps, Initial_State, trackOp, maxOpLen)
-    # 构造正确的t0, 并传入真正的初值
-    t0 = t_span[0]
-    HOCoefList0 = []
-    COCoefList0 = []
-    for stuff in rawHOCoefList:
-        if isinstance(stuff, types.FunctionType):
-            HOCoefList0.append(stuff(t0))
-        else:
-            HOCoefList0.append(stuff)
-    for stuff in rawCOCoefList:
-        if isinstance(stuff, types.FunctionType):
-            COCoefList0.append(stuff(t0))
-        else:
-            COCoefList0.append(stuff)
-    ddata = Data(Initial_State, HOList, COList, HOCoefList0, COCoefList0, trackOp, maxOpLen)
+    # 构造正确的t0, 并传入真正的系数初值
+    ddata.UpdateCoef(t_span[0], user_args)
+    ddata.UpdateInitialState(Initial_State)
     y0c = np.array(ddata.GetCurrentValue())
     n = len(y0c)
 
@@ -56,10 +42,10 @@ def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, me
         # noinspection PyTypeChecker
         options_new['jac'] = __JacWrapper
 
-    # 包装user_args为args_wrapped, 格式为[ddata, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args]
+    # 包装user_args为args_wrapped, 格式为[ddata, n, events, jac_func, user_args]
     if not isinstance(user_args, tuple) and user_args is not None:
         raise TypeError("Parameter user_args is not a tuple.")
-    args_wrapped = (ddata, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args_new)
+    args_wrapped = (ddata, n, events, jac_func, user_args_new)
 
     return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
                                      events=events_wrapped_copy,
@@ -67,72 +53,19 @@ def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, me
                                      options=options_new)
 
 
-def __CheckAndParse(H, Co_ps, Initial_State, trackOp, maxOpLen):
-    # check
-    for item in H:
-        if not isinstance(item, list) and len(item) != 2:
-            raise SyntaxError("Invalid parameter in parameter H.")
-        if not isinstance(item[0], str):
-            raise TypeError("Invalid types in parameter H.")
-        if not isinstance(item[1], complex) and not isinstance(item[1], int) \
-                and not isinstance(item[1], float) and not isinstance(item[1], types.FunctionType):
-            raise TypeError("Invalid types in parameter H.")
-    for item in Co_ps:
-        if not isinstance(item, list) and len(item) != 2:
-            raise SyntaxError("Invalid parameter in parameter Co_ps.")
-        if not isinstance(item[0], str):
-            raise TypeError("Invalid types in parameter Co_ps.")
-        if not isinstance(item[1], complex) and not isinstance(item[1], int) \
-                and not isinstance(item[1], float) and not isinstance(item[1], types.FunctionType):
-            raise TypeError("Invalid types in parameter Co_ps.")
-    for item in Initial_State:
-        if not isinstance(item, complex) and not isinstance(item, int) and not isinstance(item, float):
-            raise TypeError("Invalid types in parameter Initial_State.")
-    for item in trackOp:
-        if not isinstance(item, str):
-            raise TypeError("Invalid types in parameter trackOp.")
-    if maxOpLen <= 0:
-        raise SyntaxError("Parameter maxOpLen must be greater than zero.")
-    # parse
-    hoList = []
-    coList = []
-    hoCoefList = []
-    coCoefList = []
-    for item in H:
-        hoList.append(item[0])
-        hoCoefList.append(item[1])
-    for item in Co_ps:
-        coList.append(item[0])
-        coCoefList.append(item[1])
-    return hoList, hoCoefList, coList, coCoefList
-
-
-def __ConvertToSolver(t, y, ddata: Data, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args: Tuple[Any]):
+def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
     ddata.SetCurrentValue(y.tolist())
-    # 完成时变的系数
-    HOCoefList = []
-    COCoefList = []
-    for stuff in rawHOCoefList:
-        if isinstance(stuff, types.FunctionType):
-            HOCoefList.append(stuff(t, *user_args))
-        else:
-            HOCoefList.append(stuff)
-    for stuff in rawCOCoefList:
-        if isinstance(stuff, types.FunctionType):
-            COCoefList.append(stuff(t, *user_args))
-        else:
-            COCoefList.append(stuff)
-    ddata.SetCoefHOList(HOCoefList)
-    ddata.SetCoefCOList(COCoefList)
+    # 进行时变的系数
+    ddata.UpdateCoef(t, user_args)
     dydtc = ddata.Calculate()
     return np.asarray(dydtc)
 
 
-def __EventWrapper(t, y, ddata, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args: Tuple[Any]):
+def __EventWrapper(t, y, ddata, n, events, jac_func, user_args: Tuple[Any]):
     return events(t, y, *user_args)
 
 
-def __JacWrapper(t, y, ddata, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args: Tuple[Any]):
+def __JacWrapper(t, y, ddata, n, events, jac_func, user_args: Tuple[Any]):
     return jac_func(t, y, *user_args)
 
 

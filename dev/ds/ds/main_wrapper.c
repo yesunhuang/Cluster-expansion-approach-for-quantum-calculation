@@ -340,7 +340,7 @@ core_SetHamiltonCoef(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
 		}
 	}
-	SetHOCoefOfDData(data, buf, MIN(listSize, data->size));
+	SetHOCoefOfDData(data, buf, MIN(listSize, data->hoSize));
 	free(buf);
 	Py_RETURN_NONE;
 }
@@ -381,7 +381,7 @@ core_SetCollapseCoef(PyObject* self, PyObject* args) {
 			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't complexes or longs or floats.");
 		}
 	}
-	SetCOCoefOfDData(data, buf, MIN(listSize, data->size));
+	SetCOCoefOfDData(data, buf, MIN(listSize, data->coSize));
 	free(buf);
 	Py_RETURN_NONE;
 }
@@ -452,6 +452,56 @@ core_GetCollapseCoef(PyObject* self, PyObject* args) {
 	return ansList;
 }
 
+static PyObject*
+core_UpdateInitialState(PyObject* self, PyObject* args) {
+	if (PyTuple_Size(args) != 2) {
+		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
+	}
+	PyObject* pyData, * pyList;
+	if (!PyArg_ParseTuple(args, "OO", &pyData, &pyList))
+	{
+		RAISE_PY_ERROR(PyExc_TypeError, "The passed args aren't objects.");
+	}
+	if (!PyList_CheckExact(pyList)) {
+		RAISE_PY_ERROR(PyExc_TypeError, "The second arg isn't a strict list.");
+	}
+	pDeriveData data;
+	CheckArgsDData(pyData, &data);
+	int listSize = PyList_Size(pyList);
+	int* buf = (int*)malloc(listSize * sizeof(int)); ASSERTNULL(buf);
+	memset(buf, 0, listSize * sizeof(Complex));
+	for (int i = 0; i < listSize; ++i) {
+		PyObject* temp = PyList_GetItem(pyList, i);
+		if (PyLong_Check(temp)) {
+			buf[i] = PyLong_AsDouble(temp);
+		}
+		else {
+			RAISE_PY_ERROR(PyExc_TypeError, "The stuff in the list aren't longs.");
+		}
+	}
+	UINT_L trackBuf[MAX_OPERATOR_LENGTH];
+	Complex* ans = (Complex*)malloc(data->size * sizeof(Complex)); ASSERTNULL(ans);
+	memset(ans, 0, data->size * sizeof(Complex));
+	for (int i = 0; i < data->size; ++i) {
+		pOPNode nowTrack = data->trackNodes[i];
+		int nowArrLen = GetRoot(data->trackNodes[i], NULL);
+		ArrayFromNode(nowTrack, nowArrLen, trackBuf);
+		double temp;
+		InitialValue(trackBuf, nowArrLen, buf, listSize, &temp);
+		ans[i].real = temp;
+	}
+	memcpy(data->curValues, ans, data->size * sizeof(Complex));
+
+	PyObject* ansList = PyList_New(data->size);
+	for (int i = 0; i < data->size; ++i) {
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(ans[i].real, ans[i].image));
+	}
+
+	free(ans);
+	free(buf);
+	return ansList;
+}
+
 #ifdef __TREEDEBUG__
 static PyObject*
 core_PrintData(PyObject* self, PyObject* args) {
@@ -512,6 +562,7 @@ static PyMethodDef coreMethods[] = {
 	{"SetCollapseCoef",  core_SetCollapseCoef, METH_VARARGS, NULL},
 	{"GetHamiltonCoef",  core_GetHamiltonCoef, METH_VARARGS, NULL},
 	{"GetCollapseCoef",  core_GetCollapseCoef, METH_VARARGS, NULL},
+	{"UpdateInitialState",  core_UpdateInitialState, METH_VARARGS, NULL},
 #ifdef __TREEDEBUG__
 	{"PrintData",  core_PrintData, METH_VARARGS, NULL},
 #endif // __TREEDEBUG__

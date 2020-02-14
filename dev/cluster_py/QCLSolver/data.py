@@ -1,11 +1,12 @@
 import QCLSolver.core as clucore
 import copy
+from math import floor
+import types
 
 
 class Data:
-    def __init__(self, InitList, strHOList, strCOList, coefHOList, coefCOList, trackList, maxOPLen):
+    def __init__(self, H, Co_ps, strHOList, strCOList, coefHOList, coefCOList, trackList, maxOPLen):
         """
-        :param InitList: 初始表
         :param strHOList: 字符形式的HO列表
         :param strCOList: 字符形式的CO列表
         :param coefHOList: HO系数的列表
@@ -24,6 +25,10 @@ class Data:
         # 数字形态的Collapse operator列表
         self.__numCOList = []
         # 现在的Hamilton operator列表系数表
+        self.__rawCoefHOList = []
+        # 现在的Collapse operator列表系数表
+        self.__rawCoefCOList = []
+        # 现在的Hamilton operator列表系数表
         self.__coefHOList = []
         # 现在的Collapse operator列表系数表
         self.__coefCOList = []
@@ -32,23 +37,26 @@ class Data:
         # 最大算符长度
         self.__maxOPLen = maxOPLen
 
-        self.__CreateNumLetterMap(strHOList, strCOList, trackList)
+        # 检查输入正确性, 并返回raw数据
+        (HOList, self.__rawCoefHOList, COList, self.__rawCoefCOList) = \
+            Data.__CheckAndParse(H, Co_ps, trackList, maxOPLen)
+
+        self.__CreateNumLetterMap(HOList, COList, trackList)
         (self.__numHOList, self.__numCOList, self.__numTrackList) = \
-            self.__MapLetterListToNumList(strHOList, strCOList, trackList)
-        self.__coefHOList = copy.deepcopy(coefHOList)
-        self.__coefCOList = copy.deepcopy(coefCOList)
-        # 检查系数列表中的类型
-        for c in coefHOList:
-            if not isinstance(c, int) and not isinstance(c, float) and not isinstance(c, complex):
-                raise TypeError("Invalid types in coefficient list.")
-        for c in coefCOList:
-            if not isinstance(c, int) and not isinstance(c, float) and not isinstance(c, complex):
-                raise TypeError("Invalid types in coefficient list.")
-        for c in InitList:
-            if not isinstance(c, int) and not isinstance(c, float) and not isinstance(c, complex):
-                raise TypeError("Invalid types in coefficient list.")
-        if not isinstance(self.__maxOPLen, int):
-            raise TypeError("Invalid types for maxOPLen.")
+            self.__MapLetterListToNumList(HOList, COList, trackList)
+
+        # 计算t=0时刻的系数
+        self.__coefHOList = [1] * len(self.__rawCoefHOList)
+        self.__coefCOList = [1] * len(self.__rawCoefCOList)
+
+        maxnum = -1
+        for item in self.__numHOList:
+            for item2 in item:
+                maxnum = max(maxnum, item2)
+        for item in self.__numCOList:
+            for item2 in item:
+                maxnum = max(maxnum, item2)
+        InitList = [0] * floor((maxnum + 1) / 2)
 
         self.__deriveData = clucore.DeriveAssign(InitList, self.__numHOList, self.__coefHOList,
                                                  self.__numCOList, self.__coefCOList, self.__numTrackList, maxOPLen)
@@ -114,6 +122,12 @@ class Data:
         """
         return copy.deepcopy(self.__numCOList)
 
+    def GetHamiltonCoef(self):
+        return clucore.GetHamiltonCoef(self.__deriveData)
+
+    def GetCollapseCoef(self):
+        return clucore.GetCollapseCoef(self.__deriveData)
+
     def GetCurrentValue(self):
         """
         :return: 当前的current value列表
@@ -125,6 +139,70 @@ class Data:
         :return: 计算的结果, 类型为列表
         """
         return clucore.CalEvolution(self.__deriveData)
+
+    def UpdateCoef(self, t, *args):
+        HOCoefList0 = []
+        COCoefList0 = []
+        for stuff in self.__rawCoefHOList:
+            if isinstance(stuff, types.FunctionType):
+                HOCoefList0.append(stuff(t, *args))
+            else:
+                HOCoefList0.append(stuff)
+        for stuff in self.__rawCoefCOList:
+            if isinstance(stuff, types.FunctionType):
+                COCoefList0.append(stuff(t, *args))
+            else:
+                COCoefList0.append(stuff)
+        self.__coefHOList = HOCoefList0
+        self.__coefCOList = COCoefList0
+
+    def UpdateInitialState(self, initialState):
+        # TODO: 字符串形式的initialState
+        if isinstance(initialState, str):
+            raise TypeError("Sorry. This kind of initial state is not supported for now.")
+        if not isinstance(initialState, list):
+            raise TypeError("Invalid types for initial state.")
+        for item in initialState:
+            if not isinstance(item, int):
+                raise TypeError("Invalid types in initial state list.")
+        return clucore.UpdateInitialState(self.__deriveData, initialState)
+
+    @staticmethod
+    def __CheckAndParse(H, Co_ps, trackOp, maxOpLen):
+        # check
+        for item in H:
+            if not isinstance(item, list) and len(item) != 2:
+                raise SyntaxError("Invalid parameter in parameter H.")
+            if not isinstance(item[0], str):
+                raise TypeError("Invalid types in parameter H.")
+            if not isinstance(item[1], complex) and not isinstance(item[1], int) \
+                    and not isinstance(item[1], float) and not isinstance(item[1], types.FunctionType):
+                raise TypeError("Invalid types in parameter H.")
+        for item in Co_ps:
+            if not isinstance(item, list) and len(item) != 2:
+                raise SyntaxError("Invalid parameter in parameter Co_ps.")
+            if not isinstance(item[0], str):
+                raise TypeError("Invalid types in parameter Co_ps.")
+            if not isinstance(item[1], complex) and not isinstance(item[1], int) \
+                    and not isinstance(item[1], float) and not isinstance(item[1], types.FunctionType):
+                raise TypeError("Invalid types in parameter Co_ps.")
+        for item in trackOp:
+            if not isinstance(item, str):
+                raise TypeError("Invalid types in parameter trackOp.")
+        if maxOpLen <= 0:
+            raise SyntaxError("Parameter maxOpLen must be greater than zero.")
+        # parse
+        hoList = []
+        coList = []
+        hoCoefList = []
+        coCoefList = []
+        for item in H:
+            hoList.append(item[0])
+            hoCoefList.append(item[1])
+        for item in Co_ps:
+            coList.append(item[0])
+            coCoefList.append(item[1])
+        return hoList, hoCoefList, coList, coCoefList
 
     def __CreateNumLetterMap(self, strHOList, strCOList, trackList):
         for s in strHOList:

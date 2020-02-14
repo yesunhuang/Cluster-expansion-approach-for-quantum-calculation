@@ -329,9 +329,10 @@ int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len) {
 
 int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 	ASSERTNULL(data);
+	Complex temp = { 0,1 };
 	for (int i = 0; i < data->size; ++i) {
 		for (int j = 0; j < MIN(data->hoSize, len); ++j) {
-			data->evoTrees_HO[i][j]->root->value = arr[j];
+			MultiplyOfComplex(arr[j], temp, &data->evoTrees_HO[i][j]->root->value);
 		}
 	}
 	return 1;
