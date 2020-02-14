@@ -1,6 +1,6 @@
 from distutils.core import setup, Extension
 
-module1 = Extension("cluster", 
+module1 = Extension("cluster.core", 
 	sources=["cluster_expansion.c", "complex.c", "main_wrapper.c", "normalizer.c", "operator_tree.c", "position_tree.c", "solver.c", "static_dtree.c"], 
 	include_dirs=['./'])
 

@@ -5,6 +5,8 @@
 
 # own filter
 scipy*.pdf
+*/[Bb]uild
+[Bb]uild/
 
 # User-specific files
 *.rsuser

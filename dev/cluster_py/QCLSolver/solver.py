@@ -12,6 +12,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
     # 构造正确的t0, 并传入真正的系数初值
     ddata.UpdateCoef(t_span[0], user_args)
     ddata.UpdateInitialState(Initial_State)
+
     y0c = np.array(ddata.GetCurrentValue())
     n = len(y0c)
 
@@ -84,5 +85,6 @@ if __name__ == '__main__':
     print(Coo_ps)
     T_o = ['Aa', 'Bb']
     print(T_o)
-    sol2 = Solve(Hamilton, Coo_ps, [0, 0], (0, 10), T_o, 5)
+    d = Data(Hamilton, Coo_ps, T_o, 3)
+    sol2 = Solve(d, [0, 0], (0, 10))
     print('good')

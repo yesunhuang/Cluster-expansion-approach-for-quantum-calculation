@@ -1,16 +1,12 @@
-import QCLSolver.core as clucore
+import cluster.core as clucore
 import copy
 from math import floor
 import types
 
 
 class Data:
-    def __init__(self, H, Co_ps, strHOList, strCOList, coefHOList, coefCOList, trackList, maxOPLen):
+    def __init__(self, H, Co_ps, trackList, maxOPLen):
         """
-        :param strHOList: 字符形式的HO列表
-        :param strCOList: 字符形式的CO列表
-        :param coefHOList: HO系数的列表
-        :param coefCOList: CO系数的列表
         :param trackList: tracking operator的字符形式HO列表
         :param maxOPLen: 最大operator长度
         """
@@ -155,6 +151,8 @@ class Data:
                 COCoefList0.append(stuff)
         self.__coefHOList = HOCoefList0
         self.__coefCOList = COCoefList0
+        clucore.SetHamiltonCoef(self.__deriveData, self.__coefHOList)
+        clucore.SetCollapseCoef(self.__deriveData, self.__coefCOList)
 
     def UpdateInitialState(self, initialState):
         # TODO: 字符串形式的initialState
@@ -262,3 +260,6 @@ class Data:
                 raise TypeError("Invalid types in num list.")
             s += self.__numToLetterMap[n]
         return s
+
+    def Debug(self):
+        clucore.PrintData(self.__deriveData)

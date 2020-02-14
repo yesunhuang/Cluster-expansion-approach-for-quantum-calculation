@@ -469,7 +469,7 @@ core_UpdateInitialState(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 	int listSize = PyList_Size(pyList);
 	int* buf = (int*)malloc(listSize * sizeof(int)); ASSERTNULL(buf);
-	memset(buf, 0, listSize * sizeof(Complex));
+	memset(buf, 0, listSize * sizeof(int));
 	for (int i = 0; i < listSize; ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
 		if (PyLong_Check(temp)) {
