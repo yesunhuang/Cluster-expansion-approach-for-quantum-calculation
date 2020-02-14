@@ -49,7 +49,7 @@ int CheckArgsDData(PyObject* dataobject, pDeriveData* outputdd) {
 }
 
 /**
- * @ 函数: static PyObject* cluster_DeriveAssign(PyObject* self, PyObject* args)
+ * @ 函数: static PyObject* core_DeriveAssign(PyObject* self, PyObject* args)
  *
  * @ 功能: 根据传入的参数, 进行DeriveAndAssign过程
  *
@@ -58,7 +58,7 @@ int CheckArgsDData(PyObject* dataobject, pDeriveData* outputdd) {
  * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
  */
 static PyObject*
-cluster_DeriveAssign(PyObject* self, PyObject* args) {
+core_DeriveAssign(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 7) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -85,7 +85,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArr_Init[i] = PyLong_AsLong(tempobj);
 	}
-#ifdef __TREEDEBUG__
+#ifdef __CRTDEBUG__
 	printf("object[0]\n");
 #endif // __TREEDEBUG__
 	// [Hamiton算符...], [Hamilton算符系数...]
@@ -237,7 +237,7 @@ cluster_DeriveAssign(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_CalEvolution(PyObject* self, PyObject* args) {
+core_CalEvolution(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -264,7 +264,7 @@ cluster_CalEvolution(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetCurrentValue(PyObject* self, PyObject* args) {
+core_SetCurrentValue(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -305,7 +305,7 @@ cluster_SetCurrentValue(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
+core_SetHamiltonCoef(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -321,8 +321,8 @@ cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 	int listSize = PyList_Size(pyList);
 	Complex* buf = (Complex*)malloc(data->hoSize * sizeof(Complex)); ASSERTNULL(buf);
-	memset(buf, 0, data->size * sizeof(Complex));
-	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+	memset(buf, 0, data->hoSize * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->hoSize); ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
 		if (PyComplex_CheckExact(temp)) {
 			buf[i].real = PyComplex_RealAsDouble(temp);
@@ -346,7 +346,7 @@ cluster_SetHamiltonCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
+core_SetCollapseCoef(PyObject* self, PyObject* args) {
 	if (PyTuple_Size(args) != 2) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many(few) args are passed.");
 	}
@@ -362,8 +362,8 @@ cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 	int listSize = PyList_Size(pyList);
 	Complex* buf = (Complex*)malloc(data->coSize * sizeof(Complex)); ASSERTNULL(buf);
-	memset(buf, 0, data->size * sizeof(Complex));
-	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+	memset(buf, 0, data->coSize * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->coSize); ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
 		if (PyComplex_CheckExact(temp)) {
 			buf[i].real = PyComplex_RealAsDouble(temp);
@@ -387,7 +387,7 @@ cluster_SetCollapseCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetCurrentValue(PyObject* self, PyObject* args) {
+core_GetCurrentValue(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -407,7 +407,7 @@ cluster_GetCurrentValue(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetHamiltonCoef(PyObject* self, PyObject* args) {
+core_GetHamiltonCoef(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -430,7 +430,7 @@ cluster_GetHamiltonCoef(PyObject* self, PyObject* args) {
 }
 
 static PyObject*
-cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
+core_GetCollapseCoef(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -446,7 +446,7 @@ cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
 	}
 	PyObject* ansList = PyList_New(data->coSize);
 	for (int i = 0; i < data->coSize; ++i) {
-		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real, data->evoTrees_CO[0][i]->root->value.image));
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real * 2, data->evoTrees_CO[0][i]->root->value.image * 2));
 	}
 
 	return ansList;
@@ -454,7 +454,7 @@ cluster_GetCollapseCoef(PyObject* self, PyObject* args) {
 
 #ifdef __TREEDEBUG__
 static PyObject*
-cluster_PrintData(PyObject* self, PyObject* args) {
+core_PrintData(PyObject* self, PyObject* args) {
 	PyObject* pyData = NULL;
 	if (PyTuple_Size(args) != 1) {
 		RAISE_PY_ERROR(PyExc_TypeError, "Too many args are passed.");
@@ -503,32 +503,32 @@ cluster_PrintData(PyObject* self, PyObject* args) {
 #endif // __TREEDEBUG__
 
 
-static PyMethodDef clusterMethods[] = {
-	{"DeriveAssign",  cluster_DeriveAssign, METH_VARARGS, NULL},
-	{"CalEvolution",  cluster_CalEvolution, METH_VARARGS, NULL},
-	{"SetCurrentValue",  cluster_SetCurrentValue, METH_VARARGS, NULL},
-	{"GetCurrentValue",  cluster_GetCurrentValue, METH_VARARGS, NULL},
-	{"SetHamiltonCoef",  cluster_SetHamiltonCoef, METH_VARARGS, NULL},
-	{"SetCollapseCoef",  cluster_SetCollapseCoef, METH_VARARGS, NULL},
-	{"GetHamiltonCoef",  cluster_GetHamiltonCoef, METH_VARARGS, NULL},
-	{"GetCollapseCoef",  cluster_GetCollapseCoef, METH_VARARGS, NULL},
+static PyMethodDef coreMethods[] = {
+	{"DeriveAssign",  core_DeriveAssign, METH_VARARGS, NULL},
+	{"CalEvolution",  core_CalEvolution, METH_VARARGS, NULL},
+	{"SetCurrentValue",  core_SetCurrentValue, METH_VARARGS, NULL},
+	{"GetCurrentValue",  core_GetCurrentValue, METH_VARARGS, NULL},
+	{"SetHamiltonCoef",  core_SetHamiltonCoef, METH_VARARGS, NULL},
+	{"SetCollapseCoef",  core_SetCollapseCoef, METH_VARARGS, NULL},
+	{"GetHamiltonCoef",  core_GetHamiltonCoef, METH_VARARGS, NULL},
+	{"GetCollapseCoef",  core_GetCollapseCoef, METH_VARARGS, NULL},
 #ifdef __TREEDEBUG__
-	{"PrintData",  cluster_PrintData, METH_VARARGS, NULL},
+	{"PrintData",  core_PrintData, METH_VARARGS, NULL},
 #endif // __TREEDEBUG__
 
 	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-static struct PyModuleDef clusterModule = {
+static struct PyModuleDef coreModule = {
 	PyModuleDef_HEAD_INIT,
 	"core",		/* name of module */
 	"The core for QCLSolver.",			/* module documentation, may be NULL */
 	-1,				/* size of per-interpreter state of the module,
 						or -1 if the module keeps state in global variables. */
-	clusterMethods
+	coreMethods
 };
 
 PyMODINIT_FUNC
 PyInit_core(void) {
-	return PyModule_Create(&clusterModule);
+	return PyModule_Create(&coreModule);
 }

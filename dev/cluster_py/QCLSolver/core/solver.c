@@ -340,7 +340,7 @@ int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 	ASSERTNULL(data);
 	for (int i = 0; i < data->size; ++i) {
-		for (int j = 0; j < MIN(data->hoSize, len); ++j) {
+		for (int j = 0; j < MIN(data->coSize, len); ++j) {
 			data->evoTrees_CO[i][j]->root->value.real = arr[j].real / 2.0;
 			data->evoTrees_CO[i][j]->root->value.image = arr[j].image / 2.0;
 		}

@@ -85,7 +85,7 @@ core_DeriveAssign(PyObject* self, PyObject* args) {
 		}
 		inputArr_Init[i] = PyLong_AsLong(tempobj);
 	}
-#ifdef __TREEDEBUG__
+#ifdef __CRTDEBUG__
 	printf("object[0]\n");
 #endif // __TREEDEBUG__
 	// [Hamiton算符...], [Hamilton算符系数...]
@@ -321,8 +321,8 @@ core_SetHamiltonCoef(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 	int listSize = PyList_Size(pyList);
 	Complex* buf = (Complex*)malloc(data->hoSize * sizeof(Complex)); ASSERTNULL(buf);
-	memset(buf, 0, data->size * sizeof(Complex));
-	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+	memset(buf, 0, data->hoSize * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->hoSize); ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
 		if (PyComplex_CheckExact(temp)) {
 			buf[i].real = PyComplex_RealAsDouble(temp);
@@ -362,8 +362,8 @@ core_SetCollapseCoef(PyObject* self, PyObject* args) {
 	CheckArgsDData(pyData, &data);
 	int listSize = PyList_Size(pyList);
 	Complex* buf = (Complex*)malloc(data->coSize * sizeof(Complex)); ASSERTNULL(buf);
-	memset(buf, 0, data->size * sizeof(Complex));
-	for (int i = 0; i < MIN(listSize, data->size); ++i) {
+	memset(buf, 0, data->coSize * sizeof(Complex));
+	for (int i = 0; i < MIN(listSize, data->coSize); ++i) {
 		PyObject* temp = PyList_GetItem(pyList, i);
 		if (PyComplex_CheckExact(temp)) {
 			buf[i].real = PyComplex_RealAsDouble(temp);
@@ -446,7 +446,7 @@ core_GetCollapseCoef(PyObject* self, PyObject* args) {
 	}
 	PyObject* ansList = PyList_New(data->coSize);
 	for (int i = 0; i < data->coSize; ++i) {
-		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real, data->evoTrees_CO[0][i]->root->value.image));
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real * 2, data->evoTrees_CO[0][i]->root->value.image * 2));
 	}
 
 	return ansList;

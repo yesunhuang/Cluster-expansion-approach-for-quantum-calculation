@@ -4,6 +4,14 @@
 
 * Python 3.7及以上(低版本暂未测试)
 
+* scipy 1.4.1及以上
+
+  * 更新代码如下
+
+  * ```powershell
+    pip install --upgrade scipy
+    ```
+
 ### 配置步骤
 
 1. 在./cluster_py下运行shell，输入代码
@@ -15,9 +23,24 @@ python ./setup.py install
 ### import方式
 
 ```python
-from QCLSolver.data import Data
+from QCLSolver.solver import Solve
 ```
 
 ### API说明
 
-见/test/testForNewModule.ipynb中相应部分的使用, 以及./cluster_py/QCLSolver/data.py中的各参数说明
+#### 1. Solve(...)
+
+```python
+def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, **options)
+```
+
+* 参数列表:
+  1. **H**: hamilton量，格式为[[hamilton字符串形式, 系数/系数函数指针]...]。例如，Hamilton量有'Aa'与'Bb'，系数分别为$1+j, -2j$，则**H**为[['Aa', $1+j$], ['Bb', $-2j$]]
+  2. **Co_ps**: callapse量，格式同上。
+  3. **Initial_State**: 一个表示初始状态量的list。例如$[1,2,0,3]$表示算符中$\{1,2\}$的初始量为1，$\{3,4\}$的初始量为2，$\{5,6\}$的初始量为0，$\{7,8\}$的初始量为3。
+  4. **t_span**: 二元的Tuple类型，表示起始时间与结束时间。详情见solve_ivp文档。
+  5. **trackOp**: 含有多个tracking算符的列表。例如，两个tracking算符表示为'AaBb' ，'bB'，则\[Hamilton算符...\]为['AaBb' , 'bB']
+  6. 后续的参数: 见solve_ivp的文档
+* 返回值：
+  * 类型: Bunch类型
+  * 说明: 见solve_ivp的文档

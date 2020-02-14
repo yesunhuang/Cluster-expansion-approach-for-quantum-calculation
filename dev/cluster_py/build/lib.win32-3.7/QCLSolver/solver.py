@@ -7,12 +7,12 @@ import functools
 import copy
 
 
-def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, method='RK45',
+def Solve(H, Co_ps, Initial_State, tlist, trackOp, maxOpLen, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 检查输入正确性, 并返回raw数据
     (HOList, rawHOCoefList, COList, rawCOCoefList) = __CheckAndParse(H, Co_ps, Initial_State, trackOp, maxOpLen)
     # 构造正确的t0, 并传入真正的初值
-    t0 = t_span[0]
+    t0 = tlist[0]
     HOCoefList0 = []
     COCoefList0 = []
     for stuff in rawHOCoefList:
@@ -61,7 +61,7 @@ def Solve(H, Co_ps, Initial_State, t_span, trackOp, maxOpLen, user_args=None, me
         raise TypeError("Parameter user_args is not a tuple.")
     args_wrapped = (ddata, n, rawHOCoefList, rawCOCoefList, events, jac_func, user_args_new)
 
-    return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+    return scipy.integrate.solve_ivp(__ConvertToSolver, tlist, y0c, method=method, t_eval=t_eval,
                                      events=events_wrapped_copy,
                                      dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
                                      options=options_new)
@@ -144,12 +144,8 @@ def Copy_Func(f):
     g.__kwdefaults__ = f.__kwdefaults__
     return g
 
-if __name__ == '__main__':
-    Hamilton = [['Aa', 0.8], ['Bb', 1.6], ['AAb', 1], ['aaB', 1], ['A', 2], ['a', 2]]
-    print(Hamilton)
-    Coo_ps = [['a', 2], ['b', 4]]
-    print(Coo_ps)
-    T_o = ['Aa', 'Bb']
-    print(T_o)
-    sol2 = Solve(Hamilton, Coo_ps, [0, 0], (0, 10), T_o, 5)
-    print('good')
+Hamilton=[['Aa', 0.8],['Bb',1.6],['AAb',1],['aaB',1],['A',2],['a',2]];print(Hamilton)
+Co_ps=[['a',2],['b',4]];print(Co_ps)
+T_o=['Aa','Bb'];print(T_o)
+sol2=Solve(Hamilton, Co_ps, [0,0], (0,10), T_o, 5)
+print('good')
