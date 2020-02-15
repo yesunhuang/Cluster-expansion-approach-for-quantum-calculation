@@ -49,11 +49,11 @@ Complex c_8 = { 4,0 };
 int init_arr1[] = { 0,0 };
 UINT_L ho_arr1[] = { 1,2 };
 UINT_L ho_arr2[] = { 3,4 };
-UINT_L ho_arr3[] = { 1,1,4 };
+UINT_L ho_arr3[] = { 1,1,4,6 };
 UINT_L ho_arr4[] = { 2,2,3 };
 UINT_L ho_arr5[] = { 1 };
 UINT_L ho_arr6[] = { 2 };
-int ho_lens_arr1[] = { 2,2,3,3,1,1 };
+int ho_lens_arr1[] = { 2,2,4,3,1,1 };
 Complex ho_coef_arr1[6];
 pOPArray ho_arrs[6];
 UINT_L co_arr1[] = { 2 };
@@ -90,6 +90,10 @@ int main() {
 	track_arrs[1] = track_arr2;
 
 	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
+	//int* buf2 = NULL;
+
+
+	//assert(buf2 != NULL);
 	
 	/*
 	pOPTree tree1;
@@ -182,7 +186,7 @@ int main() {
 		pDeriveData data = NULL;
 		DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
 			co_arrs, co_lens_arr1, co_coef_arr1, 2,
-			init_arr1, 2, track_arrs, track_lens_arr1, 2, 6, &data);
+			init_arr1, 2, track_arrs, track_lens_arr1, 2, 3, &data);
 		Complex iv[8];
 		
 		for (int i = 0; i < 8; ++i) {

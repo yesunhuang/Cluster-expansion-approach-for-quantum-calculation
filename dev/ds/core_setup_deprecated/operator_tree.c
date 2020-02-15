@@ -326,6 +326,11 @@ int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum) {
 int _SearchOfOPTree(pOPTree tree, pOPArray arr, int len, pOPNode* output) {
 	pOPNode nowNode = tree->root;
 	for (int i = 0; i < len; ++i) {
+		if (arr[i] > tree->childSize) {
+			// 不存在此节点的情况
+			*output = NULL;
+			return 0;
+		}
 		nowNode = nowNode->children[arr[i]];
 		if (nowNode == NULL) {
 			// 不存在此节点的情况
@@ -597,6 +602,7 @@ int _ReserveChildSize(pOPNode node, UINT_L originCsize, UINT_L newCsize) {
 	struct _Node** newChild = (struct _Node**)malloc((newCsize + 1) * sizeof(struct _Node*));
 	if (newChild == NULL) 
 		return 0;
+	memset(newChild, 0, (newCsize + 1) * sizeof(struct _Node*));
 	for (int i = 0; i <= MIN(originCsize, newCsize); ++i) {
 		newChild[i] = node->children[i];
 	}

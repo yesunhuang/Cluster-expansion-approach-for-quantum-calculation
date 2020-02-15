@@ -84,7 +84,7 @@ def Copy_Func(f):
     return g
 
 if __name__ == '__main__':
-    Hamilton = [['Aa', 0.8], ['Bb', 1.6], ['AAb', 1], ['aaB', 1], ['A', 2], ['a', 2]]
+    Hamilton = [['Aa', 0.8], ['Bb', 1.6], ['AAbc', 1], ['aaB', 1], ['A', 2], ['a', 2]]
     print(Hamilton)
     Coo_ps = [['a', 2], ['b', 4]]
     print(Coo_ps)
