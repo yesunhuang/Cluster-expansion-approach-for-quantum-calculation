@@ -66,6 +66,7 @@ def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[A
     # 进行时变的系数
     ddata.UpdateCoef(t, user_args, ForceUpdate=False)
     dydtc = ddata.Calculate()
+    print(dydtc)
     return np.asarray(dydtc)
 
 
@@ -86,12 +87,13 @@ def Copy_Func(f):
     return g
 
 if __name__ == '__main__':
-    Hamilton = [['Aa', 0.8], ['Bb', 0], ['Cc', 1.6], ['AAb', 1], ['aaC', 1], ['A', 2],['a', 2]]
+    Hamilton = [['.', 31.41592653589793], ['Bb', -9.42477796076938], ['Cc', -6.283185307179586], ['Ab', 0.06283185307179587], ['aB', 0.06283185307179587], ['Ac', 0.07853981633974483], ['aC', 0.07853981633974483]]
+    #Hamilton = [['Aa', 0.8], ['Bb', 0], ['Cc', 1.6], ['AAb', 1], ['aaC', 1], ['A', 2],['a', 2]]
     print(Hamilton)
-    Coo_ps = [['a', 2], ['c', 4]]
-    print(Coo_ps)
-    T_o = ['Aa', 'Cc']
+    #Coo_ps = [['a', 2], ['c', 4]]
+    #print(Coo_ps)
+    T_o = ['Aa', 'Bb', 'Cc']
     print(T_o)
-    d = Data(Hamilton, Coo_ps, T_o, 3)
-    sol2 = Solve(d, [0, 0, 0], (0, 10))
+    d = Data(Hamilton, [], T_o, 2)
+    sol2 = Solve(d, [0, 1, 0], (0, 10))
     print('good')
