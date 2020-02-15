@@ -62,7 +62,7 @@ int co_lens_arr1[] = { 1,1 };
 Complex co_coef_arr1[2];
 pOPArray co_arrs[2];
 UINT_L track_arr1[] = { 1,2 };
-UINT_L track_arr2[] = { 3,4 };
+UINT_L track_arr2[] = { 5,6 };
 int track_lens_arr1[] = { 2,2 };
 pOPArray track_arrs[2];
 
@@ -180,7 +180,7 @@ int main() {
 	//PrintOPTree(ho_output[0]);
 	//*/
 
-	//* CalEvolution()的测试过程
+	/* CalEvolution()的测试过程
 
 		
 		pDeriveData data = NULL;

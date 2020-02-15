@@ -11,6 +11,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 构造正确的t0, 并传入真正的系数初值
     ddata.UpdateCoef(t_span[0],  user_args, ForceUpdate=True)
+    ddata.Debug()
     ddata.UpdateInitialState(Initial_State)
 
     y0c = np.array(ddata.GetCurrentValue())
@@ -61,6 +62,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
 
 def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
     ddata.SetCurrentValue(y.tolist())
+    print(ddata.GetCurrentValue())
     # 进行时变的系数
     ddata.UpdateCoef(t, user_args, ForceUpdate=False)
     dydtc = ddata.Calculate()
@@ -84,12 +86,12 @@ def Copy_Func(f):
     return g
 
 if __name__ == '__main__':
-    Hamilton = [['Aa', 0.8], ['Bb', 1.6], ['AAbc', 1], ['aaB', 1], ['A', 2], ['a', 2]]
+    Hamilton = [['Aa', 0.8], ['Bb', 0], ['Cc', 1.6], ['AAb', 1], ['aaC', 1], ['A', 2],['a', 2]]
     print(Hamilton)
-    Coo_ps = [['a', 2], ['b', 4]]
+    Coo_ps = [['a', 2], ['c', 4]]
     print(Coo_ps)
-    T_o = ['Aa', 'Bb']
+    T_o = ['Aa', 'Cc']
     print(T_o)
     d = Data(Hamilton, Coo_ps, T_o, 3)
-    sol2 = Solve(d, [0, 0], (0, 10))
+    sol2 = Solve(d, [0, 0, 0], (0, 10))
     print('good')

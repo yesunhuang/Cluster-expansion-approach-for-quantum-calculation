@@ -540,7 +540,7 @@ core_PrintData(PyObject* self, PyObject* args) {
 		putchar('\n');
 		for (int j = 0; j < data->coSize; j++) {
 			printf("CO_Tree %d:, coef is %.3lf+(%.3lf)j:\n", j,
-				data->hoCoefs[j].real, data->hoCoefs[j].image);
+				data->coCoefs[j].real, data->coCoefs[j].image);
 			PrintOPTree(data->evoTrees_CO[i][j]);
 			putchar('\n');
 		}
