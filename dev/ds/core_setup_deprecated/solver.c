@@ -19,6 +19,8 @@ int CreateOfDData(int capacity, int csize, int hoSize, int coSize, pDeriveData* 
 	p->hoSize = hoSize;
 	p->coSize = coSize;
 	p->curValues = (Complex*)malloc(capacity * sizeof(Complex)); ASSERTNULL(p->curValues);
+	p->hoCoefs = (Complex*)malloc(hoSize * sizeof(Complex)); ASSERTNULL(p->hoCoefs);
+	p->coCoefs = (Complex*)malloc(coSize * sizeof(Complex)); ASSERTNULL(p->hoCoefs);
 	p->evoTrees_HO = (pOPTree**)malloc(capacity * sizeof(pOPTree*)); ASSERTNULL(p->evoTrees_HO);
 	p->evoTrees_CO = (pOPTree**)malloc(capacity * sizeof(pOPTree*)); ASSERTNULL(p->evoTrees_CO);
 	for (int i = 0; i < capacity; ++i) {
@@ -63,6 +65,8 @@ int InsertOfDData(pDeriveData data, Complex c, pOPArray arr, int arrLen) {
 
 int FreeOfDData(pDeriveData data) {
 	free(data->curValues);
+	free(data->hoCoefs);
+	free(data->coCoefs);
 	for (int i = 0; i < data->capacity; ++i) {
 		for (int j = 0; j < data->hoSize; ++j) {
 			FreeOPTree(data->evoTrees_HO[i][j]);
@@ -291,6 +295,16 @@ int DeriveAssign(pOPArray* inputArr_HO, int* inputArrLens_HO, Complex* inputArrC
 		}
 	}
 
+	/* 设置系数的过程 */
+	for (int i = 0; i < inputArrLen_HO; ++i) {
+		Complex temp = { 0, 1 };
+		MultiplyOfComplex(inputArrCoef_HO[i], temp, &outputData->hoCoefs[i]);
+	}
+	for (int i = 0; i < inputArrLen_CO; ++i) {
+		Complex temp = { (double)0.5, 0 };
+		MultiplyOfComplex(inputArrCoef_CO[i], temp, &outputData->coCoefs[i]);
+	}
+
 	/* 把trackValueTree中结点的value设为其current value */
 	_UpdateDDTTreeValue(outputData);
 
@@ -308,10 +322,10 @@ int CalEvolution(pDeriveData data, Complex** outputpp) {
 		nowIndexArrLen = GetRoot(data->trackNodes[i], NULL);
 		ArrayFromNode(data->trackNodes[i], nowIndexArrLen, nowIndexArr);
 		for (int j = 0; j < data->hoSize; ++j) {
-			_CalEvo(data->evoTrees_HO[i][j], data, &outputp[i]);
+			_CalEvo(data->evoTrees_HO[i][j], data, j, 0, &outputp[i]);
 		}
 		for (int j = 0; j < data->coSize; ++j) {
-			_CalEvo(data->evoTrees_CO[i][j], data, &outputp[i]);
+			_CalEvo(data->evoTrees_CO[i][j], data, j, 1, &outputp[i]);
 		}
 	}
 
@@ -330,42 +344,41 @@ int SetCurrentValueOfDData(pDeriveData data, Complex* arr, int len) {
 int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 	ASSERTNULL(data);
 	Complex temp = { 0,1 };
-	for (int i = 0; i < data->size; ++i) {
-		for (int j = 0; j < MIN(data->hoSize, len); ++j) {
-			MultiplyOfComplex(arr[j], temp, &data->evoTrees_HO[i][j]->root->value);
-		}
+	for (int i = 0; i < MIN(data->hoSize, len); ++i) {
+		MultiplyOfComplex(arr[i], temp, &data->hoCoefs[i]);
 	}
 	return 1;
 }
 
 int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 	ASSERTNULL(data);
-	for (int i = 0; i < data->size; ++i) {
-		for (int j = 0; j < MIN(data->coSize, len); ++j) {
-			data->evoTrees_CO[i][j]->root->value.real = arr[j].real / 2.0;
-			data->evoTrees_CO[i][j]->root->value.image = arr[j].image / 2.0;
-		}
+	Complex temp = { (double)0.5, 0 };
+	for (int i = 0; i < MIN(data->coSize, len); ++i) {
+		MultiplyOfComplex(arr[i], temp, &data->coCoefs[i]);
 	}
 	return 1;
 }
 
-int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum) {
+int _CalEvo(pOPTree evoTree, pDeriveData data, int treeIndex, int HorC, Complex* psum) {
 	UINT_L buf[MAX_OPERATOR_LENGTH];
 	/* 零算符 */
 	if (evoTree->root->children[0] != NULL) {
-		AddOfComplex(*psum, evoTree->root->value, psum);
+		if (!HorC)
+			AddOfComplex(*psum, data->hoCoefs[treeIndex], psum);
+		else
+			AddOfComplex(*psum, data->coCoefs[treeIndex], psum);
 	}
 
 	/* 其他算符 */
 	for (int i = 1; i <= evoTree->childSize; ++i) {
 		if (evoTree->root->children[i] != NULL) {
-			__CalEvo(evoTree->root->children[i], evoTree, data, buf, 0, psum);
+			__CalEvo(evoTree->root->children[i], evoTree, data, treeIndex, HorC, buf, 0, psum);
 		}
 	}
 	return 1;
 }
 
-int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int nextIndex, Complex* psum) {
+int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, int treeIndex, int HorC, UINT_L* buf, int nextIndex, Complex* psum) {
 	buf[nextIndex] = node->label;
 	if (!IsZeroOfComplex(node->value)) {
 		int len = nextIndex + 1;
@@ -415,13 +428,16 @@ int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int next
 			head = tail;
 			_GetNextCPIndexFromOPArray(buf, len, head, &tail);
 		}
-		MultiplyOfComplex(tempc, tree->root->value, &tempc);
+		if (!HorC)
+			MultiplyOfComplex(tempc, data->hoCoefs[treeIndex], &tempc);
+		else
+			MultiplyOfComplex(tempc, data->coCoefs[treeIndex], &tempc);
 		MultiplyOfComplex(tempc, node->value, &tempc);
 		AddOfComplex(tempc, *psum, psum);
 	}
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (node->children[i] != NULL) {
-			__CalEvo(node->children[i], tree, data, buf, nextIndex + 1, psum);
+			__CalEvo(node->children[i], tree, data, treeIndex, HorC, buf, nextIndex + 1, psum);
 		}
 	}
 	return 1;
@@ -678,9 +694,11 @@ int _Evolution_HO(pOPArray* inputArr, int* inputArrLens,
 		/* TODO: 这个方法很蠢,日后需要优化 */
 		while (_DeleteAndCE(OA_Tree, maxOPLen) == 1) {}
 
+		/* deprecated. 系数存至外部.
 		OA_Tree->root->value = inputArrCoef[i];
 		Complex temp = { 0,1 };
 		MultiplyOfComplex(OA_Tree->root->value, temp, &OA_Tree->root->value);
+		*/
 
 		FreeOPTree(AO_Tree);
 
@@ -733,9 +751,11 @@ int _Evolution_CO(pOPArray* inputArr, int* inputArrLens,
 		/* TODO: 这个方法很蠢,日后需要优化 */
 		while (_DeleteAndCE(OdAO_Tree, maxOPLen) == 1) {}
 
+		/* deprecated. 系数存至外部.
 		Complex temp = { (double)0.5, 0 };
 		MultiplyOfComplex(temp, inputArrCoef[i], &temp);
 		OdAO_Tree->root->value = temp;
+		*/
 
 		FreeOPTree(OdOA_Tree);
 		FreeOPTree(AOdO_Tree);

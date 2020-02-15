@@ -6,10 +6,10 @@
 
 * scipy 1.4.1及以上
 
-  * 更新代码如下
+  * 更新代码如下，在requirements.txt的同目录下运行
 
   * ```powershell
-    pip install --upgrade scipy
+    pip install -r requirements.txt
     ```
 
 ### 配置步骤

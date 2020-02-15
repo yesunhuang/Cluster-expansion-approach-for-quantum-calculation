@@ -10,7 +10,7 @@ import copy
 def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 构造正确的t0, 并传入真正的系数初值
-    ddata.UpdateCoef(t_span[0], user_args)
+    ddata.UpdateCoef(t_span[0],  user_args, ForceUpdate=True)
     ddata.UpdateInitialState(Initial_State)
 
     y0c = np.array(ddata.GetCurrentValue())
@@ -57,7 +57,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
 def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
     ddata.SetCurrentValue(y.tolist())
     # 进行时变的系数
-    ddata.UpdateCoef(t, user_args)
+    ddata.UpdateCoef(t, user_args, ForceUpdate=False)
     dydtc = ddata.Calculate()
     return np.asarray(dydtc)
 

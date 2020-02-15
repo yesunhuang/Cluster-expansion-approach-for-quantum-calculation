@@ -423,7 +423,7 @@ core_GetHamiltonCoef(PyObject* self, PyObject* args) {
 	}
 	PyObject* ansList = PyList_New(data->hoSize);
 	for (int i = 0; i < data->hoSize; ++i) {
-		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_HO[0][i]->root->value.real, data->evoTrees_HO[0][i]->root->value.image));
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->hoCoefs[i].real, data->hoCoefs[i].image));
 	}
 
 	return ansList;
@@ -446,7 +446,7 @@ core_GetCollapseCoef(PyObject* self, PyObject* args) {
 	}
 	PyObject* ansList = PyList_New(data->coSize);
 	for (int i = 0; i < data->coSize; ++i) {
-		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->evoTrees_CO[0][i]->root->value.real * 2, data->evoTrees_CO[0][i]->root->value.image * 2));
+		PyList_SetItem(ansList, i, PyComplex_FromDoubles(data->hoCoefs[i].real * 2, data->hoCoefs[i].image * 2));
 	}
 
 	return ansList;
@@ -533,14 +533,14 @@ core_PrintData(PyObject* self, PyObject* args) {
 		printf("Tracking Operator %d :\n", i);
 		for (int j = 0; j < data->hoSize; j++) {
 			printf("HO_Tree %d, coef is %.3lf+(%.3lf)j:\n", j, 
-				data->evoTrees_HO[i][j]->root->value.real, data->evoTrees_HO[i][j]->root->value.image);
+				data->hoCoefs[j].real, data->hoCoefs[j].image);
 			PrintOPTree(data->evoTrees_HO[i][j]);
 			putchar('\n');
 		}
 		putchar('\n');
 		for (int j = 0; j < data->coSize; j++) {
 			printf("CO_Tree %d:, coef is %.3lf+(%.3lf)j:\n", j,
-				data->evoTrees_CO[i][j]->root->value.real, data->evoTrees_CO[i][j]->root->value.image);
+				data->hoCoefs[j].real, data->hoCoefs[j].image);
 			PrintOPTree(data->evoTrees_CO[i][j]);
 			putchar('\n');
 		}
