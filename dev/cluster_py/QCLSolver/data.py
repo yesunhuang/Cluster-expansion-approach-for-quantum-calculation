@@ -233,6 +233,7 @@ class Data:
             if stuff is not None:
                 totalLetters.append(stuff)
         cnt = 0
+        self.__numToLetterMap[0] = '.'
         for c in totalLetters:
             self.__numToLetterMap[2 * cnt + 1] = c
             self.__numToLetterMap[2 * cnt + 2] = c.lower()
@@ -251,7 +252,9 @@ class Data:
         for s in strList:
             li = []
             for letter in s:
-                if 90 >= ord(letter) >= 65:
+                if letter == '.':
+                    li.append(0)
+                elif 90 >= ord(letter) >= 65:
                     li.append(self.__letterToNumMap[ord(letter) - 65])
                 else:
                     li.append(self.__letterToNumMap[ord(letter) - 71])

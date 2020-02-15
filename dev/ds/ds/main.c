@@ -7,7 +7,7 @@
 // #include <Python.h>
 
 UINT_L arr1[] = { 2,4,4,0,1,3,4,6 };
-UINT_L arr2[] = { 2,1,1,1,1,4,4,3 };
+UINT_L arr2[] = { 2,1,1,4,4,3,5,6, };
 UINT_L arr3[] = { 1,3 };
 UINT_L arr4[] = { 1,1,4,1,2 };
 UINT_L arr5[] = { 1,2,1,1,4 };
@@ -90,10 +90,6 @@ int main() {
 	track_arrs[1] = track_arr2;
 
 	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
-	//int* buf2 = NULL;
-
-
-	//assert(buf2 != NULL);
 	
 	/*
 	pOPTree tree1;
@@ -125,7 +121,7 @@ int main() {
 
 	/*
 	pOPTree tree;
-	SONormalize(arr2, 5, 2, &tree);
+	MONormalize(arr2, 8, &tree);
 	//FreeOPTree(tree);
 	PrintOPTree(tree);
 	//*/
@@ -146,13 +142,13 @@ int main() {
 	}
 	//*/
 	
-	/*
+	///*
 	pOPTree tempTree = NULL;
-	DeltaTree(10, &tempTree);
-	//ClusterExpansion(arr8, 10, &tempTree);
+	//DeltaTree(10, &tempTree);
+	ClusterExpansion(arr3, 2, &tempTree);
 	//FreeOPTree(tempTree);
 
-	//PrintOPTree(tempTree);
+	PrintOPTree(tempTree);
 	//*/
 
 	/*
