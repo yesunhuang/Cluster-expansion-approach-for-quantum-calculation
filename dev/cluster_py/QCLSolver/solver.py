@@ -10,7 +10,7 @@ import copy
 def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 构造正确的t0, 并传入真正的系数初值
-    ddata.UpdateCoef(t_span[0], user_args)
+    ddata.UpdateCoef(t_span[0],  user_args, ForceUpdate=True)
     ddata.UpdateInitialState(Initial_State)
 
     y0c = np.array(ddata.GetCurrentValue())
@@ -48,16 +48,21 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
         raise TypeError("Parameter user_args is not a tuple.")
     args_wrapped = (ddata, n, events, jac_func, user_args_new)
 
-    return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
-                                     events=events_wrapped_copy,
-                                     dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
-                                     options=options_new)
+    if options_new is not None:
+        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+                                        events=events_wrapped_copy,
+                                        dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
+                                        options=options_new)
+    else:
+        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+                                        events=events_wrapped_copy,
+                                        dense_output=dense_output, vectorized=vectorized, args=args_wrapped)
 
 
 def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
     ddata.SetCurrentValue(y.tolist())
     # 进行时变的系数
-    ddata.UpdateCoef(t, user_args)
+    ddata.UpdateCoef(t, user_args, ForceUpdate=False)
     dydtc = ddata.Calculate()
     return np.asarray(dydtc)
 

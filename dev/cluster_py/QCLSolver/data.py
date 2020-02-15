@@ -136,23 +136,28 @@ class Data:
         """
         return clucore.CalEvolution(self.__deriveData)
 
-    def UpdateCoef(self, t, *args):
+    def UpdateCoef(self, t, *args, ForceUpdate=False):
+        isChanged = False
         HOCoefList0 = []
         COCoefList0 = []
         for stuff in self.__rawCoefHOList:
             if isinstance(stuff, types.FunctionType):
                 HOCoefList0.append(stuff(t, *args))
+                isChanged = True
             else:
                 HOCoefList0.append(stuff)
         for stuff in self.__rawCoefCOList:
             if isinstance(stuff, types.FunctionType):
                 COCoefList0.append(stuff(t, *args))
+                isChanged = True
             else:
                 COCoefList0.append(stuff)
-        self.__coefHOList = HOCoefList0
-        self.__coefCOList = COCoefList0
-        clucore.SetHamiltonCoef(self.__deriveData, self.__coefHOList)
-        clucore.SetCollapseCoef(self.__deriveData, self.__coefCOList)
+
+        if isChanged or ForceUpdate:
+            self.__coefHOList = HOCoefList0
+            self.__coefCOList = COCoefList0
+            clucore.SetHamiltonCoef(self.__deriveData, self.__coefHOList)
+            clucore.SetCollapseCoef(self.__deriveData, self.__coefCOList)
 
     def UpdateInitialState(self, initialState):
         # TODO: 字符串形式的initialState

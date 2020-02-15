@@ -32,6 +32,8 @@ struct _DeriveData {
 	pOPTree trackTree;
 	pOPTree trackValueTree;
 	Complex* curValues;
+	Complex* hoCoefs;
+	Complex* coCoefs;
 	pOPTree** evoTrees_HO;
 	pOPTree** evoTrees_CO;
 	pOPNode* trackNodes;
@@ -78,7 +80,7 @@ int InitialValue(pOPArray arr, int len, int* sArr, int sArrLen, double* output);
  * @ 函数: int _Evolution_HO(pOPArray* inputArr, int* intputArrCoef, int inputArrLen, pOPArray userArr, int userArrLen,
 	pOPTree* ho_outputArr)
  *
- * @ 功能: 对应第四章的Evolution操作。
+ * @ 功能: 对应第四章的Evolution操作, 但是root->value不变, 根中的系数由外部改变。
  *
  * @ 说明: 默认输入为合法。输出的数组需要拥有足够的空间(不小于inputArrLen个pOPTree元素的空间).
  *
@@ -149,9 +151,26 @@ int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len);
 
 int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len);
 
-int _CalEvo(pOPTree evoTree, pDeriveData data, Complex* psum);
+/**
+ * @ 函数: int CalEvolution(pDeriveData data, Complex** outputpp)
+ *
+ * @ 功能: 对应第四章中的Calculate Evolution过程
+ *
+ * @ param{evoTree}: 树
+ *
+ * @ param{data}: data
+ *
+ * @ param{treeIndex}: 树的序号,指在data->evoTrees_HO和data->evoTrees_CO中的序号
+ *
+ * @ param{HorC}: 0表示data->evoTrees_HO, 1表示data->evoTrees_CO
+ *
+ * @ param{psum}: 结果
+ *
+ * @ 返回值: 若成功时,返回值为1; 否则,返回值为0.
+ */
+int _CalEvo(pOPTree evoTree, pDeriveData data, int treeIndex, int HorC, Complex* psum);
 
-int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, UINT_L* buf, int nextIndex, Complex* psum);
+int __CalEvo(pOPNode node, pOPTree tree, pDeriveData data, int treeIndex, int HorC, UINT_L* buf, int nextIndex, Complex* psum);
 
 /**
  * @ 函数: int _DeleteAndCE(pOPTree tree, int maxOPLen)
