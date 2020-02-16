@@ -1,4 +1,4 @@
-import QCLSolver.core as clucore
+import cluster.core as clucore
 import copy
 from math import floor
 import types

@@ -49,10 +49,15 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
         raise TypeError("Parameter user_args is not a tuple.")
     args_wrapped = (ddata, n, events, jac_func, user_args_new)
 
-    return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
-                                     events=events_wrapped_copy,
-                                     dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
-                                     **options_new)
+    if options_new is not None:
+        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+                                         events=events_wrapped_copy,
+                                         dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
+                                         **options_new)
+    else:
+        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+                                         events=events_wrapped_copy,
+                                         dense_output=dense_output, vectorized=vectorized, args=args_wrapped)
 
 
 def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
@@ -84,5 +89,5 @@ if __name__ == '__main__':
     d = Data(Hamilton, Coo_ps, T_o, 2)
     d.SetCoefCOList([4, 8])
     t = ['suck']
-    sol2 = Solve(d, [0, 1, 0], (0, 10), user_args=t)
+    sol2 = Solve(d, [0, 1, 0], (0, 10))
     print('good')
