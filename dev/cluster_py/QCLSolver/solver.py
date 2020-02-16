@@ -10,7 +10,7 @@ import copy
 def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 构造正确的t0, 并传入真正的系数初值
-    ddata.UpdateCoef(t_span[0],  user_args, ForceUpdate=True)
+    ddata.UpdateCoef(t_span[0], user_args, ForceUpdate=True)
     # ddata.Debug()
     ddata.UpdateInitialState(Initial_State)
 
@@ -49,15 +49,10 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
         raise TypeError("Parameter user_args is not a tuple.")
     args_wrapped = (ddata, n, events, jac_func, user_args_new)
 
-    if options_new is not None:
-        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
-                                        events=events_wrapped_copy,
-                                        dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
-                                        **options_new)
-    else:
-        return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
-                                        events=events_wrapped_copy,
-                                        dense_output=dense_output, vectorized=vectorized, args=args_wrapped)
+    return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
+                                     events=events_wrapped_copy,
+                                     dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
+                                     **options_new)
 
 
 def __ConvertToSolver(t, y, ddata: Data, n, events, jac_func, user_args: Tuple[Any]):
@@ -88,5 +83,6 @@ if __name__ == '__main__':
     print(T_o)
     d = Data(Hamilton, Coo_ps, T_o, 2)
     d.SetCoefCOList([4, 8])
-    sol2 = Solve(d, [0, 1, 0], (0, 10), atol=1e-8, rtol=1e-6)
+    t = ['suck']
+    sol2 = Solve(d, [0, 1, 0], (0, 10), user_args=t)
     print('good')

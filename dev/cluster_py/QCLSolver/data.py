@@ -58,7 +58,7 @@ class Data:
         self.__deriveData = clucore.DeriveAssign(InitList, self.__numHOList, self.__coefHOList,
                                                  self.__numCOList, self.__coefCOList, self.__numTrackList, maxOPLen)
 
-    def SetCoefHOList(self, coefHOList, *args, t=0, ow=True):
+    def SetCoefHOList(self, coefHOList, args=None, t=0, ow=True):
         """
         :param coefHOList: HO系数的列表
         """
@@ -81,7 +81,7 @@ class Data:
                     self.__rawCoefHOList[i] = Copy_Func(coefHOList[i])
         clucore.SetHamiltonCoef(self.__deriveData, self.__coefHOList)
 
-    def SetCoefCOList(self, coefCOList, *args, t=0, ow=True):
+    def SetCoefCOList(self, coefCOList, args=None, t=0, ow=True):
         """
         :param coefCOList: CO系数的列表
         """
@@ -94,7 +94,7 @@ class Data:
                 self.__coefCOList[i] = coefCOList[i]
             else:
                 fun = coefCOList[i]
-                self.__coefCOList[i] = fun(t, args)
+                self.__coefCOList[i] = fun(t, *args)
 
         if ow:
             for i in range(len(coefCOList)):
@@ -163,19 +163,19 @@ class Data:
         """
         return clucore.CalEvolution(self.__deriveData)
 
-    def UpdateCoef(self, t, *args, ForceUpdate=False):
+    def UpdateCoef(self, t, args, ForceUpdate=False):
         isChanged = False
         HOCoefList0 = []
         COCoefList0 = []
         for stuff in self.__rawCoefHOList:
             if isinstance(stuff, types.FunctionType):
-                HOCoefList0.append(stuff(t, args))
+                HOCoefList0.append(stuff(t, *args))
                 isChanged = True
             else:
                 HOCoefList0.append(stuff)
         for stuff in self.__rawCoefCOList:
             if isinstance(stuff, types.FunctionType):
-                COCoefList0.append(stuff(t, args))
+                COCoefList0.append(stuff(t, *args))
                 isChanged = True
             else:
                 COCoefList0.append(stuff)
