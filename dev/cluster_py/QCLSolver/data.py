@@ -2,6 +2,7 @@ import QCLSolver.core as clucore
 import copy
 from math import floor
 import types
+import functools
 
 
 class Data:
@@ -57,24 +58,50 @@ class Data:
         self.__deriveData = clucore.DeriveAssign(InitList, self.__numHOList, self.__coefHOList,
                                                  self.__numCOList, self.__coefCOList, self.__numTrackList, maxOPLen)
 
-    def SetCoefHOList(self, coefHOList):
+    def SetCoefHOList(self, coefHOList, *args, t=0, ow=True):
         """
         :param coefHOList: HO系数的列表
         """
         for c in coefHOList:
-            if not isinstance(c, int) and not isinstance(c, float) and not isinstance(c, complex):
+            if not isinstance(c, int) and not isinstance(c, float) \
+                    and not isinstance(c, complex) and not isinstance(c, types.FunctionType):
                 raise TypeError("Invalid types in coefficient list.")
-        self.__coefHOList = copy.deepcopy(coefHOList)
+        for i in range(len(coefHOList)):
+            if isinstance(coefHOList[i], int) or isinstance(coefHOList[i], float) or isinstance(coefHOList[i], complex):
+                self.__coefHOList[i] = coefHOList[i]
+            else:
+                fun = coefHOList[i]
+                self.__coefHOList[i] = fun(t, args)
+
+        if ow:
+            for i in range(len(coefHOList)):
+                if isinstance(coefHOList[i], int) or isinstance(coefHOList[i], float) or isinstance(coefHOList[i], complex):
+                    self.__rawCoefHOList[i] = coefHOList[i]
+                else:
+                    self.__rawCoefHOList[i] = Copy_Func(coefHOList[i])
         clucore.SetHamiltonCoef(self.__deriveData, self.__coefHOList)
 
-    def SetCoefCOList(self, coefCOList):
+    def SetCoefCOList(self, coefCOList, *args, t=0, ow=True):
         """
         :param coefCOList: CO系数的列表
         """
         for c in coefCOList:
-            if not isinstance(c, int) and not isinstance(c, float) and not isinstance(c, complex):
+            if not isinstance(c, int) and not isinstance(c, float) \
+                    and not isinstance(c, complex) and not isinstance(c, types.FunctionType):
                 raise TypeError("Invalid types in coefficient list.")
-        self.__coefCOList = copy.deepcopy(coefCOList)
+        for i in range(len(coefCOList)):
+            if isinstance(coefCOList[i], int) or isinstance(coefCOList[i], float) or isinstance(coefCOList[i], complex):
+                self.__coefCOList[i] = coefCOList[i]
+            else:
+                fun = coefCOList[i]
+                self.__coefCOList[i] = fun(t, args)
+
+        if ow:
+            for i in range(len(coefCOList)):
+                if isinstance(coefCOList[i], int) or isinstance(coefCOList[i], float) or isinstance(coefCOList[i], complex):
+                    self.__rawCoefCOList[i] = coefCOList[i]
+                else:
+                    self.__rawCoefCOList[i] = Copy_Func(coefCOList[i])
         clucore.SetCollapseCoef(self.__deriveData, self.__coefCOList)
 
     def SetCurrentValue(self, curValueList):
@@ -271,3 +298,11 @@ class Data:
 
     def Debug(self):
         clucore.PrintData(self.__deriveData)
+
+def Copy_Func(f):
+    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__,
+                           argdefs=f.__defaults__,
+                           closure=f.__closure__)
+    g = functools.update_wrapper(g, f)
+    g.__kwdefaults__ = f.__kwdefaults__
+    return g

@@ -1,9 +1,9 @@
 from QCLSolver.data import Data
+from QCLSolver.data import Copy_Func
 import types
 from typing import List, Tuple, Any, Union, Dict
 import numpy as np
 import scipy.integrate
-import functools
 import copy
 
 
@@ -11,7 +11,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
           t_eval=None, dense_output=False, events=None, vectorized=False, **options: Dict[Any, Any]):
     # 构造正确的t0, 并传入真正的系数初值
     ddata.UpdateCoef(t_span[0],  user_args, ForceUpdate=True)
-    #ddata.Debug()
+    # ddata.Debug()
     ddata.UpdateInitialState(Initial_State)
 
     y0c = np.array(ddata.GetCurrentValue())
@@ -53,7 +53,7 @@ def Solve(ddata: Data, Initial_State, t_span, user_args=None, method='RK45',
         return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
                                         events=events_wrapped_copy,
                                         dense_output=dense_output, vectorized=vectorized, args=args_wrapped,
-                                        options=options_new)
+                                        **options_new)
     else:
         return scipy.integrate.solve_ivp(__ConvertToSolver, t_span, y0c, method=method, t_eval=t_eval,
                                         events=events_wrapped_copy,
@@ -78,22 +78,15 @@ def __JacWrapper(t, y, ddata, n, events, jac_func, user_args: Tuple[Any]):
     return jac_func(t, y, *user_args)
 
 
-def Copy_Func(f):
-    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__,
-                           argdefs=f.__defaults__,
-                           closure=f.__closure__)
-    g = functools.update_wrapper(g, f)
-    g.__kwdefaults__ = f.__kwdefaults__
-    return g
-
 if __name__ == '__main__':
     Hamilton = [['.', 31.41592653589793], ['Bb', -9.42477796076938], ['Cc', -6.283185307179586], ['Ab', 0.06283185307179587], ['aB', 0.06283185307179587], ['Ac', 0.07853981633974483], ['aC', 0.07853981633974483]]
     #Hamilton = [['Aa', 0.8], ['Bb', 0], ['Cc', 1.6], ['AAb', 1], ['aaC', 1], ['A', 2],['a', 2]]
     print(Hamilton)
-    #Coo_ps = [['a', 2], ['c', 4]]
+    Coo_ps = [['a', 2], ['c', 4]]
     #print(Coo_ps)
     T_o = ['Aa', 'Bb', 'Cc']
     print(T_o)
-    d = Data(Hamilton, [], T_o, 2)
-    sol2 = Solve(d, [0, 1, 0], (0, 10))
+    d = Data(Hamilton, Coo_ps, T_o, 2)
+    d.SetCoefCOList([4, 8])
+    sol2 = Solve(d, [0, 1, 0], (0, 10), atol=1e-8, rtol=1e-6)
     print('good')
