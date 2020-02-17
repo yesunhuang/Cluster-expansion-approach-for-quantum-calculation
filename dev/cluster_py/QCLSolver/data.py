@@ -71,7 +71,10 @@ class Data:
                 self.__coefHOList[i] = coefHOList[i]
             else:
                 fun = coefHOList[i]
-                self.__coefHOList[i] = fun(t, args)
+                if args is not None:
+                    self.__coefHOList[i] = fun(t, *args)
+                else:
+                    self.__coefHOList[i] = fun(t)
 
         if ow:
             for i in range(len(coefHOList)):
@@ -94,7 +97,10 @@ class Data:
                 self.__coefCOList[i] = coefCOList[i]
             else:
                 fun = coefCOList[i]
-                self.__coefCOList[i] = fun(t, *args)
+                if args is not None:
+                    self.__coefCOList[i] = fun(t, *args)
+                else:
+                    self.__coefCOList[i] = fun(t)
 
         if ow:
             for i in range(len(coefCOList)):
@@ -163,19 +169,25 @@ class Data:
         """
         return clucore.CalEvolution(self.__deriveData)
 
-    def UpdateCoef(self, t, args, ForceUpdate=False):
+    def UpdateCoef(self, t, args=None, ForceUpdate=False):
         isChanged = False
         HOCoefList0 = []
         COCoefList0 = []
         for stuff in self.__rawCoefHOList:
             if isinstance(stuff, types.FunctionType):
-                HOCoefList0.append(stuff(t, *args))
+                if args is not None:
+                    HOCoefList0.append(stuff(t, *args))
+                else:
+                    HOCoefList0.append(stuff(t))
                 isChanged = True
             else:
                 HOCoefList0.append(stuff)
         for stuff in self.__rawCoefCOList:
             if isinstance(stuff, types.FunctionType):
-                COCoefList0.append(stuff(t, *args))
+                if args is not None:
+                    COCoefList0.append(stuff(t, *args))
+                else:
+                    COCoefList0.append(stuff(t))
                 isChanged = True
             else:
                 COCoefList0.append(stuff)
