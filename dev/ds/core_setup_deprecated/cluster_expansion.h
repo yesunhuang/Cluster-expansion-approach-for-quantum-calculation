@@ -67,7 +67,7 @@ int ClusterExpansion(pOPArray arr, int len, pOPTree* outTree);
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int DTToBT(pOPTree tree);
+int DTToBT(pOPTree tree, pOPArray arr, int len);
 
 /**
  * @ 函数: int DTToCEBT(pOPTree tree)
@@ -128,6 +128,21 @@ int _DTToBT(pOPNode node, pOPTree tree, int flag);
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
 int _BTToCEBT(pOPNode node, pOPTree tree);
+
+/**
+ * @ 函数: int _NegateNode(pOPNode node, void* sth)
+ *
+ * @ 功能: 将每个结点的value取反
+ *
+ * @ 说明: sth函数传入值无效(可为NULL)
+ *
+ * @ param{node}: 结点
+ *
+ * @ param{sth}: 无效
+ *
+ * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
+ */
+int _NegateNode(pOPNode node, void* sth);
 
 #pragma endregion
 

@@ -300,21 +300,6 @@ int _MultiplyNodeWithComplex(pOPNode node, void* sth);
 
 
 /**
- * @ 函数: int _NegateNode(pOPNode node, void* sth)
- *
- * @ 功能: 将每个结点的value取反
- *
- * @ 说明: sth函数传入值无效(可为NULL)
- *
- * @ param{node}: 结点
- *
- * @ param{sth}: 无效
- *
- * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
- */
-int _NegateNode(pOPNode node, void* sth);
-
-/**
  * @ 函数: int _UpdateDDTTreeValue(pDeriveData data)
  *
  * @ 功能: 把tracking tree中结点的value设为其current value

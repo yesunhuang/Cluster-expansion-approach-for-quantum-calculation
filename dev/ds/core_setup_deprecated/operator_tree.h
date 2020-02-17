@@ -705,6 +705,8 @@ int PrintOPTree(pOPTree tree);
  */
 int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2, int* output1_len, int* output2_len);
 
+int AddAllTreeNodeValueSum(pOPNode node, void* dNum);
+
 /** tested
  * @ 函数: int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf)
  *

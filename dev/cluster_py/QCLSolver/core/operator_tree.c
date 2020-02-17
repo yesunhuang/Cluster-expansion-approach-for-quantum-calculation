@@ -653,6 +653,12 @@ int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2, int* output1_l
 	return 1;
 }
 
+int AddAllTreeNodeValueSum(pOPNode node, void* dNum) {
+	Complex* num = dNum;
+	AddOfComplex(*num, node->value, num);
+	return 1;
+}
+
 int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf) {
 	buf[nextIndex] = node->label;
 	if (!IsZeroOfComplex(node->value)) {

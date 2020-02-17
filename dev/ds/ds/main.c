@@ -18,6 +18,7 @@ UINT_L arr9[] = { 0,1 };
 UINT_L arr10[] = { 1 };
 UINT_L arr11[] = { 1,0,1,0,1 };
 UINT_L arr12[] = { 1,1,2 };
+UINT_L arr13[] = { 1,2,1,4,4,5 };
 
 Complex c_1 = { 0.8,0 };
 Complex c_2 = { 1.6,0 };
@@ -144,11 +145,15 @@ int main() {
 	
 	///*
 	pOPTree tempTree = NULL;
-	//DeltaTree(10, &tempTree);
-	ClusterExpansion(arr3, 2, &tempTree);
+	//DeltaTree(7, &tempTree);
+	ClusterExpansion(arr13, 6, &tempTree);
 	//FreeOPTree(tempTree);
-
-	PrintOPTree(tempTree);
+	
+	Complex sum = { 0,0 };
+	EachNodeOfOPTree(tempTree, &sum, AddAllTreeNodeValueSum);
+	printf("%lf + (%lf)j", sum.real, sum.image);
+	
+	//PrintOPTree(tempTree);
 	//*/
 
 	/*

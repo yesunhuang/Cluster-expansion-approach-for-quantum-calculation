@@ -55,17 +55,23 @@ int ClusterExpansion(pOPArray arr, int len, pOPTree* outTree) {
 	pOPTree dtree = NULL;
 	DeltaTree(len, &dtree);
 	BuildFromPTree(dtree, arr, len, outTree);
-	DTToBT(*outTree);
+	DTToBT(*outTree, arr, len);
 	BTToCEBT(*outTree);
 	FreeOPTree(dtree);
 	return 1;
 }
 
-int DTToBT(pOPTree tree) {
+int DTToBT(pOPTree tree, pOPArray arr, int len) {
+	/*
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL)
 			_DTToBT(tree->root->children[i], tree, 0);
 	}
+	*/
+	EachNodeOfOPTree(tree, NULL, _NegateNode);
+	pOPNode oriNode = NULL;
+	_SearchOfOPTree(tree, arr, len, &oriNode);
+	if (oriNode != NULL) NegateOfComplex(oriNode->value, &oriNode->value);
 	return 1;
 }
 
@@ -74,6 +80,7 @@ int BTToCEBT(pOPTree tree) {
 		if (tree->root->children[i] != NULL)
 			_BTToCEBT(tree->root->children[i], tree);
 	}
+
 	return 1;
 }
 
@@ -152,5 +159,10 @@ int _BTToCEBT(pOPNode node, pOPTree tree) {
 		if (ret == 1)
 			return 1;
 	}
+	return 0;
+}
+
+int _NegateNode(pOPNode node, void* sth) {
+	NegateOfComplex(node->value, &node->value);
 	return 1;
 }

@@ -773,11 +773,6 @@ int _MultiplyNodeWithComplex(pOPNode node, void* sth) {
 	return 1;
 }
 
-int _NegateNode(pOPNode node, void* sth) {
-	NegateOfComplex(node->value, &node->value);
-	return 1;
-}
-
 int _UpdateDDTTreeValue(pDeriveData data) {
 	ASSERTNULL(data);
 	UINT_L buf[MAX_OPERATOR_LENGTH];
