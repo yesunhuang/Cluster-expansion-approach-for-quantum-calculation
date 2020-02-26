@@ -4,10 +4,6 @@
 #include "solver.h"
 #include "complex.h"
 #include <crtdbg.h>
-
-#include "dllheader.h"
-#include <Windows.h>
-
 // #include <Python.h>
 
 UINT_L arr1[] = { 2,4,4,0,1,3,4,6 };
@@ -95,11 +91,11 @@ int main() {
 	track_arrs[1] = track_arr2;
 
 	pOPArray buf = (UINT_L*)malloc(sizeof(UINT_L) * 100);
-
+	
 	/*
 	pOPTree tree1;
 	pOPTree tree2;
-
+	
 	for (int i = 0; i < 1000; ++i) {
 		CreateOPTree(4, &tree1);
 		CreateOPTree(4, &tree2);
@@ -118,10 +114,10 @@ int main() {
 	// CopyCreateOPTree(tree1, &tree3);
 	//MultiplyOfOPTree_TT(tree1, tree2, &tree3);
 	//_DeleteAndCE(tree2, 1);
-
+	
 	//PrintOPTree(tree1);
 	//printf("%lf", tree3->root->value.real);
-
+	
 	//*/
 
 	/*
@@ -146,19 +142,19 @@ int main() {
 	FreeOPTree(posTree);
 	}
 	//*/
-
-	/*
+	
+	///*
 	pOPTree tempTree = NULL;
 	//DeltaTree(7, &tempTree);
 	ClusterExpansion(arr13, 6, &tempTree);
 	//FreeOPTree(tempTree);
-
+	
 	Complex sum = { 0,0 };
 	EachNodeOfOPTree(tempTree, &sum, AddAllTreeNodeValueSum);
 	printf("%lf + (%lf)j", sum.real, sum.image);
-
+	
 	//PrintOPTree(tempTree);
-	*/
+	//*/
 
 	/*
 	double ans;
@@ -167,7 +163,7 @@ int main() {
 
 	printf("%lf", ans);
 	*/
-
+	
 	/* Evolution()的测试用例
 	for (int i = 0; i < 10000; ++i) {
 		pOPTree ho_output[6];
@@ -187,49 +183,60 @@ int main() {
 
 	/* CalEvolution()的测试过程
 
-	pDeriveData data = NULL;
-	DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
-		co_arrs, co_lens_arr1, co_coef_arr1, 2,
-		init_arr1, 2, track_arrs, track_lens_arr1, 2, 3, &data);
-	Complex iv[8];
-
-	for (int i = 0; i < 8; ++i) {
-		iv[i] = c_9;
-	}
-	SetCurrentValueOfDData(data, iv, 8);
-
-	//PrintOPTree(data->evoTrees_HO[0][0]);
-	//PrintOPTree(data->evoTrees_CO[0][0]);
-
-	for (int i = 0; i < data->size; ++i) {
-		int len;
-		len = GetRoot(data->trackNodes[i], NULL);
-		ArrayFromNode(data->trackNodes[i], len, buf);
-		printf("TrackNodes[%d]:{", i);
-		for (int j = 0; j < len; ++j) {
-			printf("%d, ", buf[j]);
+		
+		pDeriveData data = NULL;
+		DeriveAssign(ho_arrs, ho_lens_arr1, ho_coef_arr1, 6,
+			co_arrs, co_lens_arr1, co_coef_arr1, 2,
+			init_arr1, 2, track_arrs, track_lens_arr1, 2, 3, &data);
+		Complex iv[8];
+		
+		for (int i = 0; i < 8; ++i) {
+			iv[i] = c_9;
 		}
-		printf("}\n");
-	}
-	int treenumber = 2;
-	for (int i = 0; i < data->hoSize; ++i) {
-		printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->hoCoefs[i].real, data->hoCoefs[i].image);
-		PrintOPTree(data->evoTrees_HO[treenumber][i]);
-		putchar('\n');
-	}
-	for (int i = 0; i < data->coSize; ++i) {
-		printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->coCoefs[i].real, data->coCoefs[i].image);
-		PrintOPTree(data->evoTrees_CO[treenumber][i]);
-		putchar('\n');
-	}
-	//PrintOPTree(data->trackTree);
+		SetCurrentValueOfDData(data, iv, 8);
+		
+		for (int i = 0; i < 6; ++i) {
+			Complex temp = { 2, 0 };
+			MultiplyOfComplex(ho_coef_arr1[i], temp, ho_coef_arr1 + i);
+		}
+		for (int i = 0; i < 2; ++i) {
+			Complex temp = { 2, 0 };
+			MultiplyOfComplex(co_coef_arr1[i], temp, co_coef_arr1 + i);
+		}
+		SetHOCoefOfDData(data, ho_coef_arr1, 6);
+		SetCOCoefOfDData(data, co_coef_arr1, 2);
 
-	Complex* ans = NULL;
-	//double ans[88];
-	CalEvolution(data, &ans);
+		//PrintOPTree(data->evoTrees_HO[0][0]);
+		//PrintOPTree(data->evoTrees_CO[0][0]);
+		
+		for (int i = 0; i < data->size; ++i) {
+			int len;
+			len = GetRoot(data->trackNodes[i], NULL);
+			ArrayFromNode(data->trackNodes[i], len, buf);
+			printf("TrackNodes[%d]:{", i);
+			for (int j = 0; j < len; ++j) {
+				printf("%d, ", buf[j]);
+			}
+			printf("}\n");
+		}
+		int treenumber = 2;
+		for (int i = 0; i < data->hoSize; ++i) {
+			printf("Tree_HO %d, coef is %.3lf+(%.3lf)j:\n", i, data->hoCoefs[i].real, data->hoCoefs[i].image);
+			PrintOPTree(data->evoTrees_HO[treenumber][i]);
+			putchar('\n');
+		}
+		for (int i = 0; i < data->coSize; ++i) {
+			printf("Tree_CO %d, coef is %.3lf+(%.3lf)j:\n", i, data->coCoefs[i].real, data->coCoefs[i].image);
+			PrintOPTree(data->evoTrees_CO[treenumber][i]);
+			putchar('\n');
+		}
+		//PrintOPTree(data->trackTree);
+		
+		Complex* ans = NULL;
+		CalEvolution(data, &ans);
 
 
-
+	
 	//*/
 
 	/* 静态Delta树创建过程
@@ -258,54 +265,10 @@ int main() {
 		FreeOPTree(tempTree);
 	}
 
-
-
+	
+	
 	//*/
 	// _CrtDumpMemoryLeaks();
-
-	//* dll测试
-
-	HINSTANCE hdll = LoadLibraryA("dsdll.dll"); ASSERTNULL(hdll);
-	p_cedll_DeriveAssign pDeriveAssign = GetProcAddress(hdll, "cedll_DeriveAssign");
-	p_cedll_CalEvolution pCalEvolution = GetProcAddress(hdll, "cedll_CalEvolution");
-	p_cedll_GetTrackingTreeSize pGetTrack = GetProcAddress(hdll, "cedll_GetTrackingTreeSize");
-	p_cedll_SetCurrentValue pSetCur = GetProcAddress(hdll, "cedll_SetCurrentValue");
-	p_cedll_UpdateInitialValue pUpdateInit = GetProcAddress(hdll, "cedll_UpdateInitialValue");
-	p_cedll_GetHamiltonCoef pGetHOCOEF = GetProcAddress(hdll, "cedll_GetHamiltonCoef");
-	p_cedll_GetCollapseCoef pGetCOCOEF = GetProcAddress(hdll, "cedll_GetCollapseCoef");
-	p_cedll_GetCurrentValue pGetCur = GetProcAddress(hdll, "cedll_GetCurrentValue");
-
-
-	int ho_arr[] = {1,2,3,4,1,1,4,6,2,2,3,1,2};
-	double ho_coef_arr[] = {0.8,1.6,1,1,2,2,0,0,0,0,0,0};
-	int ho_size_arr[] = {2, 2, 4, 3, 1, 1};
-	int ho_size = 6;
-	int co_arr[] = {2, 4};
-	double co_coef_arr[] = {2, 4,0,0};
-	int co_size_arr[] = {1, 1};
-	int co_size = 2;
-	int track_arr[] = {1,2,5,6};
-	int track_size_arr[] = {2,2};
-	int track_size = 2;
-	int maxOPLen = 3;
-	int init_arr[] = { 0,0 };
-	double cur[] = { 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1 };
-
-	M_DATAPOINTER data = pDeriveAssign(ho_arr, ho_coef_arr, ho_size_arr, ho_size,
-		co_arr, co_coef_arr, co_size_arr, co_size, track_arr, track_size_arr, track_size, maxOPLen);
-
-	double ho_coef[12];
-	pGetCur(data, ho_coef, 12);
-	pUpdateInit(data, init_arr, 2);
-	pGetCur(data, ho_coef, 12);
-	pSetCur(data, cur, 16);
-	pGetCur(data, ho_coef, 12);
-
-
-	double ans[88];
-	pCalEvolution(data, ans);
-
-	//*/
 	while (1){
 	
 

@@ -490,7 +490,8 @@ core_UpdateInitialState(PyObject* self, PyObject* args) {
 		InitialValue(trackBuf, nowArrLen, buf, listSize, &temp);
 		ans[i].real = temp;
 	}
-	memcpy(data->curValues, ans, data->size * sizeof(Complex));
+	// memcpy(data->curValues, ans, data->size * sizeof(Complex));
+	SetCurrentValueOfDData(data, ans, data->size);
 
 	PyObject* ansList = PyList_New(data->size);
 	for (int i = 0; i < data->size; ++i) {
