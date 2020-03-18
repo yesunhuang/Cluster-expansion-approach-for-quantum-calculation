@@ -151,6 +151,8 @@ int SetHOCoefOfDData(pDeriveData data, Complex* arr, int len);
 
 int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len);
 
+void PrintData(pDeriveData data);
+
 /**
  * @ 函数: int CalEvolution(pDeriveData data, Complex** outputpp)
  *
@@ -213,7 +215,7 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen);
  *
  * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
  */
-int _DeriveAT(pOPTree evoTree, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data);
+int _DeriveAT(pOPTree evoTree, int* inputArr_Init, int inputArrLen_Init, pDeriveData data);
 
 /**
  * @ 函数: int __DeriveAT(pOPTree evoTree, pDeriveData data)
@@ -226,7 +228,7 @@ int _DeriveAT(pOPTree evoTree, pOPArray inputArr_Init, int inputArrLen_Init, pDe
  *
  * @ 返回值: 若存在删除并成功时,返回值为1; 否则,返回值为0.
  */
-int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data, 
+int __DeriveAT(pOPNode node, int csize, int* inputArr_Init, int inputArrLen_Init, pDeriveData data, 
 	UINT_L* buf, int nextIndex);
 
 /**

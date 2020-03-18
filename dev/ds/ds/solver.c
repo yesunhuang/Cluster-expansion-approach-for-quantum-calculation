@@ -359,6 +359,41 @@ int SetCOCoefOfDData(pDeriveData data, Complex* arr, int len) {
 	return 1;
 }
 
+void PrintData(pDeriveData data) {
+	printf("---------------------------\n");
+	UINT_L buf[MAX_OPERATOR_LENGTH];
+	printf("Tracking Nodes:\n");
+	for (int i = 0; i < data->size; ++i) {
+		int len = GetRoot(data->trackNodes[i], NULL);
+		ArrayFromNode(data->trackNodes[i], len, buf);
+		printf("Nodes[%d]:  {%d", i, (int)buf[0]);
+		for (int j = 1; j < len; ++j)
+			printf(", %d", (int)buf[j]);
+		printf("}\n");
+	}
+	printf("---------------------------");
+	printf("\n\n\n");
+
+	for (int i = 0; i < data->size; ++i) {
+		printf("Tracking Operator %d :\n", i);
+		for (int j = 0; j < data->hoSize; j++) {
+			printf("HO_Tree %d, coef is %.3lf+(%.3lf)j:\n", j,
+				data->hoCoefs[j].real, data->hoCoefs[j].image);
+			PrintOPTree(data->evoTrees_HO[i][j]);
+			putchar('\n');
+		}
+		putchar('\n');
+		for (int j = 0; j < data->coSize; j++) {
+			printf("CO_Tree %d:, coef is %.3lf+(%.3lf)j:\n", j,
+				data->coCoefs[j].real, data->coCoefs[j].image);
+			PrintOPTree(data->evoTrees_CO[i][j]);
+			putchar('\n');
+		}
+		printf("---------------------------");
+		printf("\n\n\n");
+	}
+}
+
 int _CalEvo(pOPTree evoTree, pDeriveData data, int treeIndex, int HorC, Complex* psum) {
 	UINT_L buf[MAX_OPERATOR_LENGTH];
 	/* 零算符 */
@@ -548,7 +583,7 @@ int _DeleteAndCE_(pOPNode node, pOPTree tree, int maxOPLen, int nextLen) {
 	}
 }
 
-int _DeriveAT(pOPTree evoTree, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data) {
+int _DeriveAT(pOPTree evoTree, int* inputArr_Init, int inputArrLen_Init, pDeriveData data) {
 	UINT_L buf[MAX_OPERATOR_LENGTH];
 	for (int i = 1; i <= evoTree->childSize; ++i) {
 		if (evoTree->root->children[i] != NULL) {
@@ -558,7 +593,7 @@ int _DeriveAT(pOPTree evoTree, pOPArray inputArr_Init, int inputArrLen_Init, pDe
 	return 1;
 }
 
-int __DeriveAT(pOPNode node, int csize, pOPArray inputArr_Init, int inputArrLen_Init, pDeriveData data, UINT_L* buf, int nextIndex) {
+int __DeriveAT(pOPNode node, int csize, int* inputArr_Init, int inputArrLen_Init, pDeriveData data, UINT_L* buf, int nextIndex) {
 	buf[nextIndex] = node->label;
 	if (node->label == 0) {
 		if (nextIndex == 0) {

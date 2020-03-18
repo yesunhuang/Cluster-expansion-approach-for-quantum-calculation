@@ -111,7 +111,7 @@ typedef struct _OPTree OPTree, *pOPTree;
  *
  * @ 返回值: 若初始化成功,返回值为1; 否则,返回值为0.
  */
-int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p);
+int InitOPNode(struct _Node* node, UINT_L l, INT_V* v, int csize, struct _Node* p);
 
 /** tested
  * @ 函数: int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** output)
@@ -130,7 +130,7 @@ int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p
  *
  * @ 返回值: 若成功,返回值为1; 否则,返回值为0.
  */
-int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** output);
+int MallocOPNode(UINT_L l, INT_V* v, int csize, struct _Node* p, struct _Node** output);
 
 /** tested
  * @ 函数: int GetRoot(struct _Node* node, struct _Node** output)
@@ -231,7 +231,7 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V *output);
  *
  * @ 返回值: 成功插入时,返回值为1; 否则,返回值为0.
  */
-int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef);
+int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* coef);
 
 /**
  * @ 函数: int DeleteOfOPTree(pOPTree tree, pOPArray arr, int len)
@@ -526,7 +526,7 @@ void _FreeNode(struct _Node* node, int csize);
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree);
+int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V* coef, pOPTree otherTree);
 
 /**
  * @ 函数: int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree)
@@ -545,7 +545,7 @@ int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTre
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree);
+int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V* coef, pOPTree otherTree);
 
 /**
  * @ 函数: int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize, UINT_L* tree2Stack, int nextIndex, pOPTree outputTree)
@@ -614,7 +614,7 @@ int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
+int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V* coef, 
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
 
 /**
@@ -640,7 +640,7 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
  *
  * @ 返回值: 成功时,返回值为1; 否则,返回值为0.
  */
-int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef,
+int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V* coef,
 	UINT_L* lStack, int nextIndex, pOPTree otherTree);
 
 /**

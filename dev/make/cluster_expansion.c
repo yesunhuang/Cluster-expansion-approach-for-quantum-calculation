@@ -40,8 +40,10 @@ int DeltaTree(int N, pOPTree* outTree) {
 	for (int i = 0; i < N; ++i) {
 		temparr[i] = i + 1;
 	}
-	INT_V tempv = { 1, 0 };
-	InsertOfOPTree(*outTree, temparr, N, tempv);
+	INT_V tempv;
+	InitOfComplexD(&tempv, 1, 0);
+	InsertOfOPTree(*outTree, temparr, N, &tempv);
+	ClearOfComplex(&tempv);
 
 	int ret = 1;
 	if (N <= STANAMIC_DTREE_SIZE) {
@@ -71,7 +73,7 @@ int DTToBT(pOPTree tree, pOPArray arr, int len) {
 	EachNodeOfOPTree(tree, NULL, _NegateNode);
 	pOPNode oriNode = NULL;
 	_SearchOfOPTree(tree, arr, len, &oriNode);
-	if (oriNode != NULL) NegateOfComplex(oriNode->value, &oriNode->value);
+	if (oriNode != NULL) NegateOfComplex(&oriNode->value, &oriNode->value);
 	return 1;
 }
 
@@ -110,8 +112,9 @@ int _DT(int nowi, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTre
 		}
 		buf1[nowi] = N;
 
-		INT_V tempv = { -1, 0 };
-		InsertOfOPTree(outTree, buf2, N - nowi - 1, tempv);
+		INT_V tempv;
+		InitOfComplexD(&tempv, -1, 0);
+		InsertOfOPTree(outTree, buf2, N - nowi - 1, &tempv);
 		pOPNode tempNode = NULL;
 		_SearchOfOPTree(outTree, buf2, N - nowi - 1, &tempNode);
 		pOPTree newDeltaTree;
@@ -137,7 +140,7 @@ int _DT(int nowi, int N, int prevIndex, int alCount, UINT_L* buf, pOPTree outTre
 int _DTToBT(pOPNode node, pOPTree tree, int flag) {
 	flag = (node->label == 0) ? 1 : flag;
 	if (flag == 1)
-		NegateOfComplex(node->value, &node->value);
+		NegateOfComplex(&node->value, &node->value);
 
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (node->children[i] != NULL)
@@ -163,6 +166,6 @@ int _BTToCEBT(pOPNode node, pOPTree tree) {
 }
 
 int _NegateNode(pOPNode node, void* sth) {
-	NegateOfComplex(node->value, &node->value);
+	NegateOfComplex(&node->value, &node->value);
 	return 1;
 }

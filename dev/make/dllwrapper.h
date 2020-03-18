@@ -8,6 +8,7 @@
  *
  */
 
+#define DSDLL_EXPORTS
 #ifdef DSDLL_EXPORTS   //定义在 工程->属性->c/c++ 预处理器定义 为工程宏定义
 #define DSDLL_API __declspec(dllexport) //在dll项目中 为dllexport
 #else
@@ -42,8 +43,6 @@ extern "C" {
 	DSDLL_API int cedll_SetCollapseCoef(M_DATAPOINTER dataPtr, double* inputArr, int arrSize);
 
 	DSDLL_API int cedll_UpdateInitialValue(M_DATAPOINTER dataPtr, int* init_arr, int arrSize);
-
-	DSDLL_API int cedll_GetLongDoubleSize();
 
 #ifdef __cplusplus
 }

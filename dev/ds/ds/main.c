@@ -233,8 +233,8 @@ int main() {
 	//*/
 
 	/* 静态Delta树创建过程
-	UINT_L output1[1024];
-	int output2[1024];
+	UINT_L output1[10240];
+	int output2[10240];
 	int output1_len, output2_len;
 	pOPTree tree;
 	DeltaTree(5, &tree);
@@ -242,11 +242,15 @@ int main() {
 	printf("Output1:\n");
 	for (int i = 0; i < output1_len; ++i) {
 		printf("%d, ", (int)output1[i]);
+		if (i > 0 && i % 22 == 0)
+			printf("\n");
 	}
 	printf("\nOutput1_Len: %d\n\n", output1_len);
 	printf("Output2:\n");
 	for (int i = 0; i < output2_len; ++i) {
 		printf("%d, ", (int)output2[i]);
+		if (i > 0 && i % 22 == 0)
+			printf("\n");
 	}
 	printf("\nOutput2_Len: %d\n", output2_len);
 	//*/
@@ -276,15 +280,15 @@ int main() {
 	p_cedll_GetCurrentValue pGetCur = GetProcAddress(hdll, "cedll_GetCurrentValue");
 
 
-	int ho_arr[] = {1,2,3,4,1,1,4,6,2,2,3,1,2};
-	double ho_coef_arr[] = {0.8,1.6,1,1,2,2,0,0,0,0,0,0};
-	int ho_size_arr[] = {2, 2, 4, 3, 1, 1};
+	int ho_arr[] = { 1, 2, 3, 4, 1,1,4,2,2,3,1,1 };
+	double ho_coef_arr[] = { 0.8, 1.6, 1.0, 1.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+	int ho_size_arr[] = { 2, 2,3,3,1,1 };
 	int ho_size = 6;
 	int co_arr[] = {2, 4};
 	double co_coef_arr[] = {2, 4,0,0};
 	int co_size_arr[] = {1, 1};
 	int co_size = 2;
-	int track_arr[] = {1,2,5,6};
+	int track_arr[] = {1,2,3,4};
 	int track_size_arr[] = {2,2};
 	int track_size = 2;
 	int maxOPLen = 3;
@@ -294,16 +298,18 @@ int main() {
 	M_DATAPOINTER data = pDeriveAssign(ho_arr, ho_coef_arr, ho_size_arr, ho_size,
 		co_arr, co_coef_arr, co_size_arr, co_size, track_arr, track_size_arr, track_size, maxOPLen);
 
-	double ho_coef[12];
-	pGetCur(data, ho_coef, 12);
-	pUpdateInit(data, init_arr, 2);
-	pGetCur(data, ho_coef, 12);
-	pSetCur(data, cur, 16);
-	pGetCur(data, ho_coef, 12);
+	//double ho_coef[12];
+	//pGetCur(data, ho_coef, 12);
+	//pUpdateInit(data, init_arr, 2);
+	//pGetCur(data, ho_coef, 12);
+	//pSetCur(data, cur, 16);
+	//pGetCur(data, ho_coef, 12);
 
 
 	double ans[88];
 	pCalEvolution(data, ans);
+	pDeriveData d = data;
+	PrintData(data);
 
 	//*/
 	while (1){

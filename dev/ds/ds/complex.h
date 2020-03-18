@@ -26,8 +26,8 @@
 #pragma region 结构体及typedef定义区
 /* 复数域扩展 */
 typedef struct _Complex {
-	double real;
-	double image;
+	long double real;
+	long double image;
 } Complex;
 #pragma endregion
 

@@ -11,10 +11,10 @@
 #include "operator_tree.h"
 #include "normalizer.h"
 
-int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p)
+int InitOPNode(struct _Node* node, UINT_L l, INT_V* v, int csize, struct _Node* p)
 {
 	node->label = l;
-	node->value = v;
+	AssignOfComplex(&node->value, v);
 	node->parent = p;
 	node->children = (struct _Node**)malloc((csize + 1) * sizeof(struct _Node*));
 	if (node->children == NULL) return 0;
@@ -22,7 +22,7 @@ int InitOPNode(struct _Node* node, UINT_L l, INT_V v, int csize, struct _Node* p
 	return 1;
 }
 
-int MallocOPNode(UINT_L l, INT_V v, int csize, struct _Node* p, struct _Node** output)
+int MallocOPNode(UINT_L l, INT_V* v, int csize, struct _Node* p, struct _Node** output)
 {
 	*output = (struct _Node*)malloc(sizeof(struct _Node));
 	return (*output == NULL) ? 0 : InitOPNode(*output, l, v, csize, p);
@@ -63,8 +63,9 @@ int CopyCreateOPTree(pOPTree origin, pOPTree* outputTree) {
 
 int _InitOPTree(pOPTree tree, UINT_L csize) {
 	tree->childSize = csize;
-	INT_V v = { 0,0 };
-	return MallocOPNode(0, v, csize, NULL, &tree->root);
+	INT_V v;
+	InitOfComplex(&v);
+	return MallocOPNode(0, &v, csize, NULL, &tree->root);
 }
 
 int AddOfOPTree_TT(pOPTree tree1, pOPTree tree2)
@@ -87,16 +88,15 @@ int SearchOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* output) {
 	_SearchOfOPTree(tree, arr, len, &nowNode);
 	if (nowNode == NULL) {
 		// 不存在此节点的情况
-
 		return 0;
 	}
 
 	/* 成功查询 */
-	if (output != NULL) *output = nowNode->value;
+	if (output != NULL) AssignOfComplex(output, &nowNode->value);
 	return 1;
 }
 
-int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef) {
+int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V* coef) {
 	if (tree == NULL || len <= 0)
 		return 0;
 	else if (IsZeroOfComplex(coef))
@@ -109,23 +109,28 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef) {
 	if (maxLabel > tree->childSize)
 		ReserveChildSize(tree, maxLabel);
 
+	INT_V tempv;
+	InitOfComplex(&tempv);
+
 	if (arr[0] == 0) {
 		/* 0次项插入 */
 		if (tree->root->children[0] == NULL) {
 			if (IsZeroOfComplex(coef)) return 0;
-			INT_V tempv = { 0,0 };
-			MallocOPNode(0, tempv, tree->childSize, tree->root, &tree->root->children[0]);
+			SetZeroOfComplex(&tempv);
+			MallocOPNode(0, &tempv, tree->childSize, tree->root, &tree->root->children[0]);
 		}
 
 		/* 判断是否更新root的value */
 		if (tree->root->children[0]->value.real == 0) {
-			++tree->root->value.real;
+			IncOfComplex(&tree->root->value);
 		}
-		AddOfComplex(coef, tree->root->children[0]->value, &tree->root->children[0]->value);
+		AddOfComplex(coef, &tree->root->children[0]->value, &tree->root->children[0]->value);
 		/* 删除0结点 */
-		if (IsZeroOfComplex(tree->root->children[0]->value)) {
+		if (IsZeroOfComplex(&tree->root->children[0]->value)) {
 			_DeleteNode(tree->root->children[0], tree);
 		}
+
+		ClearOfComplex(&tempv);
 
 		return 1;
 	}
@@ -133,18 +138,20 @@ int InsertOfOPTree(pOPTree tree, pOPArray arr, int len, INT_V coef) {
 	for (int i = 0; i < len; ++i) {
 		if (nowNode->children[arr[i]] == NULL) {
 			if (IsZeroOfComplex(coef)) return 0;
-			INT_V tempv = { 0,0 };
-			MallocOPNode(arr[i], tempv, tree->childSize, nowNode, &nowNode->children[arr[i]]);
+			SetZeroOfComplex(&tempv);
+			MallocOPNode(arr[i], &tempv, tree->childSize, nowNode, &nowNode->children[arr[i]]);
 		}
 		nowNode = nowNode->children[arr[i]];
 	}
 
+	ClearOfComplex(&tempv);
+
 	/* 判断是否更新root的value */
-	if (IsZeroOfComplex(nowNode->value)) {
-		++tree->root->value.real;
+	if (IsZeroOfComplex(&nowNode->value)) {
+		IncOfComplex(&tree->root->value);
 	}
-	AddOfComplex(coef, nowNode->value, &nowNode->value);
-	if (IsZeroOfComplex(nowNode->value))
+	AddOfComplex(coef,& nowNode->value, &nowNode->value);
+	if (IsZeroOfComplex(&nowNode->value))
 		_DeleteNode(nowNode, tree);
 	
 	return 1;
@@ -184,10 +191,14 @@ int MultiplyOfOPTree_TO(pOPTree tree, pOPNode otherNode, pOPTree otherTree) {
 	pOPArray otherArray = (pOPArray)malloc(depth * sizeof(UINT_L));
 	ArrayFromNode(otherNode, depth, otherArray);
 	/* 另一个树中删除该结点 */
-	INT_V coef = otherNode->value;
+	INT_V coef;
+	InitOfComplex(&coef);
+	AssignOfComplex(&coef, &otherNode->value);
 	DeleteOfOPTree(otherTree, otherArray, depth);
 
-	return _MultiplyOfOPTree_TO(tree, otherArray, depth, coef, otherTree);
+	int ans = _MultiplyOfOPTree_TO(tree, otherArray, depth, &coef, otherTree);
+	ClearOfComplex(&coef);
+	return ans;
 }
 
 int MultiplyOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree) {
@@ -219,7 +230,7 @@ int MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPTree tree2, pOPTree* outputTree
 }
 
 int NormalizeOPTree(pOPTree tree) {
-	tree->root->value.real = 0;
+	SetZeroOfComplex(&tree->root->value);
 	int ret = 1;
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL) {
@@ -261,8 +272,7 @@ int ClearOfOPTree(pOPTree tree) {
 		}
 	}
 
-	tree->root->value.real = 0;
-
+	SetZeroOfComplex(&tree->root->value);
 	return 1;
 }
 
@@ -280,11 +290,11 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 		if (node2->children[i] != NULL) {
 			if (node1->children[i] != NULL) {
 				/* node1中存在此子节点 */
-				AddOfComplex(node1->children[i]->value, node2->children[i]->value, &node1->children[i]->value);
+				AddOfComplex(&node1->children[i]->value, &node2->children[i]->value, &node1->children[i]->value);
 			}
 			else {
 				/* node1中不存在此子节点 */
-				MallocOPNode(node2->children[i]->label, node2->children[i]->value, tree1->childSize, node1, &node1->children[i]);
+				MallocOPNode(node2->children[i]->label, &node2->children[i]->value, tree1->childSize, node1, &node1->children[i]);
 			}
 			_AddOfOPTree_TT(node1->children[i], node2->children[i], tree1, tree2);
 		}
@@ -292,7 +302,7 @@ int _AddOfOPTree_TT(pOPNode node1, pOPNode node2, pOPTree tree1, pOPTree tree2) 
 	/* 删除可能出现的"零"叶子结点 */
 	for (int i = 0; i <= tree1->childSize; ++i) {
 		if (node1->children[i] != NULL && 
-			IsZeroOfComplex(node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
+			IsZeroOfComplex(&node1->children[i]->value) && _IsLeafNode(node1->children[i], tree1->childSize)) {
 			free(node1->children[i]);
 			node1->children[i] = NULL;
 		}
@@ -306,14 +316,14 @@ int _AdjustRootValue(pOPTree tree) {
 		if (tree->root->children[i] != NULL)
 			_AdjustRootValue_Sum(tree->root->children[i], tree->childSize, &sum);
 	}
-	tree->root->value.real = sum;
+	SetRealOfComplex(&tree->root->value, sum);
 	return 1;
 }
 
 int _AdjustRootValue_Sum(pOPNode node, int csize, int* psum) {
 	if (node == NULL)
 		return 0;
-	else if (!IsZeroOfComplex(node->value))
+	else if (!IsZeroOfComplex(&node->value))
 		++(*psum);
 
 	for (int i = 0; i <= csize; ++i) {
@@ -358,7 +368,7 @@ int _CopyOPTree(pOPNode origin, pOPNode output, int csize) {
 		if (origin->children[i] != NULL) {
 			if (output->children[i] == NULL) {
 				Complex temp = { 0,0 };
-				MallocOPNode(0, temp, csize, output, &output->children[i]);
+				MallocOPNode(0, &temp, csize, output, &output->children[i]);
 			}
 			_CopyOPTree(origin->children[i], output->children[i], csize);
 		}
@@ -375,7 +385,7 @@ int _DeleteNode(pOPNode node, pOPTree tree) {
 		return 0;
 
 	/* 有此结点 */
-	if (IsZeroOfComplex(nowNode->value))
+	if (IsZeroOfComplex(&nowNode->value))
 		/* 但value为0 */
 		return 1;
 	else {
@@ -390,20 +400,20 @@ int _DeleteNode(pOPNode node, pOPTree tree) {
 				nowNode = parent;
 				parent = parent->parent;
 
-				if (!_IsLeafNode(nowNode, tree->childSize) || !IsZeroOfComplex(nowNode->value))
+				if (!_IsLeafNode(nowNode, tree->childSize) || !IsZeroOfComplex(&nowNode->value))
 					break;
 				else if (nowNode == tree->root)
 					break;
 			}
 			/* 更新root */
-			tree->root->value.real--;
+			DecOfComplex(&tree->root->value);
 		}
 		else {
 			/* 非叶子节点 */
 			INT_V tempv = { 0,0 };
 			nowNode->value = tempv;
 			/* 更新root */
-			tree->root->value.real--;
+			DecOfComplex(&tree->root->value);
 		}
 	}
 	return 1;
@@ -436,7 +446,7 @@ void _FreeNode(struct _Node* node, int csize) {
 	return;
 }
 
-int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree) {
+int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V* coef, pOPTree otherTree) {
 	/* 定义一个简易的栈 */
 	UINT_L lStack[MAX_OPERATOR_LENGTH];
 	int ret = 1;
@@ -448,7 +458,7 @@ int _MultiplyOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTre
 	return ret;
 }
 
-int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V coef, pOPTree otherTree) {
+int _MultiplyConnectOfOPTree_TO(pOPTree tree, pOPArray arr, int len, INT_V* coef, pOPTree otherTree) {
 	/* 定义一个简易的栈 */
 	UINT_L lStack[MAX_OPERATOR_LENGTH];
 	int ret = 1;
@@ -467,20 +477,10 @@ int _MultiplyOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize,
 	tree2Stack[nextIndex] = tree2node->label;
 	int ret = 1;
 
-	if (!IsZeroOfComplex(tree2node->value)) {
-		/* 定义一个简易的栈 */
-		/*
-		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
-		for (int i = 0; i <= tree1->childSize; ++i) {
-			if (tree1->root->children[i] != NULL) {
-				ret &= _MultiplyNodeWithOP(tree1->root->children[i], tree1->childSize, 
-					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
-			}
-		}
-		*/
+	if (!IsZeroOfComplex(&tree2node->value)) {
 		pOPTree tempTree = NULL;
 		CreateOPTree(MAX(tree2csize, tree1->childSize), &tempTree);
-		_MultiplyOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, tree2node->value, tempTree);
+		_MultiplyOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, &tree2node->value, tempTree);
 		AddOfOPTree_TT(outputTree, tempTree);
 		FreeOPTree(tempTree);
 	}
@@ -500,20 +500,10 @@ int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize
 	tree2Stack[nextIndex] = tree2node->label;
 	int ret = 1;
 
-	if (!IsZeroOfComplex(tree2node->value)) {
-		/* 定义一个简易的栈 */
-		/*
-		UINT_L tree1Stack[MAX_OPERATOR_LENGTH];
-		for (int i = 0; i <= tree1->childSize; ++i) {
-			if (tree1->root->children[i] != NULL) {
-				ret &= _MultiplyConnectNodeWithOP(tree1->root->children[i], tree1->childSize,
-					tree2Stack, nextIndex + 1, tree2node->value, tree1Stack, 0, outputTree);
-			}
-		}
-		*/
+	if (!IsZeroOfComplex(&tree2node->value)) {
 		pOPTree tempTree = NULL;
 		CreateOPTree(MAX(tree2csize, tree1->childSize), &tempTree);
-		_MultiplyConnectOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, tree2node->value, tempTree);
+		_MultiplyConnectOfOPTree_TO(tree1, tree2Stack, nextIndex + 1, &tree2node->value, tempTree);
 		AddOfOPTree_TT(outputTree, tempTree);
 		FreeOPTree(tempTree);
 	}
@@ -526,19 +516,20 @@ int _MultiplyConnectOfOPTree_TT(pOPTree tree1, pOPNode tree2node, int tree2csize
 	return ret;
 }
 
-int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef, 
+int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V* coef, 
 	UINT_L* lStack, int nextIndex, pOPTree otherTree) {
 	if (nextIndex >= MAX_OPERATOR_LENGTH)
 		return 0;
 	lStack[nextIndex] = node->label;
 	int ret = 1;
-	if (!IsZeroOfComplex(node->value)) {
+	if (!IsZeroOfComplex(&node->value)) {
 		int newLen = ((nextIndex + 1) + len + 1);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
 		INT_V tempv;
-		MultiplyOfComplex(coef, node->value, &tempv);
-		InsertOfOPTree(otherTree, ans, newLen, tempv);
+		InitOfComplex(&tempv);
+		MultiplyOfComplex(coef, &node->value, &tempv);
+		InsertOfOPTree(otherTree, ans, newLen, &tempv);
 		free(ans);
 	}
 
@@ -551,20 +542,22 @@ int _MultiplyNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V
 	return ret;
 }
 
-int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V coef,
+int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len, INT_V* coef,
 	UINT_L* lStack, int nextIndex, pOPTree otherTree) {
 	if (nextIndex >= MAX_OPERATOR_LENGTH)
 		return 0;
 	lStack[nextIndex] = node->label;
 	int ret = 1;
-	if (!IsZeroOfComplex(node->value)) {
+	if (!IsZeroOfComplex(&node->value)) {
 		int newLen = (nextIndex + 1 + len);
 		pOPArray ans = (pOPArray)malloc(newLen * sizeof(UINT_L));
 		MultiplyConnectOfOPArray(arr, len, lStack, nextIndex + 1, ans, &newLen);
 		INT_V tempv;
-		MultiplyOfComplex(coef, node->value, &tempv);
-		InsertOfOPTree(otherTree, ans, newLen, tempv);
+		InitOfComplex(&tempv);
+		MultiplyOfComplex(coef, &node->value, &tempv);
+		InsertOfOPTree(otherTree, ans, newLen, &tempv);
 		free(ans);
+		ClearOfComplex(&tempv);
 	}
 
 	for (int i = 0; i <= csize; ++i) {
@@ -579,8 +572,8 @@ int _MultiplyConnectNodeWithOP(pOPNode node, UINT_L csize, pOPArray arr, int len
 int _NormalizeOPTree(pOPNode node, pOPTree tree) {
 	if (node == NULL)
 		return 0;
-	if (!IsZeroOfComplex(node->value))
-		++(tree->root->value.real);
+	if (!IsZeroOfComplex(&node->value))
+		IncOfComplex(&tree->root->value);
 
 	int ret = 1;
 	for (int i = 0; i <= tree->childSize; ++i) {
@@ -589,7 +582,7 @@ int _NormalizeOPTree(pOPNode node, pOPTree tree) {
 		}
 	}
 
-	if (_IsLeafNode(node, tree->childSize) && IsZeroOfComplex(node->value)) {
+	if (_IsLeafNode(node, tree->childSize) && IsZeroOfComplex(&node->value)) {
 		pOPNode p = node->parent;
 		p->children[node->label] = NULL;
 		free(node);
@@ -642,7 +635,7 @@ int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2, int* output1_l
 	for (int i = 0; i <= tree->childSize; ++i) {
 		if (tree->root->children[i] != NULL) {
 			output1[o1cnt++] = tree->root->children[i]->label;
-			output2[o2cnt++] = tree->root->children[i]->value.real;
+			output2[o2cnt++] = mpf_get_d(tree->root->children[i]->value.real);
 			_PrintOrderOPTree(tree->root->children[i], tree->childSize, output1, output2, &o1cnt, &o2cnt);
 		}
 	}
@@ -655,14 +648,14 @@ int PrintOrderOPTree(pOPTree tree, UINT_L* output1, int* output2, int* output1_l
 
 int AddAllTreeNodeValueSum(pOPNode node, void* dNum) {
 	Complex* num = dNum;
-	AddOfComplex(*num, node->value, num);
+	AddOfComplex(num, &node->value, num);
 	return 1;
 }
 
 int _PrintOPTree(pOPNode node, UINT_L csize, int nextIndex, pOPArray buf) {
 	buf[nextIndex] = node->label;
-	if (!IsZeroOfComplex(node->value)) {
-		printf("%.3lf+(%.3lfj)  ", node->value.real, node->value.image);
+	if (!IsZeroOfComplex(&node->value)) {
+		printf("%.3lf+(%.3lfj)  ", mpf_get_d(node->value.real), mpf_get_d(node->value.image));
 		putchar('{');
 		printf("%d", buf[0]);
 		for (int i = 1; i <= nextIndex; ++i) {
@@ -683,7 +676,7 @@ int _PrintOrderOPTree(pOPNode node, UINT_L csize, UINT_L* output1, int* output2,
 	for (int i = 0; i <= csize; ++i) {
 		if (node->children[i] != NULL) {
 			output1[*output1_cnt] = node->children[i]->label;
-			output2[*output2_cnt] = node->children[i]->value.real;
+			output2[*output2_cnt] = mpf_get_ui(node->children[i]->value.real);
 			++(*output1_cnt);
 			++(*output2_cnt);
 			_PrintOrderOPTree(node->children[i], csize, output1, output2, output1_cnt, output2_cnt);
