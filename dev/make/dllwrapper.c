@@ -1,3 +1,4 @@
+
 #include "dllwrapper.h"
 /**
  * @ 文件名: dllwrapper.c
@@ -16,10 +17,10 @@ int cedll_CalEvolution(M_DATAPOINTER dataPtr, double* outputArr)
 
 	CalEvolution(data, &output);
 	for (int i = 0; i < data->size; ++i) {
-		outputArr[i] = output[i].real;
+		GetRealOfComplex(&output[i], &outputArr[i]);
 	}
 	for (int i = 0; i < data->size; ++i) {
-		outputArr[i + data->size] = output[i].image;
+		GetImageOfComplex(&output[i], &outputArr[i]);
 	}
 	free(output);
 	return 1;
@@ -53,8 +54,8 @@ M_DATAPOINTER cedll_DeriveAssign(int* ho_arr, double* ho_coef, int* ho_size_arr,
 	inputArrCoef_HO = (Complex*)malloc(inputArrLen_HO * sizeof(Complex)); ASSERTNULL(inputArrCoef_HO);
 	memset(inputArrCoef_HO, 0, inputArrLen_HO * sizeof(Complex));
 	for (int i = 0; i < inputArrLen_HO; ++i) {
-		inputArrCoef_HO[i].real = ho_coef[i];
-		inputArrCoef_HO[i].image = ho_coef[i + ho_size];
+		SetRealOfComplex(&inputArrCoef_HO[i], ho_coef[i]);
+		SetImageOfComplex(&inputArrCoef_HO[i], ho_coef[i + ho_size]);
 	}
 
 	// [Collapse算符...], [Collapse算符系数...]
@@ -73,8 +74,8 @@ M_DATAPOINTER cedll_DeriveAssign(int* ho_arr, double* ho_coef, int* ho_size_arr,
 	inputArrCoef_CO = (Complex*)malloc(inputArrLen_CO * sizeof(Complex)); ASSERTNULL(inputArrCoef_CO);
 	memset(inputArrCoef_CO, 0, inputArrLen_CO * sizeof(Complex));
 	for (int i = 0; i < inputArrLen_CO; ++i) {
-		inputArrCoef_CO[i].real = co_coef[i];
-		inputArrCoef_CO[i].image = co_coef[i + co_size];
+		SetRealOfComplex(&inputArrCoef_CO[i], co_coef[i]);
+		SetImageOfComplex(&inputArrCoef_CO[i], co_coef[i + co_size]);
 	}
 
 	// [Tracking算符...]
@@ -128,10 +129,10 @@ int cedll_GetCurrentValue(M_DATAPOINTER dataPtr, double* outputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	for (int i = 0; i < MIN(arrSize, data->size); ++i) {
-		outputArr[i] = data->curValues[i].real;
+		GetRealOfComplex(&data->curValues[i], &outputArr[i]);
 	}
 	for (int i = data->size; i < MIN(arrSize, 2 * data->size); ++i) {
-		outputArr[i] = data->curValues[i - data->size].image;
+		GetImageOfComplex(&data->curValues[i - data->size], &outputArr[i]);
 	}
 	return 1;
 }
@@ -140,10 +141,10 @@ int cedll_GetHamiltonCoef(M_DATAPOINTER dataPtr, double* outputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	for (int i = 0; i < MIN(arrSize, data->hoSize); ++i) {
-		outputArr[i] = data->hoCoefs[i].real;
+		GetRealOfComplex(&data->hoCoefs[i], &outputArr[i]);
 	}
 	for (int i = data->hoSize; i < MIN(arrSize, 2 * data->hoSize); ++i) {
-		outputArr[i] = data->hoCoefs[i - data->hoSize].image;
+		GetImageOfComplex(&data->hoCoefs[i - data->hoSize], &outputArr[i]);
 	}
 	return 1;
 }
@@ -151,12 +152,16 @@ int cedll_GetHamiltonCoef(M_DATAPOINTER dataPtr, double* outputArr, int arrSize)
 int cedll_GetCollapseCoef(M_DATAPOINTER dataPtr, double* outputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
+	mpf_t tmp;
 	for (int i = 0; i < MIN(arrSize, data->coSize); ++i) {
-		outputArr[i] = data->coCoefs[i].real * 2;
+		mpf_mul_ui(tmp, data->coCoefs[i].real, 2);
+		outputArr[i] = mpf_get_d(tmp);
 	}
 	for (int i = data->coSize; i < MIN(arrSize, 2 * data->coSize); ++i) {
-		outputArr[i] = data->coCoefs[i - data->coSize].image * 2;
+		mpf_mul_ui(tmp, data->coCoefs[i - data->coSize].image, 2);
+		outputArr[i] = mpf_get_d(tmp);
 	}
+	mpf_clear(tmp);
 	return 1;
 }
 
@@ -170,16 +175,16 @@ int cedll_SetCurrentValue(M_DATAPOINTER dataPtr, double* inputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	Complex* temp = (Complex*)malloc(sizeof(Complex) * data->size); ASSERTNULL(temp);
-	memset(temp, 0, sizeof(Complex) * data->size);
+	InitOfComplexs(temp, data->size);
 
 	for (int i = 0; i < (arrSize / 2); ++i) {
-		temp[i].real = inputArr[i];
+		SetRealOfComplex(&temp[i], inputArr[i]);
 	}
 	for (int i = (arrSize / 2); i < arrSize; ++i) {
-		temp[i - (arrSize / 2)].image = inputArr[i];
+		SetImageOfComplex(&temp[i - (arrSize / 2)], inputArr[i]);
 	}
 	SetCurrentValueOfDData(data, temp, data->size);
-	free(temp);
+	FreeOfComplexs(temp, data->size);
 	return 1;
 }
 
@@ -187,16 +192,16 @@ int cedll_SetHamiltonCoef(M_DATAPOINTER dataPtr, double* inputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	Complex* temp = (Complex*)malloc(sizeof(Complex) * data->hoSize); ASSERTNULL(temp);
-	memset(temp, 0, sizeof(Complex) * data->hoSize);
+	InitOfComplexs(temp, data->hoSize);
 
 	for (int i = 0; i < MIN(arrSize, data->hoSize); ++i) {
-		temp[i].real = inputArr[i];
+		SetRealOfComplex(&temp[i], inputArr[i]);
 	}
 	for (int i = data->hoSize; i < MIN(arrSize, 2 * data->hoSize); ++i) {
-		temp[i - data->hoSize].image = inputArr[i];
+		SetImageOfComplex(&temp[i - data->hoSize], inputArr[i]);
 	}
 	SetHOCoefOfDData(data, temp, data->hoSize);
-	free(temp);
+	FreeOfComplexs(temp, data->hoSize);
 	return 1;
 }
 
@@ -204,16 +209,16 @@ int cedll_SetCollapseCoef(M_DATAPOINTER dataPtr, double* inputArr, int arrSize)
 {
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	Complex* temp = (Complex*)malloc(sizeof(Complex) * data->coSize); ASSERTNULL(temp);
-	memset(temp, 0, sizeof(Complex) * data->coSize);
+	InitOfComplexs(temp, data->coSize);
 
 	for (int i = 0; i < MIN(arrSize, data->coSize); ++i) {
-		temp[i].real = inputArr[i];
+		SetRealOfComplex(&temp[i], inputArr[i]);
 	}
 	for (int i = data->coSize; i < MIN(arrSize, 2 * data->coSize); ++i) {
-		temp[i - data->coSize].image = inputArr[i];
+		SetImageOfComplex(&temp[i - data->coSize], inputArr[i]);
 	}
 	SetCOCoefOfDData(data, temp, data->coSize);
-	free(temp);
+	FreeOfComplexs(temp, data->coSize);
 	return 1;
 }
 
@@ -222,19 +227,16 @@ int cedll_UpdateInitialValue(M_DATAPOINTER dataPtr, int* init_arr, int arrSize)
 	pDeriveData data = MPTR_TO(dataPtr, pDeriveData);
 	UINT_L trackBuf[MAX_OPERATOR_LENGTH];
 	Complex* ans = (Complex*)malloc(data->size * sizeof(Complex)); ASSERTNULL(ans);
-	memset(ans, 0, data->size * sizeof(Complex));
+	InitOfComplexs(ans, data->size);
 	for (int i = 0; i < data->size; ++i) {
 		pOPNode nowTrack = data->trackNodes[i];
 		int nowArrLen = GetRoot(data->trackNodes[i], NULL);
 		ArrayFromNode(nowTrack, nowArrLen, trackBuf);
 		double temp;
 		InitialValue(trackBuf, nowArrLen, init_arr, arrSize, &temp);
-		ans[i].real = temp;
+		SetRealOfComplex(&ans[i], temp);
 	}
 	SetCurrentValueOfDData(data, ans, data->size);
+	FreeOfComplexs(ans, data->size);
 	return 0;
-}
-
-int cedll_GetLongDoubleSize() {
-	return sizeof(long double);
 }

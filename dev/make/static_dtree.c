@@ -110,12 +110,14 @@ int CreateStaticDTree(int n, pOPTree* output) {
 		else {
 			UINT_L nextUINTL = g_StaticDTreesList[listIndex];
 			if (nowNode->children[nextUINTL] == NULL) {
-				Complex tempc = { 0,0 };
-				MallocOPNode(0, tempc, o->childSize, nowNode, &nowNode->children[nextUINTL]);
+				Complex tempc;
+				InitOfComplex(&tempc);
+				MallocOPNode(0, &tempc, o->childSize, nowNode, &nowNode->children[nextUINTL]);
+				ClearOfComplex(&tempc);
 			}
 			nowNode = nowNode->children[nextUINTL];
 			nowNode->label = g_StaticDTreesList[listIndex];
-			nowNode->value.real = g_StaticDTreesValueRealList[valueListIndex];
+			SetRealOfComplex(&nowNode->value, g_StaticDTreesValueRealList[valueListIndex]);
 			++listIndex;
 			++valueListIndex;
 		}

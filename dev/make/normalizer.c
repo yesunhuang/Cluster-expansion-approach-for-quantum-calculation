@@ -52,25 +52,27 @@ int SONormalize(pOPArray arr, int len, int csize, pOPTree* outTree) {
 	for (int i = zeroNum; i < len; ++i) {
 		tempbuf[i] = normal;
 	}
-	INT_V tempv = { buf[0], 0 };
-	InsertOfOPTree(*outTree, tempbuf, len, tempv);
+	INT_V tempv;
+	InitOfComplex(&tempv);
+	SetRealOfComplex(&tempv, buf[0]);
+	InsertOfOPTree(*outTree, tempbuf, len, &tempv);
 	for (int i = 1; i <= (len / 2); ++i) {
 		// int arrlen = len - 2 * i;
 		if (buf[i] != 0) {
 			if (2 * i == len) {
 				/* 0次项 */
 				tempbuf[0] = 0;
-				tempv.real = buf[i];
-				InsertOfOPTree(*outTree, tempbuf, 1, tempv);
+				SetRealOfComplex(&tempv, buf[i]);
+				InsertOfOPTree(*outTree, tempbuf, 1, &tempv);
 			}
 			else {
 				tempbuf[zeroNum - i] = normal;
-				tempv.real = buf[i];
-				InsertOfOPTree(*outTree, tempbuf, len - 2 * i, tempv);
+				SetRealOfComplex(&tempv, buf[i]);
+				InsertOfOPTree(*outTree, tempbuf, len - 2 * i, &tempv);
 			}
 		}
 	}
-	
+	ClearOfComplex(&tempv);
 	free(tempbuf);
 	free(buf);
 	return 0;

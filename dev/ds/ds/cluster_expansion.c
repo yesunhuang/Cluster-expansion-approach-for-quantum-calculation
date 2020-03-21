@@ -12,11 +12,12 @@
 
 int DeltaTree(int N, pOPTree* outTree) {
 	/* 加入静态数据 */
+	//*
 	if (N <= 0) {
 		return 0;
 	}
 	if (N <= STANAMIC_DTREE_SIZE) {
-		/* 从动态表中获取 */
+		//从动态表中获取
 		if (g_StanamicDTrees[N] != NULL) {
 			return CopyCreateOPTree(g_StanamicDTrees[N], outTree);
 		}
@@ -29,6 +30,7 @@ int DeltaTree(int N, pOPTree* outTree) {
 		ret &= CopyCreateOPTree(*outTree, &g_StanamicDTrees[N]);
 		return ret;
 	}
+	//*/
 	int n = N - 1;
 	/* 创建结果的树 */
 	CreateOPTree(N, outTree);
