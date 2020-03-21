@@ -19,9 +19,9 @@
 
 typedef unsigned long long M_DATAPOINTER;
 
-#include <stdlib.h>
-#include "solver.h"
-#include "dllheader.h"
+//#include <stdlib.h>
+//#include "solver.h"
+//#include "dllheader.h"
 
 #ifdef __cplusplus
 extern "C" {
