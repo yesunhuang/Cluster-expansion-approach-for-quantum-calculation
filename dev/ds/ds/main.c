@@ -280,8 +280,8 @@ int main() {
 	p_cedll_GetCurrentValue pGetCur = GetProcAddress(hdll, "cedll_GetCurrentValue");
 
 
-	int ho_arr[] = { 1, 2, 3, 4, 1,1,4,2,2,3,1,1 };
-	double ho_coef_arr[] = { 0.8, 1.6, 1.0, 1.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+	int ho_arr[] = { 1, 2, 3, 4, 1,1,4,2,2,3,1,2 };
+	double ho_coef_arr[] = { 0.8,1.6,2.0,2.0,8.831,8.831,0.0,0.0,0.0,0.0,0.0,0.0 };
 	int ho_size_arr[] = { 2, 2,3,3,1,1 };
 	int ho_size = 6;
 	int co_arr[] = {2, 4};
@@ -289,9 +289,9 @@ int main() {
 	int co_size_arr[] = {1, 1};
 	int co_size = 2;
 	int track_arr[] = {1,2,3,4};
-	int track_size_arr[] = {2,2};
+	int track_size_arr[] = {2,2,0,0};
 	int track_size = 2;
-	int maxOPLen = 3;
+	int maxOPLen = 5;
 	int init_arr[] = { 0,0 };
 	double cur[] = { 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1 };
 
