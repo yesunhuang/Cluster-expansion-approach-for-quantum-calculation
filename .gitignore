@@ -9,6 +9,7 @@ scipy*.pdf
 [Bb]uild/
 *.pptx
 *.ppt
+other/
 
 # User-specific files
 *.rsuser
